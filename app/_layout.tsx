@@ -2,7 +2,6 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import App from './(tabs)/index.tsx';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,7 +22,7 @@ export default function RootLayout() {
 
   return (
   <Stack>
-    <Stack.Screen name='indexik' component={App} options={{ headerShown: false }} />
+    <Stack.Screen name='indexik' options={{ headerShown: false }} />
   </Stack>
   );
 }
