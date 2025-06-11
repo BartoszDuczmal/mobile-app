@@ -12,8 +12,6 @@ const addPost = async (title: string, desc: string) => {
 };
 
 const createPost = () => {
-    const [press, setPress] = useState(false)
-
     const screenSize = useWindowDimensions();
 
     const [title, setTitle] = useState('')

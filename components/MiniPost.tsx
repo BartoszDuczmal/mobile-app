@@ -1,9 +1,17 @@
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
-const ViewPost = (props: any) => {
+type Post = {
+    id: number,
+    title: string,
+    desc: string,
+    likes: number,
+}
+
+const ViewPost = (props: Post) => {
     const [likes, setLikes] = useState(props.likes)
 
     // Dodac automatyczne wczytywanie czy post jest polubiony
@@ -21,13 +29,13 @@ const ViewPost = (props: any) => {
     }
 
     return (
-        <View style={css.box}>
+        <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id.toString()}`) }}>
             <View style={css.contentBox}>
                 <Text style={css.title} numberOfLines={1} ellipsizeMode="tail">{props.title}</Text>
                 <Text numberOfLines={4} ellipsizeMode="tail">{props.desc}</Text>
             </View>
             <View style={css.footerBox}>
-                <AntDesign name={isLike ? 'heart' : 'hearto'} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
+                <AntDesign name={isLike ? 'heart' : 'hearto'} style={{ zIndex: 10 }} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
                     async () => {
                         if(!isLike) {
                             const res = await handleLike(props.id)
@@ -39,7 +47,7 @@ const ViewPost = (props: any) => {
                 }/>
                 <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
             </View>
-        </View>
+        </Pressable>
     );
 }
 
@@ -52,6 +60,7 @@ const css = StyleSheet.create({
         borderRadius: 20,
         marginTop: 25,
         display: 'flex',
+        zIndex: 1,
     },
     title: {
         fontSize: 25,
@@ -68,7 +77,7 @@ const css = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 20,
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'flex-end',
         gap: 7,
     },
 })

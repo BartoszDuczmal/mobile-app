@@ -22,8 +22,9 @@ export default function RootLayout() {
 
   return (
   <Stack>
-    <Stack.Screen name='(tabs)/main' options={{ headerShown: true, title: 'Strona Główna' }} />
+    <Stack.Screen name='(tabs)/posts/index' options={{ headerShown: true, title: 'Strona Główna' }} />
     <Stack.Screen name='(tabs)/createPost' options={{ headerShown: true, title: 'Opublikuj post' }} />
+    <Stack.Screen name='(tabs)/posts/[id]' options={{ headerShown: true, title: 'Przegląd postu' }} />
   </Stack>
   );
 }
