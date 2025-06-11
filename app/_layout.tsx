@@ -22,7 +22,8 @@ export default function RootLayout() {
 
   return (
   <Stack>
-    <Stack.Screen name='indexik' options={{ headerShown: false }} />
+    <Stack.Screen name='(tabs)/main' options={{ headerShown: true, title: 'Strona Główna' }} />
+    <Stack.Screen name='(tabs)/createPost' options={{ headerShown: true, title: 'Opublikuj post' }} />
   </Stack>
   );
 }
