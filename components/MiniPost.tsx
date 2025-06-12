@@ -1,5 +1,5 @@
+import { handleLike } from '@/utils/like-post';
 import { AntDesign } from '@expo/vector-icons';
-import axios from 'axios';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -17,19 +17,8 @@ const ViewPost = (props: Post) => {
     // Dodac automatyczne wczytywanie czy post jest polubiony
     const [isLike, setIsLike] = useState(false)
 
-    const handleLike = async (id: number) => {
-        try {
-            const res = await axios.post(`http://192.168.1.151:3001/posts/${id}/likes`, { id: id });
-            setLikes((prev: number) => prev + 1)
-            return true
-        } catch (err) {
-            alert('Nie udało się polubić!\nError: ' + err)
-            return false
-        }
-    }
-
     return (
-        <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id.toString()}`) }}>
+        <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id}`) }}>
             <View style={css.contentBox}>
                 <Text style={css.title} numberOfLines={1} ellipsizeMode="tail">{props.title}</Text>
                 <Text numberOfLines={4} ellipsizeMode="tail">{props.desc}</Text>
@@ -40,6 +29,7 @@ const ViewPost = (props: Post) => {
                         if(!isLike) {
                             const res = await handleLike(props.id)
                             if(res) {
+                                setLikes((prev: number) => prev + 1)
                                 setIsLike(true)
                             }
                         }
