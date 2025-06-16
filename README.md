@@ -1,1 +1,2 @@
-# My fff mobile app
+# mobile-app
+Multi platform app developed using **react native**
