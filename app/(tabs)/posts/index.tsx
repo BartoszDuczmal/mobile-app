@@ -41,7 +41,7 @@ export default function Main() {
           <TextInput placeholder='Szukaj...' placeholderTextColor='gray' style={css.inputSearch} onChangeText={text => setSearchData(text)}></TextInput>
         </View>
         <View style={[css.footer, { marginBottom: screenSize.height * 0.1 }]}>
-          <TouchableHighlight onPress={() => router.push('/createPost')} style={css.buttonFooter} underlayColor='darkgray'>
+          <TouchableHighlight onPress={() => router.push('/publish')} style={css.buttonFooter} underlayColor='darkgray'>
             <Text style={{color: 'gray', fontSize: 25}}>+</Text>
           </TouchableHighlight>
         </View>

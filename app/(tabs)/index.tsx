@@ -1,7 +1,8 @@
+import { Text, View } from "react-native";
 
 
 export default function App() {
   return (
-    <>(tabs) index</>
+    <View><Text>Tu jeszcze niczego nie ma...</Text></View>
   );
 }

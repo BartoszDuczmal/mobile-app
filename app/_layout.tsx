@@ -1,7 +1,9 @@
+import { Feather } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { Text, TouchableOpacity } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,10 +23,24 @@ export default function RootLayout() {
   }
 
   return (
-  <Stack>
-    <Stack.Screen name='(tabs)/posts/index' options={{ headerShown: true, title: 'Strona Główna' }} />
-    <Stack.Screen name='(tabs)/createPost' options={{ headerShown: true, title: 'Opublikuj post' }} />
-    <Stack.Screen name='(tabs)/posts/[id]' options={{ headerShown: true, title: 'Przegląd postu' }} />
+  <Stack screenOptions={{
+    headerShown: true,
+    headerRight: () => (
+    <TouchableOpacity onPress={() => router.push('/(tabs)/login')} style={{
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      marginRight: 5 
+    }}>
+      <Text style={{ fontWeight: 'bold', marginRight: 5 }}>Zaloguj się</Text>
+      <Feather name="user" size={24} color="#000" />
+    </TouchableOpacity>),
+  }}>
+    <Stack.Screen name='(tabs)/posts/index' options={{ title: 'Strona Główna' , headerBackVisible: false }} />
+    <Stack.Screen name='(tabs)/publish' options={{ title: 'Opublikuj post' }} />
+    <Stack.Screen name='(tabs)/posts/[id]' options={{ title: 'Przegląd postu' }} />
+    <Stack.Screen name='(tabs)/login/index' options={{ title: 'Logowanie', headerRight: () => null }} />
+    <Stack.Screen name='(tabs)/login/recovery' options={{ title: 'Odzyskiwanie', headerRight: () => null }} />
+    <Stack.Screen name='(tabs)/register' options={{ title: 'Rejestracja', headerRight: () => null }} />
   </Stack>
   );
 }

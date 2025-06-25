@@ -1,10 +1,10 @@
 import cors from 'cors';
+import dotenv from 'dotenv';
 import express from 'express';
 import Joi from 'joi';
 import mysql from 'mysql';
 
-require('dotenv').config();
-
+dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -14,7 +14,7 @@ app.use(express.json());
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASS,
+  password: process.env.DB_PASS || '',
   database: process.env.DB_NAME,
 });
 
@@ -25,7 +25,7 @@ db.connect(err => {
   console.log('Połączono z MySQL');
 });
 
-//Pobranie wszystkich postów z bazy danych
+// Pobranie wszystkich postów z bazy danych
 
 app.get('/posts', (req, res) => {
   db.query('SELECT id, title, description, likes FROM posts ORDER BY created_at DESC', (err, result) => {
