@@ -6,7 +6,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fRegister = async (email: string, pass: string) => {
     try {
-        const res = await axios.post('http://192.168.1.151:3001/register', { email: email, pass: pass });
+        const res = await axios.post('http://192.168.1.151:3001/auth/register', { email: email, pass: pass });
         alert('Pomyślnie udało się zarejestrować!')
     }
     catch(err) {

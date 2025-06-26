@@ -6,7 +6,8 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fLogin = async (email: string, pass: string) => {
     try {
-        const res = await axios.post('http://192.168.1.151:3001/login', { email: email, pass: pass });
+        const res = await axios.post('http://192.168.1.151:3001/auth/login', { email: email, pass: pass });
+        alert('Pomyślnie się zalogowano!')
     }
     catch(err) {
         alert('Nie udało się zalogować!\nError: ' + err)
