@@ -1,17 +1,31 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import axios from "axios";
 import { router } from "expo-router";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
+const fLogin = async (email: string, pass: string) => {
+    try {
+        const res = await axios.post('http://192.168.1.151:3001/login', { email: email, pass: pass });
+    }
+    catch(err) {
+        alert('Nie udało się zalogować!\nError: ' + err)
+    }
+}
+
 const index = () => {
+    const [email, setEmail] = useState('')
+    const [pass, setPass] = useState('')
+
     return (
         <View style={css.container}>
             <View style={css.inputBox}>
                 <MaterialIcons name="alternate-email" size={40} color={'gray'} />
-                <TextInput placeholder="email" style={css.input} />
+                <TextInput placeholder="email" style={css.input} onChangeText={setEmail}/>
             </View>
             <View style={[css.inputBox, {marginTop: 20}]}>
                 <MaterialIcons name="lock-open" size={40} color={'gray'} />
-                <TextInput placeholder="hasło" style={css.input} />
+                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass}/>
             </View>
             <View style={css.helpBox}>
                 <Pressable onPress={() => router.push('/register')}>
@@ -26,7 +40,7 @@ const index = () => {
                     )}
                 </Pressable>
             </View>
-            <Pressable>
+            <Pressable onPress={() => fLogin(email, pass)}>
                 {({ pressed }) => (
                 <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Zaloguj</Text>
                 )}

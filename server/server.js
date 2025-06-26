@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -8,6 +9,8 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const saltRounds = 10
 
 // Dane wejściowe do bazy danych
 
@@ -44,7 +47,7 @@ const schemaPost = Joi.object({
 // Dodanie nowego postu do bazy danych
 
 app.post('/posts', (req, res) => {
-  console.log('Otrzymano post: ' + req.body)
+  console.log('Otrzymano post: ', req.body)
 
   const { error, value } = schemaPost.validate(req.body)
   if(error) {
@@ -62,7 +65,7 @@ app.post('/posts', (req, res) => {
   })
 })
 
-// Polubianie posta
+// Polubianie posta - do zmiany
 
 app.post('/posts/:id/likes', (req, res) => {
   if(req.params.id != req.body.id) {
@@ -105,6 +108,107 @@ app.get('/posts/:id', (req, res) => {
   });
 });
 
+
+//
+// AUTORYZACJA
+//
+
+// Szablon
+
+const schemaLogin = Joi.object({
+  email: Joi.string().max(50).email().required(),
+  pass: Joi.string().min(8).max(30).pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$")).required(),
+})
+
+// Logowanie
+
+app.post('/login', (req, res) => {
+  const msgError = 'Nie istnieje żadne konto pasujące do podanych danych!'
+
+  console.log('Otrzymano próbę logowania: ', req.body)
+
+  const { error, value } = schemaLogin.validate(req.body)
+  if(error) {
+    console.log('Bledna walidacja! Error: ' + error)
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  const sql = 'SELECT email, pass FROM users WHERE email = ?' 
+  db.query(sql, [value.email], (err, result) => {
+    if(err) {
+      console.log('Blad podczas zapytania do bazy! Error: ' + err)
+      return res.status(500).json({ error: err });
+    }
+
+    if(result.length > 0) {
+      bcrypt.compare(req.body.pass, result[0].pass, (err, isMatch) => {
+        if(err) {
+          return res.status(500).json({ error: 'Blad serwera!' });
+        }
+        if(isMatch) {
+          res.json({ success: true, key: 'jwt' }); 
+        }
+        else {
+          console.log('Bledne haslo!')
+          return res.status(404).json({ error: msgError });
+        }
+      })
+    }
+    else {
+      console.log('Brak konta o takim emailu!')
+      return res.status(404).json({ error: msgError });
+    }
+  })
+})
+
+// Rejestracja
+
+app.post('/register', (req, res) => {
+  console.log('Otrzymano próbę zarejestrowania: ', req.body)
+
+  const { error, value } = schemaLogin.validate(req.body)
+  if(error) {
+    console.log('Bledna walidacja! Error: ' + error)
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  // Sprawdzenie czy nie istnieje juz konto o podanym emailu
+
+  const sql = 'SELECT email, pass FROM users WHERE email = ?'
+  db.query(sql, [value.email], (err, result) => {
+    if(err) {
+      console.log('Blad podczas zapytania do bazy! Error: ' + err)
+      return res.status(500).json({ error: err });
+    }
+    
+    if(result.length === 0) {
+
+      // Hashowanie hasła
+
+      bcrypt.hash(value.pass, saltRounds, (err, hash) => {
+        if (err) {
+          console.log('Błąd podczas hashowania hasła:', err);
+          return res.status(500).json({ error: 'Błąd serwera!' });
+        }
+
+        // Dodanie użytkownika do bazy danych
+
+        const sql = 'INSERT INTO users (email, pass) VALUES (?, ?)'
+        db.query(sql, [value.email, hash], (err, result) => {
+          if(err) {
+            console.log('Blad podczas zapytania do bazy! Error: ' + err)
+            return res.status(500).json({ error: err });
+          }
+          res.json({ success: true })
+        })
+      })
+    }
+    else {
+      console.log('Konto o takim emailu już istnieje!')
+      return res.status(404).json({ error: 'Konto o takim emailu już istnieje!' });
+    }
+  })
+})
 
 // Uruchomienie serwera
 
