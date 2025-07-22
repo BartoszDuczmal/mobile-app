@@ -1,3 +1,4 @@
+import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
@@ -21,11 +22,12 @@ const ViewPost = () => {
 
     const [likes, setLikes] = useState<number>(0)
 
-    // Dodac automatyczne wczytywanie czy post jest polubiony
     const [isLike, setIsLike] = useState(false)
 
     useEffect(() => {
-        if (!id || isNaN(Number(id))) return;
+        let blocker = true
+        const idNum = parseInt(id as string, 10)
+        if (!idNum || isNaN(idNum)) return;
 
         const fetchData = async () => {
             try {
@@ -46,7 +48,17 @@ const ViewPost = () => {
                 console.error('Błąd podczas pobierania posta:', error);
             }
         };
+        const fetchIsLike = async () => {
+            const status = await isLikedBy(idNum)
+            setIsLike(status)
+        }
+        
         fetchData();
+        fetchIsLike()
+
+        return () => {
+            blocker = false;
+        };
     }, [id]);
 
     if (!data) {
@@ -74,12 +86,10 @@ const ViewPost = () => {
                 <View style={css.likeFooter}>
                     <AntDesign name={isLike ? 'heart' : 'hearto'} style={{ zIndex: 10 }} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
                         async () => {
-                            if(!isLike) {
-                                const res = await handleLike(data.id)
-                                if(res) {
-                                    setLikes((prev: number) => prev + 1)
-                                    setIsLike(true)
-                                }
+                            const res = await handleLike(data.id)
+                            if(res) {
+                                setLikes(res.likes)
+                                setIsLike(!isLike)
                             }
                         }
                     }/>

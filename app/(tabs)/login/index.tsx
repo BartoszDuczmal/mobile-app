@@ -8,6 +8,7 @@ const fLogin = async (email: string, pass: string) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/login', { email: email, pass: pass });
         alert('Pomyślnie się zalogowano!')
+        router.push('/posts')
     }
     catch(err) {
         alert('Nie udało się zalogować!\nError: ' + err)

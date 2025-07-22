@@ -36,6 +36,7 @@ export default function Main() {
   }, []);
 
   return (
+    <>
     <View style={css.container}>
         <View style={css.header}>
           <TextInput placeholder='Szukaj...' placeholderTextColor='gray' style={css.inputSearch} onChangeText={text => setSearchData(text)}></TextInput>
@@ -59,6 +60,7 @@ export default function Main() {
           </ScrollView>
         </View>
     </View>
+    </>
   );
 }
 

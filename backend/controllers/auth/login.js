@@ -1,6 +1,10 @@
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 import db from "../../config/db.js";
 import schemaLogin from "../../models/loginModel.js";
+
+dotenv.config();
 
 const login = (req, res) => {
     const msgError = 'Nie istnieje żadne konto pasujące do podanych danych!'
@@ -26,7 +30,16 @@ const login = (req, res) => {
                     return res.status(500).json({ error: 'Blad serwera!' });
                 }
                 if(isMatch) {
-                    res.json({ success: true, key: 'jwt' }); 
+                    const token = jwt.sign({ email: value.email }, process.env.JWT_KEY, { expiresIn: '1h' });
+
+                    res.cookie('token', token, {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
+                        sameSite: 'Strict',
+                        maxAge: 60 * 60 * 1000, // 1 godzina
+                        path: '/',
+                    });
+                    res.json({ success: true }); 
                 }
                 else {
                     console.log('Bledne haslo!')

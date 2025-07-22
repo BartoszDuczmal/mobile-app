@@ -1,7 +1,8 @@
+import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
 import { AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type Post = {
@@ -17,6 +18,15 @@ const ViewPost = (props: Post) => {
     // Dodac automatyczne wczytywanie czy post jest polubiony
     const [isLike, setIsLike] = useState(false)
 
+    useEffect(() => {
+        const fetchIsLike = async () => {
+            const status = await isLikedBy(props.id)
+            setIsLike(status)
+        }
+
+        fetchIsLike()
+    }, [props.id])
+
     return (
         <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id}`) }}>
             <View style={css.contentBox}>
@@ -26,12 +36,10 @@ const ViewPost = (props: Post) => {
             <View style={css.footerBox}>
                 <AntDesign name={isLike ? 'heart' : 'hearto'} style={{ zIndex: 10 }} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
                     async () => {
-                        if(!isLike) {
-                            const res = await handleLike(props.id)
-                            if(res) {
-                                setLikes((prev: number) => prev + 1)
-                                setIsLike(true)
-                            }
+                        const res = await handleLike(props.id)
+                        if(res) {
+                            setLikes(res.likes)
+                            setIsLike(!isLike)
                         }
                     }
                 }/>
