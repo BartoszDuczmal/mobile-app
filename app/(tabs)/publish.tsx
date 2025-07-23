@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } fro
 
 const addPost = async (title: string, desc: string) => {
   try {
-    const res = await axios.post('http://192.168.1.151:3001/posts', { title: title, desc: desc });
+    const res = await axios.post('http://192.168.1.151:3001/posts', { title: title, desc: desc }, { withCredentials: true });
     alert('Pomyślnie opublikowano!')
   } catch (err) {
     alert('Nie udało się opublikować!\nError: ' + err)

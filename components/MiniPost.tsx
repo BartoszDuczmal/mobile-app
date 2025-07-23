@@ -10,6 +10,7 @@ type Post = {
     title: string,
     desc: string,
     likes: number,
+    author: string,
 }
 
 const ViewPost = (props: Post) => {

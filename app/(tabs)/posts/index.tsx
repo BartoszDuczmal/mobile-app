@@ -5,10 +5,11 @@ import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, useWindowDimensions, View } from 'react-native';
 
 type Post = {
-  id: number;
-  title: string;
-  desc: string;
-  likes: number;
+  id: number,
+  title: string,
+  desc: string,
+  likes: number,
+  author: string,
 };
 
 export default function Main() {
@@ -54,7 +55,7 @@ export default function Main() {
                 (item.title.toLowerCase().includes(searchData.toLowerCase())) || (item.desc.toLowerCase().includes(searchData.toLowerCase()))
               )
               .map((v: Post) => (
-                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
+                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes} author={v.author}></MiniPost>
               ))
             }
           </ScrollView>

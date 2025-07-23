@@ -10,6 +10,7 @@ type Post = {
     id: number,
     title: string,
     desc: string,
+    author: string,
     likes: number,
     date: string,
 }
@@ -37,6 +38,7 @@ const ViewPost = () => {
                         id: res.data.id,
                         title: res.data.title,
                         desc: res.data.description,
+                        author: res.data.author,
                         likes: res.data.likes,
                         date: res.data.created_at,
                     });
@@ -78,6 +80,7 @@ const ViewPost = () => {
 
     return (
         <View style={css.container}>
+            <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>{data.author}</Text>
             <View style={css.title}>
                 <Text style={{ fontSize: 35 }} numberOfLines={3}>{data.title}</Text>
             </View>

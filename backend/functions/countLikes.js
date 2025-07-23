@@ -1,6 +1,5 @@
 import db from "../config/db.js";
 
-// Zrobic do show.js i fetchPosts.js zliczanie polubien
 const countLikes = (id) => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT id FROM likes WHERE post_id = ?'
