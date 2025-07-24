@@ -10,8 +10,7 @@ const checkFunc = (token) => {
     }
     try {   
         const decoded = jwt.verify(token, process.env.JWT_KEY)
-        console.log('Zdekodowany: ', decoded)
-        return decoded.email
+        return decoded.id
     }
     catch(err) {
         return null;

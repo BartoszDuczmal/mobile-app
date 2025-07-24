@@ -6,14 +6,12 @@ import schemaPost from "../../models/postModel.js";
 const query = promisify(db.query).bind(db);
 
 const create = async (req, res) => {
-    const email = checkFunc(req.cookies.token)
-    if(email === null) {
+    const user = checkFunc(req.cookies.token)
+    if(user === null) {
         return res.status(401).json({ error: 'Musisz się najpierw zalogować!' })
     }
 
-    const user = await query('SELECT id FROM users WHERE email = ? LIMIT 1', [email])
-
-    console.log('Otrzymano post: ', req.body, email, '->', user[0].id)
+    console.log('Otrzymano post: ', req.body, '-> ID: ', user)
 
     const { error, value } = schemaPost.validate(req.body)
     if(error) {
@@ -21,14 +19,14 @@ const create = async (req, res) => {
         return res.status(400).json({ error: error.details[0].message });
     }
 
-    const sql = 'INSERT INTO posts (title, description, author) VALUES (?, ?, ?)'
-    db.query(sql, [value.title, value.desc, user[0].id], (err, result) => {
-        if (err) {
-          console.log('Blad podczas zapytania do bazy! Error: ' + err)
-          return res.status(500).json({ error: err });
-        }
+    try {
+        const result = await query('INSERT INTO posts (title, description, author) VALUES (?, ?, ?)', [value.title, value.desc, user])
         res.json({ success: true, id: result.insertId });
-    })
+    }
+    catch(err) {
+        console.log('Blad podczas zapytania do bazy! Error: ' + err)
+        return res.status(500).json({ error: err });
+    }
 }
 
 export default create;

@@ -1,24 +1,23 @@
+import { promisify } from 'util';
 import db from '../../config/db.js';
 import countLikes from '../../functions/countLikes.js';
 
-const fetchPosts = (req, res) => {
-    const sql = 'SELECT id, title, description FROM posts ORDER BY created_at DESC'
-    db.query(sql, async (err, result) => {
-        if (err) return res.status(500).send(err);
-        // Pobieramy ilość polubień i wstawiamy do każdego posta
+const query = promisify(db.query).bind(db);
+
+const fetchPosts = async (req, res) => {
+    try {
+        const result = await query('SELECT id, title, description FROM posts ORDER BY created_at DESC')
         const posts = await Promise.all(
             result.map(async (post) => {
-                try {
-                    const likes = await countLikes(post.id)
-                    return {...post, likes}
-                } catch (err) {
-                    console.log('Błąd: ' + err)
-                    return {...post, likes: -1}
-                }
+                const likes = await countLikes(post.id)
+                return {...post, likes}
             })
         )
         res.json(posts)
-    });
+    }
+    catch(err) {
+        return res.status(500).json({ error: err });
+    }
 }
 
 export default fetchPosts;

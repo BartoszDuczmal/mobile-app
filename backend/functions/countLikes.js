@@ -1,15 +1,16 @@
+import { promisify } from 'util';
 import db from "../config/db.js";
 
-const countLikes = (id) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT id FROM likes WHERE post_id = ?'
-        db.query(sql, [id], (err, result) => {
-            if(err) {
-                return reject(err)
-            }
-            resolve(result.length)
-        })
-    })
+const query = promisify(db.query).bind(db);
+
+const countLikes = async (id) => {
+    try {
+        const result = await query('SELECT COUNT(*) AS count FROM likes WHERE post_id = ?', [id])
+        return result[0].count
+    }
+    catch(err) {
+        return -1
+    }
 }
 
 export default countLikes;

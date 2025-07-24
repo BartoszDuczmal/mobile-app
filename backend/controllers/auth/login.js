@@ -17,7 +17,7 @@ const login = (req, res) => {
         return res.status(400).json({ error: error.details[0].message });
     }
     
-    const sql = 'SELECT email, pass FROM users WHERE email = ?' 
+    const sql = 'SELECT id, email, pass FROM users WHERE email = ? LIMIT 1' 
     db.query(sql, [value.email], (err, result) => {
         if(err) {
           console.log('Blad podczas zapytania do bazy! Error: ' + err)
@@ -30,7 +30,7 @@ const login = (req, res) => {
                     return res.status(500).json({ error: 'Blad serwera!' });
                 }
                 if(isMatch) {
-                    const token = jwt.sign({ email: value.email }, process.env.JWT_KEY, { expiresIn: '1h' });
+                    const token = jwt.sign({ id: result[0].id }, process.env.JWT_KEY, { expiresIn: '1h' });
 
                     res.cookie('token', token, {
                         httpOnly: true,
