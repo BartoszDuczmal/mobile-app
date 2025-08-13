@@ -1,10 +1,13 @@
+import DeletePost from '@/components/modals/DeletePost';
+import { checkAuth } from '@/utils/checkAuth';
 import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
+import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type Post = {
     id: number,
@@ -18,6 +21,8 @@ type Post = {
 const ViewPost = () => {
     const params = useLocalSearchParams()
     const id = params.id
+    const idNum = parseInt(id as string, 10)
+    if (!idNum || isNaN(idNum)) return;
 
     const [data, setData] = useState<Post | null>(null);
 
@@ -25,10 +30,14 @@ const ViewPost = () => {
 
     const [isLike, setIsLike] = useState(false)
 
+    const [isOwner, setIsOwner] = useState<string>()
+
+    const [colorDelete, setColorDelete] = useState('gray')
+
+    const [modal, setModal] = useState(0)
+
     useEffect(() => {
         let blocker = true
-        const idNum = parseInt(id as string, 10)
-        if (!idNum || isNaN(idNum)) return;
 
         const fetchData = async () => {
             try {
@@ -54,8 +63,14 @@ const ViewPost = () => {
             const status = await isLikedBy(idNum)
             setIsLike(status)
         }
-        
-        fetchData();
+
+        const fetchOwner = async () => {
+            const auth = await checkAuth();
+            setIsOwner(auth?.user || null);
+        };
+
+        fetchOwner()
+        fetchData()
         fetchIsLike()
 
         return () => {
@@ -79,28 +94,46 @@ const ViewPost = () => {
     });
 
     return (
-        <View style={css.container}>
-            <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>{data.author}</Text>
-            <View style={css.title}>
-                <Text style={{ fontSize: 35 }} numberOfLines={3}>{data.title}</Text>
-            </View>
-            <Text style={{fontSize: 20}}>{data.desc}</Text>
-            <View style={css.footerBox}>
-                <View style={css.likeFooter}>
-                    <AntDesign name={isLike ? 'heart' : 'hearto'} style={{ zIndex: 10 }} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
-                        async () => {
-                            const res = await handleLike(data.id)
-                            if(res) {
-                                setLikes(res.likes)
-                                setIsLike(!isLike)
-                            }
-                        }
-                    }/>
-                    <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
+        <>
+            <DeletePost refresh={modal} id={idNum}/>
+            <View style={css.container}>
+                <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>{data.author}</Text>
+                <View style={css.title}>
+                    <Text style={{ fontSize: 35 }} numberOfLines={3}>{data.title}</Text>
                 </View>
-                <Text style={{ color: 'gray', fontSize: 18 }}>{formattedDate}</Text>
+                <Text style={{fontSize: 20}}>{data.desc}</Text>
+                <View style={css.footerBox}>
+                    <View style={css.likeFooter}>
+                        <AntDesign name={isLike ? 'heart' : 'hearto'} style={{ zIndex: 10 }} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
+                            async () => {
+                                const res = await handleLike(data.id)
+                                if(res) {
+                                    setLikes(res.likes)
+                                    setIsLike(!isLike)
+                                }
+                            }
+                        }/>
+                        <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
+                    </View>
+                    <Text style={{ color: 'gray', fontSize: 18 }}>{formattedDate}</Text>
+                </View>
+                { 
+                (isOwner === data.author) && 
+                <View style={css.editBox}>
+                    <Pressable onPress={() => router.push('/(tabs)/posts/[id]/edit')}>
+                        {({pressed}) => (
+                            <AntDesign name='edit' size={24} color={pressed ? 'silver' : 'gray'}/>
+                        )}
+                    </Pressable>
+                    <Pressable onPress={() => setModal(prev => prev+1)}>
+                        {({pressed}) => (
+                            <AntDesign name='delete' size={24} color={pressed ? 'silver' : 'gray'}/>
+                        )}
+                    </Pressable>
+                </View> 
+                }
             </View>
-        </View>
+        </>
     );
 }
 
@@ -140,6 +173,14 @@ const css = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         gap: 7,
+    },
+    editBox: {
+        marginTop: 5,
+        paddingHorizontal: 15,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 20,
     },
 })
 

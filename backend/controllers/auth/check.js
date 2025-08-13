@@ -13,7 +13,7 @@ const check = async (req, res) => {
     const id = checkFunc(token)
 
     if(id === null) {
-        console.log('Błąd autoryzacji!')
+        console.log('Nieautoryzano!')
         return res.status(401).json({ error: 'Błąd autoryzacji!' })
     }
     try {

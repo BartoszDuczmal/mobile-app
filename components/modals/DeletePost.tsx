@@ -3,18 +3,17 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const logout = async () => {
+const remove = async (id: number) => {
     try {
-        const res = await axios.post('http://192.168.1.151:3001/auth/logout', {}, { withCredentials: true });
+        const res = await axios.delete(`http://192.168.1.151:3001/posts/${id}/remove`, { withCredentials: true });
         router.replace('/(tabs)/posts')
-    }
-    catch(err) {
-        alert('Nie udało się wylogować!\nError: ' + err)
+        alert('Pomyślnie usunięto!')
+    } catch(err: any) {
+        alert('Nie udało się usunąć!')
     }
 }
 
-const Account = ({ refresh }) => {
-
+const DeletePost = ({ refresh, id }) => {
     const [visible, setVisible] = useState(false)
 
     useEffect(() => {
@@ -25,14 +24,14 @@ const Account = ({ refresh }) => {
 
     return (
         <Modal animationType="slide" visible={visible} transparent={true}>
-            <View style={css.centeredView}>
-                <View style={css.modalView}>
-                    <Text style={{fontSize: 18, textAlign: 'center'}}>Czy napewno chcesz się wylogować?</Text>
-                    <View style={css.buttonsView}>
-                        <TouchableOpacity onPress={async () => {
-                            await logout()
-                            setVisible(!visible)
-                            }}><Text>Tak</Text></TouchableOpacity>
+                    <View style={css.centeredView}>
+                        <View style={css.modalView}>
+                            <Text style={{fontSize: 18, textAlign: 'center'}}>Czy napewno chcesz usunąć ten post?</Text>
+                            <View style={css.buttonsView}>
+                                <TouchableOpacity onPress={async () => {
+                                    await remove(id)
+                                    setVisible(!visible)
+                                    }}><Text>Tak</Text></TouchableOpacity>
                         <TouchableOpacity onPress={() => setVisible(!visible)}><Text>Nie</Text></TouchableOpacity>
                     </View>
                 </View>
@@ -74,4 +73,4 @@ const css = StyleSheet.create({
     },
 })
 
-export default Account;
+export default DeletePost;

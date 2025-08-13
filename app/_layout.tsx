@@ -27,8 +27,9 @@ export default function RootLayout() {
     headerRight: () => TabLogin(),
   }}>
     <Stack.Screen name='(tabs)/posts/index' options={{ title: 'Strona Główna' , headerBackVisible: false }} />
-    <Stack.Screen name='(tabs)/publish' options={{ title: 'Opublikuj post' }} />
-    <Stack.Screen name='(tabs)/posts/[id]' options={{ title: 'Przegląd postu' }} />
+    <Stack.Screen name='(tabs)/publish' options={{ title: 'Publikowanie' }} />
+    <Stack.Screen name='(tabs)/posts/[id]/index' options={{ title: 'Przegląd' }} />
+    <Stack.Screen name='(tabs)/posts/[id]/edit' options={{ title: 'Edytowanie'}} />
     <Stack.Screen name='(tabs)/login/index' options={{ title: 'Logowanie', headerRight: () => null }} />
     <Stack.Screen name='(tabs)/login/recovery' options={{ title: 'Odzyskiwanie', headerRight: () => null }} />
     <Stack.Screen name='(tabs)/register' options={{ title: 'Rejestracja', headerRight: () => null }} />
