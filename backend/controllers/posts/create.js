@@ -11,7 +11,7 @@ const create = async (req, res) => {
         return res.status(401).json({ error: 'Musisz się najpierw zalogować!' })
     }
 
-    console.log('Otrzymano post: ', req.body, '-> ID: ', user)
+    console.log('Otrzymano post: ', req.body, '-> ID: ', user.id)
 
     const { error, value } = schemaPost.validate(req.body)
     if(error) {
@@ -20,7 +20,7 @@ const create = async (req, res) => {
     }
 
     try {
-        const result = await query('INSERT INTO posts (title, description, author) VALUES (?, ?, ?)', [value.title, value.desc, user])
+        const result = await query('INSERT INTO posts (title, description, author) VALUES (?, ?, ?)', [value.title, value.desc, user.id])
         res.json({ success: true, id: result.insertId });
     }
     catch(err) {

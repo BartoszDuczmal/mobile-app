@@ -10,12 +10,12 @@ const isLikedBy = async (req, res) => {
         return res.status(400).json({ error: 'Błąd!' });
     }
 
-    const userId = checkFunc(req.cookies.token)
-    if(userId === null) {
+    const user = checkFunc(req.cookies.token)
+    if(user === null) {
         return res.json(false)
     }
     try {
-        const result = await query('SELECT id FROM likes WHERE user_id = ? AND post_id = ? LIMIT 1', [userId, postId])
+        const result = await query('SELECT id FROM likes WHERE user_id = ? AND post_id = ? LIMIT 1', [user.id, postId])
         
         return res.json(result.length > 0)
     }

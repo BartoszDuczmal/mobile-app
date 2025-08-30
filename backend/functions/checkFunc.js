@@ -8,9 +8,10 @@ const checkFunc = (token) => {
     if(!token) {
         return null
     }
-    try {   
+    try {
+        console.log('Tokenito: ', token)
         const decoded = jwt.verify(token, process.env.JWT_KEY)
-        return decoded.id
+        return { id: decoded.id, perm: decoded.perm }
     }
     catch(err) {
         return null;

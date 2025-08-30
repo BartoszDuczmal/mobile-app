@@ -22,7 +22,7 @@ const ViewPost = () => {
     const params = useLocalSearchParams()
     const id = params.id
     const idNum = parseInt(id as string, 10)
-    if (!idNum || isNaN(idNum)) return;
+    if (isNaN(idNum)) return;
 
     const [data, setData] = useState<Post | null>(null);
 
@@ -30,7 +30,7 @@ const ViewPost = () => {
 
     const [isLike, setIsLike] = useState(false)
 
-    const [isOwner, setIsOwner] = useState<string>()
+    const [isOwner, setIsOwner] = useState<{user: string, perm: string} | null>(null)
 
     const [colorDelete, setColorDelete] = useState('gray')
 
@@ -39,7 +39,7 @@ const ViewPost = () => {
     useEffect(() => {
         let blocker = true
 
-        const fetchData = async () => {
+        const fetchAll = async () => {
             try {
                 const res = await axios.get(`http://192.168.1.151:3001/posts/${id}`);
                 if (res.data) {
@@ -55,23 +55,19 @@ const ViewPost = () => {
                 } else {
                     console.warn('Brak danych dla danego ID');
                 }
-            } catch (error) {
-                console.error('Błąd podczas pobierania posta:', error);
+
+                const status = await isLikedBy(idNum)
+                setIsLike(status)
+
+                const auth = await checkAuth();
+                setIsOwner({user: auth?.user, perm: auth?.perm});
+
+            } catch (err) {
+                console.error('Błąd podczas pobierania danych:', err);
             }
         };
-        const fetchIsLike = async () => {
-            const status = await isLikedBy(idNum)
-            setIsLike(status)
-        }
 
-        const fetchOwner = async () => {
-            const auth = await checkAuth();
-            setIsOwner(auth?.user || null);
-        };
-
-        fetchOwner()
-        fetchData()
-        fetchIsLike()
+        fetchAll()
 
         return () => {
             blocker = false;
@@ -118,9 +114,9 @@ const ViewPost = () => {
                     <Text style={{ color: 'gray', fontSize: 18 }}>{formattedDate}</Text>
                 </View>
                 { 
-                (isOwner === data.author) && 
+                (isOwner?.user === data.author || isOwner?.perm === 'admin') &&
                 <View style={css.editBox}>
-                    <Pressable onPress={() => router.push('/(tabs)/posts/[id]/edit')}>
+                    <Pressable onPress={() => router.push(`/posts/${idNum}/edit`)}>
                         {({pressed}) => (
                             <AntDesign name='edit' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}

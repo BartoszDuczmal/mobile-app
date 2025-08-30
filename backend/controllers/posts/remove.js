@@ -5,22 +5,34 @@ import checkFunc from "../../functions/checkFunc.js";
 const query = promisify(db.query).bind(db);
 
 const remove = async (req, res) => {
-    const postId = req.params.id
-    const userId = checkFunc(req.cookies.token)
-    try {
+
+    // Pobieranie ID postu z url
+    const postId = parseInt(req.params.id, 10)
+    if(isNaN(postId)) {
+        return res.status(400).json({ error: 'Błąd!' });
+    }
+
+    // Pobieranie ID użytkownika
+    const user = checkFunc(req.cookies.token)
+    if(user === null) {
+        return res.status(401).json({ error: 'Musisz się najpierw zalogować!' })
+    }
+
     // Sprawdzanie czy użytkownik może usunąć posta
-    const qAuthor = await query(`SELECT author FROM posts WHERE id=? LIMIT 1`, [postId])
-    if(qAuthor.length === 0) {
-        return res.status(404).json({ error: 'Post nie znaleziony!' })
+    if(user.perm !== 'admin') {
+        const qAuthor = await query(`SELECT id FROM posts WHERE id = ? AND author = ? LIMIT 1`, [postId, user.id])
+        if(qAuthor.length === 0) {
+            return res.status(403).json({ error: 'Błąd, nie możesz wykonać tej czynności!' })
+        }
     }
-    if(qAuthor[0].author !== userId) {
-        return res.status(403).json({ error: 'Nie możesz wykonać tej czynności!' })
-    }
-    const qDelete = await query('DELETE FROM posts WHERE id=?', [postId])
-    if(qDelete.affectedRows === 0) {
-        return res.status(500).json({ error: 'Błąd!' })
-    }
-    return res.json({ success: true })
+
+    // Usunięcie postu
+    try {
+        const qDelete = await query('DELETE FROM posts WHERE id=?', [postId])
+        if(qDelete.affectedRows === 0) {
+            return res.status(500).json({ error: 'Błąd!' })
+        }
+        return res.json({ success: true })
     }
     catch(err) {
         console.error(err);
