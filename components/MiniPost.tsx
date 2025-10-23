@@ -1,6 +1,6 @@
 import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
-import { AntDesign } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -35,7 +35,7 @@ const ViewPost = (props: Post) => {
                 <Text numberOfLines={4} ellipsizeMode="tail">{props.desc}</Text>
             </View>
             <View style={css.footerBox}>
-                <AntDesign name={isLike ? 'heart' : 'hearto'} style={{ zIndex: 10 }} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
+                <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
                     async () => {
                         const res = await handleLike(props.id)
                         if(res) {

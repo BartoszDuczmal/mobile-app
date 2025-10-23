@@ -8,7 +8,7 @@ const query = promisify(db.query).bind(db);
 const create = async (req, res) => {
     const user = checkFunc(req.cookies.token)
     if(user === null) {
-        return res.status(401).json({ error: 'Musisz się najpierw zalogować!' })
+        return res.status(401).json({ error: 'Musisz się najpierw zalogować.' })
     }
 
     console.log('Otrzymano post: ', req.body, '-> ID: ', user.id)
@@ -16,7 +16,7 @@ const create = async (req, res) => {
     const { error, value } = schemaPost.validate(req.body)
     if(error) {
         console.log('Bledna walidacja! Error: ' + error)
-        return res.status(400).json({ error: error.details[0].message });
+        return res.status(400).json({ error: 'Błędny format wpisu.' });
     }
 
     try {
@@ -25,7 +25,7 @@ const create = async (req, res) => {
     }
     catch(err) {
         console.log('Blad podczas zapytania do bazy! Error: ' + err)
-        return res.status(500).json({ error: err });
+        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' });
     }
 }
 

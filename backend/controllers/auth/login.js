@@ -18,7 +18,7 @@ const login = async (req, res) => {
     const { error, value } = schemaLogin.validate(req.body)
     if(error) {
         console.log('Bledna walidacja! Error: ' + error)
-        return res.status(400).json({ error: error.details[0].message });
+        return res.status(400).json({ error: msgError });
     }
     
     // Logowanie użytkownika 
@@ -52,7 +52,7 @@ const login = async (req, res) => {
     }
     catch(err) {
         console.log('Blad podczas zapytania do bazy! Error: ' + err)
-        return res.status(500).json({ error: err });
+        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' });
     }
 }
 

@@ -1,0 +1,8 @@
+TODO:
+*NA TERAZ:
+-> 1. Podmienić Alert.alert na własny modal - tamte wygladaja jak gowno 
+-> 2. Zrobic publikowanie tak jak edytowanie
+*NA PÓŹNIEJ:
+-> 3. Dodać pseudonimy do kont !!
+-> 4. Dodać profil użytkownika
+-> 5. Dodać admin panel

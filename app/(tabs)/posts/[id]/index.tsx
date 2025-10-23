@@ -2,7 +2,7 @@ import DeletePost from '@/components/modals/DeletePost';
 import { checkAuth } from '@/utils/checkAuth';
 import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
-import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
@@ -100,7 +100,7 @@ const ViewPost = () => {
                 <Text style={{fontSize: 20}}>{data.desc}</Text>
                 <View style={css.footerBox}>
                     <View style={css.likeFooter}>
-                        <AntDesign name={isLike ? 'heart' : 'hearto'} style={{ zIndex: 10 }} size={24} color={isLike ? '#ec5353' : 'gray'} onPress={
+                        <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
                             async () => {
                                 const res = await handleLike(data.id)
                                 if(res) {
@@ -118,12 +118,12 @@ const ViewPost = () => {
                 <View style={css.editBox}>
                     <Pressable onPress={() => router.push(`/posts/${idNum}/edit`)}>
                         {({pressed}) => (
-                            <AntDesign name='edit' size={24} color={pressed ? 'silver' : 'gray'}/>
+                            <FontAwesome6 name='edit' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}
                     </Pressable>
                     <Pressable onPress={() => setModal(prev => prev+1)}>
                         {({pressed}) => (
-                            <AntDesign name='delete' size={24} color={pressed ? 'silver' : 'gray'}/>
+                            <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}
                     </Pressable>
                 </View> 
@@ -169,6 +169,7 @@ const css = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         gap: 7,
+        alignItems: 'center'
     },
     editBox: {
         marginTop: 5,

@@ -1,11 +1,11 @@
 import DeletePost from '@/components/modals/DeletePost';
 import { checkAuth } from '@/utils/checkAuth';
-import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome6 } from '@expo/vector-icons';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 type Post = {
     id: number,
@@ -17,11 +17,20 @@ type Post = {
 const fetchEdit = async (id: number, title: String, desc: String) => {
     try {
         const res = await axios.post(`http://192.168.1.151:3001/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
-        alert('Pomyślnie edytowano posta!')
+        Alert.alert('Pomyślnie edytowano wpis!', undefined, [
+            {
+                text: 'OK',
+            }
+        ])
         router.back()
-    } catch (error) {
-        console.error('Błąd podczas pobierania posta:', error);
-        alert('Błąd podczas edytowania posta! ' + error)
+    }
+    catch(err: any) {
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
+        Alert.alert('Przepraszamy, ale nie udało się edytować tego wpisu.', errMsg, [
+            {
+                text: 'OK',
+            }
+        ])
     }
 }
 
@@ -62,7 +71,7 @@ const edit = () => {
                     console.warn('Brak danych dla danego ID');
                 }
             } catch (error) {
-                console.error('Błąd podczas pobierania posta:', error);
+                console.error('Błąd podczas pobierania wpisu:', error);
             }
         };
         fetchData()
@@ -111,7 +120,7 @@ const edit = () => {
                     </Pressable>
                     <Pressable onPress={() => setModal(prev => prev+1)}>
                         {({pressed}) => (
-                            <AntDesign name='delete' size={24} color={pressed ? 'silver' : 'gray'}/>
+                            <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}
                     </Pressable>
                 </View>

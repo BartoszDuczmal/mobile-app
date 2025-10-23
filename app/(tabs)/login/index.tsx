@@ -2,16 +2,25 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fLogin = async (email: string, pass: string) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/login', { email: email, pass: pass });
-        alert('Pomyślnie się zalogowano!')
+        Alert.alert('Pomyślnie się zalogowano.', undefined, [
+            {
+                text: 'OK',
+            }
+        ])
         router.push('/posts')
     }
-    catch(err) {
-        alert('Nie udało się zalogować!\nError: ' + err)
+    catch(err: any) {
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
+        Alert.alert('Przepraszamy, ale nie udało się zalogować.', errMsg, [
+            {
+                text: 'OK',
+            }
+        ])
     }
 }
 

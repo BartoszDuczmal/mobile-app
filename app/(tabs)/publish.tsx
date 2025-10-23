@@ -1,15 +1,25 @@
 import axios from "axios";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 const addPost = async (title: string, desc: string) => {
   try {
     const res = await axios.post('http://192.168.1.151:3001/posts', { title: title, desc: desc }, { withCredentials: true });
-    alert('Pomyślnie opublikowano!')
-  } catch (err) {
-    alert('Nie udało się opublikować!\nError: ' + err)
+    Alert.alert('Pomyślnie opublikowano wpis.', undefined, [
+        {
+            text: 'OK',
+        }
+    ])
   }
-};
+  catch(err: any) {
+    const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
+    Alert.alert('Przepraszamy, ale nie udało się opublikować wpisu.', errMsg, [
+        {
+            text: 'OK',
+        }
+    ])
+  }
+}
 
 const createPost = () => {
     const screenSize = useWindowDimensions();

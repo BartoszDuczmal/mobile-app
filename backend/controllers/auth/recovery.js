@@ -1,4 +1,57 @@
-const recovery = () => {
+import jwt from 'jsonwebtoken';
+import { promisify } from 'util';
+import { v4 as uuidv4 } from 'uuid';
+import db from "../../config/db.js";
+import mail from '../../config/mail.js';
+import schemaLogin from "../../models/loginModel.js";
+
+const query = promisify(db.query).bind(db);
+
+const recovery = async (req, res) => {
+
+    // Walidacja otrzymanych danych
+    const { error, value } = schemaLogin.extract('email').validate(req.body.email)
+    if(error) {
+      console.log('Bledna walidacja! Error: ' + error)
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    try {
+        const result = await query('SELECT id FROM users WHERE email = ? LIMIT 1', [value])
+        if(result.length === 0) {
+            return res.json({ success: false })
+        }
+        try {
+            const jti = uuidv4()
+            await query('INSERT INTO pass_resets (jti, user_id) VALUES (?, ?)', [jti, result[0].id])
+            await query('DELETE FROM pass_resets WHERE user_id = ? AND id NOT IN ( SELECT id FROM ( SELECT id FROM pass_resets WHERE user_id = ? ORDER BY created_at DESC LIMIT 3 ) AS recent )', [result[0].id, result[0].id])
+            const token = jwt.sign({ jti: jti, user: result[0].id }, process.env.JWT_KEY, { expiresIn: '10m' });
+            const resetLink = 'https://localhost:8081/login/resetPassword?token=' + token
+            console.log(process.env.EMAIL_USER)
+            await mail.sendMail(
+                { 
+                    from: process.env.EMAIL_USER, 
+                    to: value, 
+                    subject: 'Odzyskiwanie konta', 
+                    text: resetLink,
+                    html: 
+                    `
+                    <h2>Aby zmienić hasło do konta kliknij w przycisk poniżej.</h2>
+                    <a href="${resetLink}" target="_blank">Zmień hasło</a>
+                    `
+                }
+            )
+            res.json({ success: 'true', token: token })
+        }
+        catch(err) {
+            console.error('Blad podczas wysylania!', err)
+            return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera!' })
+        }
+    }
+    catch(err) {
+        console.error('Blad!', err)
+        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera!' })
+    }
     
 }
 
