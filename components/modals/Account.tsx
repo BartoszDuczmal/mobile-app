@@ -13,7 +13,7 @@ const logout = async () => {
     }
 }
 
-const Account = ({ refresh }) => {
+const Account = ({ refresh } : { refresh: number }) => {
 
     const [visible, setVisible] = useState(false)
 

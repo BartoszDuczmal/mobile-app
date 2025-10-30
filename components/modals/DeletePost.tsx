@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const remove = async (id: number) => {
+export const remove = async (id: number) => {
     try {
         const res = await axios.delete(`http://192.168.1.151:3001/posts/${id}/remove`, { withCredentials: true });
         router.replace('/(tabs)/posts')
@@ -13,7 +13,7 @@ const remove = async (id: number) => {
     }
 }
 
-const DeletePost = ({ refresh, id }) => {
+const DeletePost = ({ refresh, id }: { refresh: number, id: number }) => {
     const [visible, setVisible] = useState(false)
 
     useEffect(() => {

@@ -1,10 +1,11 @@
+import { useModal } from "@/providers/ModalContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const handleRecovery = async (email: string) => {
+const handleRecovery = async (email: string, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/recovery', { email: email })
         Alert.alert('Wysłano link odzyskujący.', 'Jeśli podany email istnieje w naszej bazie danych to został na niego wysłany link odzyskujący.\n\nLink jest aktywny przez 15 minut.', [
@@ -20,15 +21,14 @@ const handleRecovery = async (email: string) => {
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        Alert.alert('Przepraszamy, ale wystąpił błąd.', errMsg, [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ title: 'Nie udało się zarejestrować.', msg: errMsg })
     }
 }
 
 const recovery = () => {
+
+    const { openModal } = useModal()
+
     const [email, setEmail] = useState<string>('')
 
     return (
@@ -40,7 +40,7 @@ const recovery = () => {
             <View style={css.helpBox}>
                 <Text style={{ color: 'gray', textAlign: 'center' }}>Po kliknięciu przycisku poniżej wyślemy na podany email link odzyskujący</Text>
             </View>
-            <Pressable onPress={() => handleRecovery(email)}>
+            <Pressable onPress={() => handleRecovery(email, openModal)}>
                 {({ pressed }) => (
                 <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Wyślij</Text>
                 )}

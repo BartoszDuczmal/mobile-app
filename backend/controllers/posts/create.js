@@ -8,7 +8,7 @@ const query = promisify(db.query).bind(db);
 const create = async (req, res) => {
     const user = checkFunc(req.cookies.token)
     if(user === null) {
-        return res.status(401).json({ error: 'Musisz się najpierw zalogować.' })
+        return res.status(401).json({ error: 'Musisz najpierw się zalogować.' })
     }
 
     console.log('Otrzymano post: ', req.body, '-> ID: ', user.id)

@@ -1,3 +1,4 @@
+import { useModal } from '@/providers/ModalContext';
 import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -28,6 +29,8 @@ const ViewPost = (props: Post) => {
         fetchIsLike()
     }, [props.id])
 
+    const { openModal } = useModal()
+
     return (
         <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id}`) }}>
             <View style={css.contentBox}>
@@ -37,7 +40,7 @@ const ViewPost = (props: Post) => {
             <View style={css.footerBox}>
                 <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
                     async () => {
-                        const res = await handleLike(props.id)
+                        const res = await handleLike(props.id, openModal)
                         if(res) {
                             setLikes(res.likes)
                             setIsLike(!isLike)

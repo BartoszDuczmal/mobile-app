@@ -1,4 +1,5 @@
 import DeletePost from '@/components/modals/DeletePost';
+import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
@@ -35,6 +36,8 @@ const ViewPost = () => {
     const [colorDelete, setColorDelete] = useState('gray')
 
     const [modal, setModal] = useState(0)
+
+    const { openModal } = useModal()
 
     useEffect(() => {
         let blocker = true
@@ -102,7 +105,7 @@ const ViewPost = () => {
                     <View style={css.likeFooter}>
                         <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
                             async () => {
-                                const res = await handleLike(data.id)
+                                const res = await handleLike(data.id, openModal)
                                 if(res) {
                                     setLikes(res.likes)
                                     setIsLike(!isLike)

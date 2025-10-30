@@ -1,4 +1,5 @@
 import DeletePost from '@/components/modals/DeletePost';
+import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { FontAwesome6 } from '@expo/vector-icons';
 import axios from 'axios';
@@ -14,7 +15,7 @@ type Post = {
     author: string,
 }
 
-const fetchEdit = async (id: number, title: String, desc: String) => {
+const fetchEdit = async (id: number, title: String, desc: String, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
     try {
         const res = await axios.post(`http://192.168.1.151:3001/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
         Alert.alert('Pomyślnie edytowano wpis!', undefined, [
@@ -26,15 +27,13 @@ const fetchEdit = async (id: number, title: String, desc: String) => {
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        Alert.alert('Przepraszamy, ale nie udało się edytować tego wpisu.', errMsg, [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ title: 'Przepraszamy, ale nie udało się edytować tego wpisu.', msg: errMsg })
     }
 }
 
 const edit = () => {
+    const { openModal } = useModal()
+
     const { width } = useWindowDimensions();
 
     const params = useLocalSearchParams()

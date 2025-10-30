@@ -10,14 +10,14 @@ dotenv.config();
 const query = promisify(db.query).bind(db);
 
 const login = async (req, res) => {
-    const msgError = 'Nie istnieje żadne konto pasujące do podanych danych!'
+    const msgError = 'Nie istnieje żadne konto pasujące do podanych danych.'
     
     console.log('Otrzymano próbę logowania: ', req.body)
     
     // Walidacja otrzymanych danych
     const { error, value } = schemaLogin.validate(req.body)
     if(error) {
-        console.log('Bledna walidacja! Error: ' + error)
+        console.log('Bledna walidacja. Error: ' + error)
         return res.status(400).json({ error: msgError });
     }
     
@@ -41,17 +41,17 @@ const login = async (req, res) => {
                 res.json({ success: true }); 
             }
             else {
-                console.log('Bledne haslo!')
+                console.log('Bledne haslo.')
                 return res.status(401).json({ error: msgError });
             }
         }
         else {
-            console.log('Brak konta o takim emailu!')
+            console.log('Brak konta o takim emailu.')
             return res.status(401).json({ error: msgError });
         }
     }
     catch(err) {
-        console.log('Blad podczas zapytania do bazy! Error: ' + err)
+        console.log('Blad podczas zapytania do bazy. Error: ' + err)
         return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' });
     }
 }

@@ -1,6 +1,6 @@
 TODO:
 *NA TERAZ:
--> 1. Podmienić Alert.alert na własny modal - tamte wygladaja jak gowno 
+-> 1. Zrobic typy modali ( narazie info i error )
 -> 2. Zrobic publikowanie tak jak edytowanie
 *NA PÓŹNIEJ:
 -> 3. Dodać pseudonimy do kont !!

@@ -1,10 +1,11 @@
+import { useModal } from "@/providers/ModalContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const fReset = async (token: string, pass: string) => {
+const fReset = async (token: string, pass: string, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/resetPass', { token: token, pass: pass });
         Alert.alert('Pomyślnie zresetowano hasło.', 'Teraz możesz zalogować się na swoje konto.', [
@@ -14,15 +15,13 @@ const fReset = async (token: string, pass: string) => {
         ])
     }
     catch(err: any) {
-        Alert.alert('Przepraszamy, ale nie udało się zresetować hasła.', 'Wystąpił wewnętrzny błąd serwera.', [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ title: 'Nie udało się zresetować hasła.', msg: 'Wystąpił wewnętrzny błąd serwera.'})
     }
 }
 
 const resetPassword = () => {
+    const { openModal } = useModal()
+
     const [pass, setPass] = useState('')
     const { token } = useLocalSearchParams<{ token?: string }>()
     if(!token) return;
@@ -37,7 +36,7 @@ const resetPassword = () => {
                 <MaterialIcons name="lock-outline" size={40} color={'gray'} />
                 <TextInput placeholder="powtórz hasło" style={css.input} />
             </View>
-            <Pressable onPress={() => fReset(token, pass)} style={css.button}>
+            <Pressable onPress={() => fReset(token, pass, useModal)} style={css.button}>
                 {({ pressed }) => (
                 <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Zmień hasło</Text>
                 )}

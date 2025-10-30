@@ -1,8 +1,9 @@
+import { useModal } from "@/providers/ModalContext";
 import axios from "axios";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
-const addPost = async (title: string, desc: string) => {
+const addPost = async (title: string, desc: string, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
   try {
     const res = await axios.post('http://192.168.1.151:3001/posts', { title: title, desc: desc }, { withCredentials: true });
     Alert.alert('Pomyślnie opublikowano wpis.', undefined, [
@@ -13,15 +14,13 @@ const addPost = async (title: string, desc: string) => {
   }
   catch(err: any) {
     const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-    Alert.alert('Przepraszamy, ale nie udało się opublikować wpisu.', errMsg, [
-        {
-            text: 'OK',
-        }
-    ])
+    openModal({ title: 'Nie udało się opublikować wpisu.', msg: errMsg })
   }
 }
 
 const createPost = () => {
+    const { openModal } = useModal()
+
     const screenSize = useWindowDimensions();
 
     const [title, setTitle] = useState('')
@@ -31,7 +30,7 @@ const createPost = () => {
         <View style={css.container}>
             <TextInput placeholder="Tytuł" onChangeText={setTitle} style={css.title}/>
             <TextInput placeholder="Opis" onChangeText={setDesc} style={[css.description, {height: (screenSize.height > screenSize.width) ? 225 : 85 }]} multiline={true} textAlignVertical="top"/>
-            <Pressable onPress={() => addPost(title, desc)}>
+            <Pressable onPress={() => addPost(title, desc, openModal)}>
                 {({ pressed }) => (
                 <Text style={[ css.button, { color: pressed ? 'blue' : 'gray' } ]}>Opublikuj</Text>
                 )}

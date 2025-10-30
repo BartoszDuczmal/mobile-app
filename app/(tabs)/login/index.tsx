@@ -1,10 +1,11 @@
+import { useModal } from "@/providers/ModalContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const fLogin = async (email: string, pass: string) => {
+const fLogin = async (email: string, pass: string, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/login', { email: email, pass: pass });
         Alert.alert('Pomyślnie się zalogowano.', undefined, [
@@ -16,15 +17,13 @@ const fLogin = async (email: string, pass: string) => {
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        Alert.alert('Przepraszamy, ale nie udało się zalogować.', errMsg, [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ title: 'Nie udało się zalogować.', msg: errMsg })
     }
 }
 
 const index = () => {
+    const { openModal } = useModal()
+
     const [email, setEmail] = useState('')
     const [pass, setPass] = useState('')
 
@@ -51,7 +50,7 @@ const index = () => {
                     )}
                 </Pressable>
             </View>
-            <Pressable onPress={() => fLogin(email, pass)}>
+            <Pressable onPress={() => fLogin(email, pass, openModal)}>
                 {({ pressed }) => (
                 <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Zaloguj</Text>
                 )}
