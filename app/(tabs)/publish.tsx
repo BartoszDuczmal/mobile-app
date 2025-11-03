@@ -25,7 +25,7 @@ const createPost = () => {
     return (
         <View style={css.container}>
             <TextInput placeholder="Tytuł" onChangeText={setTitle} style={css.title}/>
-            <TextInput placeholder="Opis" onChangeText={setDesc} style={[css.description, {height: (screenSize.height > screenSize.width) ? 225 : 85 }]} multiline={true} textAlignVertical="top"/>
+            <TextInput placeholder="Opis" onChangeText={setDesc} style={css.description} multiline={true} numberOfLines={7} textAlignVertical="top" />
             <Pressable onPress={() => addPost(title, desc, openModal)}>
                 {({ pressed }) => (
                 <Text style={[ css.button, { color: pressed ? 'blue' : 'gray' } ]}>Opublikuj</Text>
@@ -47,10 +47,12 @@ const css = StyleSheet.create({
         fontSize: 35,
         borderBottomColor: 'gray',
         borderBottomWidth: 2,
+        justifyContent: 'flex-start',
     },
     description: {
         width: '70%',
         fontSize: 25,
+        justifyContent: 'flex-start',
     },
     button: {
         marginTop: 20,

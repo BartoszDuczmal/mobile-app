@@ -1,6 +1,6 @@
 TODO:
 *NA TERAZ:
--> 1. Zrobic publikowanie tak jak edytowanie
+-> 1. Dodac walidacje na poziomie frontendu
 -> 2. Dodać pseudonimy do kont
 *NA PÓŹNIEJ:
 -> 3. Dodać profil użytkownika
