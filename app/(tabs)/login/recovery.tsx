@@ -3,16 +3,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const handleRecovery = async (email: string, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
+const handleRecovery = async (email: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/recovery', { email: email })
-        Alert.alert('Wysłano link odzyskujący.', 'Jeśli podany email istnieje w naszej bazie danych to został na niego wysłany link odzyskujący.\n\nLink jest aktywny przez 15 minut.', [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ type: 'info', title: 'Wysłano link odzyskujący.', msg: 'Jeśli podany email istnieje w naszej bazie danych to został na niego wysłany link odzyskujący.\n\nLink jest aktywny przez 15 minut.' })
         // Tylko do testów - przy buildzie dodać przekierowanie z myapp://
         router.push({
             pathname: '/login/resetPassword',
@@ -21,7 +17,7 @@ const handleRecovery = async (email: string, openModal: ({title, msg}: { title: 
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        openModal({ title: 'Nie udało się zarejestrować.', msg: errMsg })
+        openModal({ type: "error", title: 'Nie udało się zarejestrować.', msg: errMsg })
     }
 }
 

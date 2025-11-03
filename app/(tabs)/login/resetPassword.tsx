@@ -3,19 +3,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const fReset = async (token: string, pass: string, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
+const fReset = async (token: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/resetPass', { token: token, pass: pass });
-        Alert.alert('Pomyślnie zresetowano hasło.', 'Teraz możesz zalogować się na swoje konto.', [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ type: 'info', title: 'Pomyślnie zresetowano hasło.', msg: 'Teraz możesz zalogować się na swoje konto.' })
     }
     catch(err: any) {
-        openModal({ title: 'Nie udało się zresetować hasła.', msg: 'Wystąpił wewnętrzny błąd serwera.'})
+        openModal({ type: "error", title: 'Nie udało się zresetować hasła.', msg: 'Wystąpił wewnętrzny błąd serwera.'})
     }
 }
 

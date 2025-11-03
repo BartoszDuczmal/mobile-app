@@ -3,21 +3,17 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const fLogin = async (email: string, pass: string, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
+const fLogin = async (email: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
         const res = await axios.post('http://192.168.1.151:3001/auth/login', { email: email, pass: pass });
-        Alert.alert('Pomyślnie się zalogowano.', undefined, [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ type: 'info', title: 'Pomyślnie się zalogowano.', msg: '' })
         router.push('/posts')
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        openModal({ title: 'Nie udało się zalogować.', msg: errMsg })
+        openModal({ type: "error", title: 'Nie udało się zalogować.', msg: errMsg })
     }
 }
 

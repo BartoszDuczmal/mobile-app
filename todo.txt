@@ -1,8 +1,7 @@
 TODO:
 *NA TERAZ:
--> 1. Zrobic typy modali ( narazie info i error )
--> 2. Zrobic publikowanie tak jak edytowanie
+-> 1. Zrobic publikowanie tak jak edytowanie
+-> 2. Dodać pseudonimy do kont
 *NA PÓŹNIEJ:
--> 3. Dodać pseudonimy do kont !!
--> 4. Dodać profil użytkownika
--> 5. Dodać admin panel
+-> 3. Dodać profil użytkownika
+-> 4. Dodać admin panel

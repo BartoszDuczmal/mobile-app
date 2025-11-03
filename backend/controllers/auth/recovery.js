@@ -13,7 +13,7 @@ const recovery = async (req, res) => {
     const { error, value } = schemaLogin.extract('email').validate(req.body.email)
     if(error) {
       console.log('Bledna walidacja! Error: ' + error)
-      return res.status(400).json({ error: error.details[0].message });
+      return res.status(400).json({ error: "Niepoprawny format emaila." });
     }
 
     try {
