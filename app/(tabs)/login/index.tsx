@@ -1,4 +1,5 @@
 import { useModal } from "@/providers/ModalContext";
+import emailValid from "@/utils/validation/email";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
@@ -23,12 +24,17 @@ const index = () => {
     const [email, setEmail] = useState('')
     const [pass, setPass] = useState('')
 
+    const eValid = emailValid(email)
+
     return (
         <View style={css.container}>
-            <View style={css.inputBox}>
-                <MaterialIcons name="alternate-email" size={40} color={'gray'} />
+            <View style={[css.inputBox, {borderBottomColor: eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'}]}>
+                <MaterialIcons name="alternate-email" size={40} color={eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'} />
                 <TextInput placeholder="email" style={css.input} onChangeText={setEmail}/>
             </View>
+            { !eValid && email.length !== 0 && (
+                            <Text style={css.errMsg}>Niepoprawny format emaila.</Text>
+            )}
             <View style={[css.inputBox, {marginTop: 20}]}>
                 <MaterialIcons name="lock-open" size={40} color={'gray'} />
                 <TextInput placeholder="hasło" style={css.input} onChangeText={setPass}/>
@@ -46,9 +52,13 @@ const index = () => {
                     )}
                 </Pressable>
             </View>
-            <Pressable onPress={() => fLogin(email, pass, openModal)}>
+            <Pressable onPress={() => fLogin(email, pass, openModal)} disabled={!eValid}>
                 {({ pressed }) => (
-                <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Zaloguj</Text>
+                <Text style={{ 
+                    fontSize: 20, 
+                    color: pressed ? 'blue' : 'black' , 
+                    opacity: !eValid ? 0.5 : 1
+                }}>Zaloguj</Text>
                 )}
             </Pressable>
         </View>
@@ -81,6 +91,10 @@ const css = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         marginBottom: 10,
+    },
+    errMsg: {
+        color: '#f2545b', 
+        marginTop: 10,
     },
 })
 

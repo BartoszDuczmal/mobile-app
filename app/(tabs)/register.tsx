@@ -1,4 +1,6 @@
 import { useModal } from "@/providers/ModalContext";
+import emailValid from "@/utils/validation/email";
+import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
@@ -21,21 +23,43 @@ const register = () => {
 
     const [email, setEmail] = useState('')
     const [pass, setPass] = useState('')
+    const [repass, setRepass] = useState('')
+
+    const pValid = passValid(pass)
+
+    const eValid = emailValid(email)
 
     return (
         <View style={css.container}>
-            <View style={css.inputBox}>
-                <MaterialIcons name="alternate-email" size={40} color={'gray'} />
+            <View style={[css.inputBox, { 
+                borderBottomColor: email.length === 0 ? 'gray' : eValid ? 'gray': '#f2545b' 
+            }]}>
+                <MaterialIcons name="alternate-email" size={40} color={email.length === 0 ? 'gray' : eValid ? 'gray': '#f2545b'} />
                 <TextInput placeholder="email" style={css.input} onChangeText={setEmail} />
             </View>
-            <View style={[css.inputBox, {marginTop: 20}]}>
-                <MaterialIcons name="lock-outline" size={40} color={'gray'} />
+            { !eValid && email.length !== 0 && (
+                <Text style={css.errMsg}>Niepoprawny format emaila.</Text>
+            )}
+            <View style={[css.inputBox, {
+                marginTop: 20, 
+                borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
+            }]}>
+                <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
                 <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} />
             </View>
-            <View style={[css.inputBox, {marginTop: 20}]}>
-                <MaterialIcons name="lock-outline" size={40} color={'gray'} />
-                <TextInput placeholder="powtórz hasło" style={css.input} />
+            { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
+                <Text key={i} style={css.errMsg}>{msg}</Text>))
+            }
+            <View style={[css.inputBox, {
+                marginTop: 20, 
+                borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
+            }]}>
+                <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
+                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass}/>
             </View>
+            { repass !== pass && repass.length !== 0 && (
+                <Text style={css.errMsg}>Hasła muszą być takie same.</Text>
+            )}
             <View style={css.helpBox}>
                 <Pressable onPress={() => router.push('/login')}>
                     {({ pressed }) => (
@@ -43,9 +67,13 @@ const register = () => {
                     )}
                 </Pressable>
             </View>
-            <Pressable onPress={() => fRegister(email, pass, openModal)}>
+            <Pressable onPress={() => fRegister(email, pass, openModal)} disabled={ !(pValid.valid && pass === repass && eValid) }>
                 {({ pressed }) => (
-                <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Zarejestruj</Text>
+                <Text style={{ 
+                    fontSize: 20, 
+                    color: pressed ? 'blue' : 'black', 
+                    opacity: !(pValid.valid && pass === repass && eValid) ? 0.5 : 1
+                }}>Zarejestruj</Text>
                 )}
             </Pressable>
         </View>
@@ -79,6 +107,10 @@ const css = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    errMsg: {
+        color: '#f2545b', 
+        marginTop: 10,
+    }
 })
 
 export default register;

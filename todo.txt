@@ -1,7 +1,6 @@
 TODO:
 *NA TERAZ:
--> 1. Dodac walidacje na poziomie frontendu
--> 2. Dodać pseudonimy do kont
+-> 1. Dodać pseudonimy do kont
 *NA PÓŹNIEJ:
--> 3. Dodać profil użytkownika
--> 4. Dodać admin panel
+-> 2. Dodać profil użytkownika
+-> 3. Dodać admin panel

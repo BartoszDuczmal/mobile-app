@@ -1,4 +1,5 @@
 import { useModal } from "@/providers/ModalContext";
+import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
@@ -19,20 +20,38 @@ const resetPassword = () => {
     const { openModal } = useModal()
 
     const [pass, setPass] = useState('')
+
+    const [repass, setRepass] = useState('')
+
     const { token } = useLocalSearchParams<{ token?: string }>()
+
     if(!token) return;
+
+    const pValid = passValid(pass)
 
     return (
         <View style={css.container}>
-            <View style={[css.inputBox, {marginTop: 20}]}>
-                <MaterialIcons name="lock-outline" size={40} color={'gray'} />
+            <View style={[css.inputBox, {
+                marginTop: 20, 
+                borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
+            }]}>
+                <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
                 <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} />
             </View>
-            <View style={[css.inputBox, {marginTop: 20}]}>
-                <MaterialIcons name="lock-outline" size={40} color={'gray'} />
-                <TextInput placeholder="powtórz hasło" style={css.input} />
+            { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
+                <Text key={i} style={css.errMsg}>{msg}</Text>))
+            }
+            <View style={[css.inputBox, {
+                marginTop: 20, 
+                 borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
+            }]}>
+                <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
+                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass}/>
             </View>
-            <Pressable onPress={() => fReset(token, pass, useModal)} style={css.button}>
+            { repass !== pass && repass.length !== 0 && (
+                            <Text style={css.errMsg}>Hasła muszą być takie same.</Text>
+            )}
+            <Pressable onPress={() => fReset(token, pass, openModal)} style={[css.button, {opacity: !(pValid.valid && pass === repass) ? 0.5 : 1}]} disabled={ !(pValid.valid && pass === repass) }>
                 {({ pressed }) => (
                 <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Zmień hasło</Text>
                 )}
@@ -70,6 +89,10 @@ const css = StyleSheet.create({
     },
     button: {
         marginTop: 15,
+    },
+    errMsg: {
+        color: '#f2545b', 
+        marginTop: 10,
     },
 })
 
