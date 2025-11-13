@@ -3,7 +3,7 @@ import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
-import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
@@ -96,7 +96,7 @@ const ViewPost = () => {
         <>
             <DeletePost refresh={modal} id={idNum}/>
             <View style={css.container}>
-                <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>{data.author}</Text>
+                <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}><Feather name="user" size={24} color='gray' /> {data.author}</Text>
                 <View style={css.title}>
                     <Text style={{ fontSize: 35 }} numberOfLines={3}>{data.title}</Text>
                 </View>

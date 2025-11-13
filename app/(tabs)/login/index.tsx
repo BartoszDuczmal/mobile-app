@@ -1,14 +1,13 @@
 import { useModal } from "@/providers/ModalContext";
-import emailValid from "@/utils/validation/email";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const fLogin = async (email: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
+const fLogin = async (login: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        const res = await axios.post('http://192.168.1.151:3001/auth/login', { email: email, pass: pass });
+        const res = await axios.post('http://192.168.1.151:3001/auth/login', { login: login, pass: pass });
         openModal({ type: 'info', title: 'Pomyślnie się zalogowano.', msg: '' })
         router.push('/posts')
     }
@@ -21,20 +20,15 @@ const fLogin = async (email: string, pass: string, openModal: ({type, title, msg
 const index = () => {
     const { openModal } = useModal()
 
-    const [email, setEmail] = useState('')
+    const [login, setLogin] = useState('')
     const [pass, setPass] = useState('')
-
-    const eValid = emailValid(email)
 
     return (
         <View style={css.container}>
-            <View style={[css.inputBox, {borderBottomColor: eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'}]}>
-                <MaterialIcons name="alternate-email" size={40} color={eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'} />
-                <TextInput placeholder="email" style={css.input} onChangeText={setEmail}/>
+            <View style={css.inputBox}>
+                <MaterialIcons name="alternate-email" size={40} color={'gray'} />
+                <TextInput placeholder="login" style={css.input} onChangeText={setLogin}/>
             </View>
-            { !eValid && email.length !== 0 && (
-                            <Text style={css.errMsg}>Niepoprawny format emaila.</Text>
-            )}
             <View style={[css.inputBox, {marginTop: 20}]}>
                 <MaterialIcons name="lock-open" size={40} color={'gray'} />
                 <TextInput placeholder="hasło" style={css.input} onChangeText={setPass}/>
@@ -52,12 +46,12 @@ const index = () => {
                     )}
                 </Pressable>
             </View>
-            <Pressable onPress={() => fLogin(email, pass, openModal)} disabled={!eValid}>
+            <Pressable onPress={() => fLogin(login, pass, openModal)} disabled={login.length === 0 || pass.length === 0}>
                 {({ pressed }) => (
                 <Text style={{ 
                     fontSize: 20, 
                     color: pressed ? 'blue' : 'black' , 
-                    opacity: !eValid ? 0.5 : 1
+                    opacity: (login.length === 0 || pass.length === 0) ? 0.5 : 1
                 }}>Zaloguj</Text>
                 )}
             </Pressable>

@@ -1,5 +1,6 @@
 import { useModal } from "@/providers/ModalContext";
 import emailValid from "@/utils/validation/email";
+import nameValid from "@/utils/validation/name";
 import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
@@ -7,9 +8,9 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const fRegister = async (email: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
+const fRegister = async (name: string, email: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        const res = await axios.post('http://192.168.1.151:3001/auth/register', { email: email, pass: pass });
+        const res = await axios.post('http://192.168.1.151:3001/auth/register', { name: name, email: email, pass: pass });
         openModal({ type: 'info', title: 'Pomyślnie udało się zarejestrować!', msg: 'Teraz możesz zalogować się na swoje konto.' })
     }
     catch(err: any) {
@@ -21,6 +22,7 @@ const fRegister = async (email: string, pass: string, openModal: ({type, title, 
 const register = () => {
     const { openModal } = useModal()
 
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [pass, setPass] = useState('')
     const [repass, setRepass] = useState('')
@@ -29,9 +31,21 @@ const register = () => {
 
     const eValid = emailValid(email)
 
+    const nValid = nameValid(name)
+
     return (
         <View style={css.container}>
-            <View style={[css.inputBox, { 
+            <View style={[css.inputBox, {
+                borderBottomColor: name.length === 0 ? 'gray' : nValid.valid ? 'gray': '#f2545b' 
+            }]}>
+                <MaterialIcons name="person-outline" size={40} color={name.length === 0 ? 'gray' : nValid.valid ? 'gray': '#f2545b'} />
+                <TextInput placeholder="nazwa użytkownika" style={css.input} onChangeText={setName}/>
+            </View>
+            { !nValid.valid && name.length !== 0 && nValid.messages.map((msg, i) => (
+                <Text style={css.errMsg} key={i}>{msg}</Text>
+            ))}
+            <View style={[css.inputBox, {
+                marginTop: 20, 
                 borderBottomColor: email.length === 0 ? 'gray' : eValid ? 'gray': '#f2545b' 
             }]}>
                 <MaterialIcons name="alternate-email" size={40} color={email.length === 0 ? 'gray' : eValid ? 'gray': '#f2545b'} />
@@ -67,12 +81,12 @@ const register = () => {
                     )}
                 </Pressable>
             </View>
-            <Pressable onPress={() => fRegister(email, pass, openModal)} disabled={ !(pValid.valid && pass === repass && eValid) }>
+            <Pressable onPress={() => fRegister(name, email, pass, openModal)} disabled={ !(pValid.valid && pass === repass && eValid && nValid.valid) }>
                 {({ pressed }) => (
                 <Text style={{ 
                     fontSize: 20, 
                     color: pressed ? 'blue' : 'black', 
-                    opacity: !(pValid.valid && pass === repass && eValid) ? 0.5 : 1
+                    opacity: !(pValid.valid && pass === repass && eValid && nValid.valid) ? 0.5 : 1
                 }}>Zarejestruj</Text>
                 )}
             </Pressable>

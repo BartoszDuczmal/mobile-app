@@ -25,8 +25,8 @@ const show = async (req, res) => {
         // Pobieranie nazwy użytkownika z id
         let author = 'Użytkownik usunięty'
         if(post[0].author !== null) {
-            const user = await query('SELECT email FROM users WHERE id = ? LIMIT 1', [post[0].author])
-            author = user[0].email
+            const user = await query('SELECT username FROM users WHERE id = ? LIMIT 1', [post[0].author])
+            author = user[0].username
         }
 
         post[0].author = author

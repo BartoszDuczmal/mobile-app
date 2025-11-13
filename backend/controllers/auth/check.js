@@ -17,9 +17,9 @@ const check = async (req, res) => {
     }
 
     try {
-        const result = await query('SELECT email FROM users WHERE id = ? LIMIT 1', [user.id])
-        console.log('Zdekodowano: ' + result[0].email)
-        res.json({ success: true, user: result[0].email, perm: user.perm })
+        const result = await query('SELECT username FROM users WHERE id = ? LIMIT 1', [user.id])
+        console.log('Zdekodowano: ' + result[0].username)
+        res.json({ success: true, user: result[0].username, perm: user.perm })
     }
     catch(err) {
         console.log('Błąd autoryzacji!')

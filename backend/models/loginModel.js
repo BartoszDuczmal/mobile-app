@@ -1,7 +1,8 @@
 import Joi from "joi";
 
 const schemaLogin = Joi.object({
-  email: Joi.string().max(50).email().required(),
+  name: Joi.string().min(3).max(30).required(),
+  email: Joi.string().max(50).email({ tlds: { allow: false } }).required(),
   pass: Joi.string().min(8).max(30).pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$")).required(),
 })
 

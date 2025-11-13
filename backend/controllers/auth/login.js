@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import Joi from "joi";
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 import db from "../../config/db.js";
@@ -10,20 +11,25 @@ dotenv.config();
 const query = promisify(db.query).bind(db);
 
 const login = async (req, res) => {
-    const msgError = 'Nie istnieje żadne konto pasujące do podanych danych.'
+    const msgError = 'Nieprawidłowy login lub hasło.'
     
     console.log('Otrzymano próbę logowania: ', req.body)
     
     // Walidacja otrzymanych danych
-    const { error, value } = schemaLogin.validate(req.body)
-    if(error) {
-        console.log('Bledna walidacja. Error: ' + error)
-        return res.status(400).json({ error: msgError });
+    const vPass = schemaLogin.extract('pass').validate(req.body.pass)
+    if(vPass.error) {
+        console.log('Bledne hasło. Error: ' + vPass.error)
+        return res.status(400).json({ error: msgError })
+    }
+    const vLogin = Joi.string().min(3).max(50).required().validate(req.body.login)
+    if(vLogin.error) {
+        console.log('Bledny login. Error: ' + vLogin.error)
+        return res.status(400).json({ error: msgError })
     }
     
     // Logowanie użytkownika 
     try {
-        const result = await query('SELECT id, email, pass, perms FROM users WHERE email = ? LIMIT 1', [value.email])
+        const result = await query('SELECT id, pass, perms FROM users WHERE email = ? OR username = ? LIMIT 1', [req.body.login, req.body.login])
         if(result.length > 0) {
             const isMatch = await bcrypt.compare(req.body.pass, result[0].pass)
             if(isMatch) {
@@ -41,12 +47,12 @@ const login = async (req, res) => {
                 res.json({ success: true }); 
             }
             else {
-                console.log('Bledne haslo.')
+                console.log('Nieprawidłowy login lub hasło.')
                 return res.status(401).json({ error: msgError });
             }
         }
         else {
-            console.log('Brak konta o takim emailu.')
+            console.log('Nieprawidłowy login lub hasło.')
             return res.status(401).json({ error: msgError });
         }
     }
