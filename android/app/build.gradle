@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.twojanazwa.native'
+    namespace 'com.twojanazwa.nativeapp'
     defaultConfig {
-        applicationId 'com.twojanazwa.native'
+        applicationId 'com.twojanazwa.nativeapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

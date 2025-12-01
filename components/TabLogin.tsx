@@ -41,7 +41,7 @@ const TabLogin = () => {
     <>
     <Account refresh={modal}/>
     <View>
-        <TouchableOpacity onPress={() => (user === null) ? router.push('/(tabs)/login') : setModal(prev => prev + 1)} style={{
+        <TouchableOpacity onPress={() => (user === null) ? router.push('/(tabs)/login') : router.push('/(tabs)/profile')} style={{
             flexDirection: 'row', 
             alignItems: 'center',
             marginRight: 5,

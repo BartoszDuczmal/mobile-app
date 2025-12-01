@@ -1,3 +1,4 @@
+import { API_URL } from "@/config.js";
 import { useModal } from "@/providers/ModalContext";
 import emailValid from "@/utils/validation/email";
 import nameValid from "@/utils/validation/name";
@@ -10,7 +11,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fRegister = async (name: string, email: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        const res = await axios.post('http://192.168.1.151:3001/auth/register', { name: name, email: email, pass: pass });
+        const res = await axios.post(`${API_URL}:3001/auth/register`, { name: name, email: email, pass: pass });
         openModal({ type: 'info', title: 'Pomyślnie udało się zarejestrować!', msg: 'Teraz możesz zalogować się na swoje konto.' })
     }
     catch(err: any) {

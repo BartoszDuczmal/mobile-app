@@ -1,3 +1,4 @@
+import { API_URL } from "@/config.js";
 import { useModal } from "@/providers/ModalContext";
 import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -8,7 +9,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fReset = async (token: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        const res = await axios.post('http://192.168.1.151:3001/auth/resetPass', { token: token, pass: pass });
+        const res = await axios.post(`${API_URL}/auth/resetPass`, { token: token, pass: pass });
         openModal({ type: 'info', title: 'Pomyślnie zresetowano hasło.', msg: 'Teraz możesz zalogować się na swoje konto.' })
     }
     catch(err: any) {

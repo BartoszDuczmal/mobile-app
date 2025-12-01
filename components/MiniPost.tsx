@@ -11,7 +11,6 @@ type Post = {
     title: string,
     desc: string,
     likes: number,
-    author: string,
 }
 
 const ViewPost = (props: Post) => {
@@ -55,7 +54,7 @@ const ViewPost = (props: Post) => {
 
 const css = StyleSheet.create({
     box: {
-        width: '65%',
+        width: '100%',
         height: 150,
         borderColor: 'gray',
         borderWidth: 1,

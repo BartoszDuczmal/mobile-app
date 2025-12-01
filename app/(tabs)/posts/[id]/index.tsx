@@ -1,4 +1,5 @@
 import DeletePost from '@/components/modals/DeletePost';
+import { API_URL } from "@/config.js";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { isLikedBy } from '@/utils/isLikedBy';
@@ -44,7 +45,7 @@ const ViewPost = () => {
 
         const fetchAll = async () => {
             try {
-                const res = await axios.get(`http://192.168.1.151:3001/posts/${id}`);
+                const res = await axios.get(`${API_URL}:3001/posts/${id}`);
                 if (res.data) {
                     setData({
                         id: res.data.id,
@@ -96,7 +97,13 @@ const ViewPost = () => {
         <>
             <DeletePost refresh={modal} id={idNum}/>
             <View style={css.container}>
-                <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}><Feather name="user" size={24} color='gray' /> {data.author}</Text>
+                <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
+                    <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>
+                        <Feather name="user" size={24} color='gray' />
+                        &nbsp;
+                        {data.author}
+                    </Text>
+                </Pressable>
                 <View style={css.title}>
                     <Text style={{ fontSize: 35 }} numberOfLines={3}>{data.title}</Text>
                 </View>

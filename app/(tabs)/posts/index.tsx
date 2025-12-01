@@ -1,4 +1,5 @@
 import MiniPost from '@/components/MiniPost';
+import { API_URL } from "@/config.js";
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -9,7 +10,6 @@ type Post = {
   title: string,
   desc: string,
   likes: number,
-  author: string,
 };
 
 export default function Main() {
@@ -22,7 +22,7 @@ export default function Main() {
   const [searchData, setSearchData] = useState('')
 
   useEffect(() => {
-    axios.get('http://192.168.1.151:3001/posts')
+    axios.post(`${API_URL}:3001/posts`)
     .then(
       res => {
         const mapData = res.data.map((post: any) => ({
@@ -55,7 +55,7 @@ export default function Main() {
                 (item.title.toLowerCase().includes(searchData.toLowerCase())) || (item.desc.toLowerCase().includes(searchData.toLowerCase()))
               )
               .map((v: Post) => (
-                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes} author={v.author}></MiniPost>
+                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
               ))
             }
           </ScrollView>
@@ -114,6 +114,7 @@ const css = StyleSheet.create({
     paddingTop: 72,
     flex: 1,
     alignItems: 'center',
+    marginHorizontal: '17.5%',
   },
   withContent: {
     display: 'flex',

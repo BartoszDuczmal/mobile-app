@@ -1,4 +1,5 @@
 import DeletePost from '@/components/modals/DeletePost';
+import { API_URL } from "@/config.js";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { FontAwesome6 } from '@expo/vector-icons';
@@ -17,7 +18,7 @@ type Post = {
 
 const fetchEdit = async (id: number, title: String, desc: String, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
     try {
-        const res = await axios.post(`http://192.168.1.151:3001/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
+        const res = await axios.post(`${API_URL}:3001/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
         Alert.alert('Pomyślnie edytowano wpis!', undefined, [
             {
                 text: 'OK',
@@ -34,7 +35,7 @@ const fetchEdit = async (id: number, title: String, desc: String, openModal: ({t
 const edit = () => {
     const { openModal } = useModal()
 
-    const { width } = useWindowDimensions();
+    const { width } = useWindowDimensions()
 
     const params = useLocalSearchParams()
     const id = params.id
@@ -111,7 +112,7 @@ const edit = () => {
                 </View>
                 <TextInput style={{fontSize: 20}} value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
                 <View style={css.footerBox}>
-                    <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc)}>
+                    <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc, useModal)}>
                         <Text>Zapisz</Text>
                     </Pressable>
                     <Pressable style={[css.actionBoxCancel, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => router.back()}>

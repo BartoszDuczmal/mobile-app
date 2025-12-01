@@ -6,7 +6,13 @@ const query = promisify(db.query).bind(db);
 
 const fetchPosts = async (req, res) => {
     try {
-        const result = await query('SELECT id, title, description FROM posts ORDER BY created_at DESC')
+        let result;
+        if(req.body?.name) {
+            result = await query('SELECT p.id, p.title, p.description FROM posts p JOIN users u ON p.author = u.id WHERE u.username = ? ORDER BY p.created_at DESC', [req.body.name])
+        }
+        else {
+            result = await query('SELECT id, title, description FROM posts ORDER BY created_at DESC')
+        }
         const posts = await Promise.all(
             result.map(async (post) => {
                 const likes = await countLikes(post.id)
@@ -16,7 +22,7 @@ const fetchPosts = async (req, res) => {
         res.json(posts)
     }
     catch(err) {
-        return res.status(500).json({ error: err });
+        return res.status(500).json({ error: err })
     }
 }
 

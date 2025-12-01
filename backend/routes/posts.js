@@ -9,8 +9,8 @@ import show from '../controllers/posts/show.js';
 
 const router = express.Router();
 
-router.get('/', fetchPosts);
-router.post('/', create);
+router.post('/', fetchPosts);
+router.post('/create', create);
 router.get('/:id', show);
 router.post('/:id/likes', like);
 router.post('/:id/isLikedBy', isLikedBy)

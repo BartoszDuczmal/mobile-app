@@ -1,3 +1,4 @@
+import { API_URL } from "@/config.js";
 import axios from "axios";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -5,7 +6,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export const remove = async (id: number) => {
     try {
-        const res = await axios.delete(`http://192.168.1.151:3001/posts/${id}/remove`, { withCredentials: true });
+        const res = await axios.delete(`${API_URL}:3001/posts/${id}/remove`, { withCredentials: true });
         router.replace('/(tabs)/posts')
         alert('Pomyślnie usunięto!')
     } catch(err: any) {
