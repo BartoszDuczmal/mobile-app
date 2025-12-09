@@ -53,7 +53,7 @@ const css = StyleSheet.create({
         width: '80%',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 10,
+        padding: 15,
         backgroundColor: 'white',
         borderRadius: 30,
         shadowColor: '#000',
@@ -61,6 +61,8 @@ const css = StyleSheet.create({
             width: 0,
             height: 2,
         },
+        borderColor: 'black',
+        borderWidth: 1,
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
@@ -71,7 +73,7 @@ const css = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '30'
+        gap: 80,
     },
 })
 

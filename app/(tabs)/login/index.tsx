@@ -32,7 +32,7 @@ const index = () => {
             </View>
             <View style={[css.inputBox, {marginTop: 20}]}>
                 <MaterialIcons name="lock-open" size={40} color={'gray'} />
-                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass}/>
+                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
             </View>
             <View style={css.helpBox}>
                 <Pressable onPress={() => router.push('/register')}>

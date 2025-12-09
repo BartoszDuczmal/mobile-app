@@ -60,7 +60,7 @@ const register = () => {
                 borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
-                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} />
+                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
             </View>
             { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
                 <Text key={i} style={css.errMsg}>{msg}</Text>))
@@ -70,7 +70,7 @@ const register = () => {
                 borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
-                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass}/>
+                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
             </View>
             { repass !== pass && repass.length !== 0 && (
                 <Text style={css.errMsg}>Hasła muszą być takie same.</Text>

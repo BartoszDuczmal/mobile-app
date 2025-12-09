@@ -1,9 +1,11 @@
 import MiniPost from '@/components/MiniPost';
+import LogoutModal from '@/components/modals/Account';
 import { API_URL } from '@/config.js';
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import axios from "axios";
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -23,6 +25,7 @@ type Post = {
 const MyProfile = () => {
     const [data, setData] = useState<null | Profile>(null)
     const [post, setPost] = useState([])
+    const [refresh, setRefresh] = useState(0)
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -73,6 +76,8 @@ const MyProfile = () => {
 
 
     return (
+        <>
+        <LogoutModal refresh={refresh}/>
         <View style={css.container}>
             <Text style={{fontSize: 20, fontWeight: 600}}>Panel zarządzania kontem</Text>
             <View style={css.infoBox}>
@@ -103,20 +108,24 @@ const MyProfile = () => {
                 </View>
             </View>
             <View style={css.infoBox}>
-                <View style={css.dateBox}>
-                    <MaterialIcons name="password" size={26} color="black" />
-                    <View>
-                        <Text style={{fontWeight: 500}}>Kliknij, aby zmienić hasło</Text>
+                <TouchableOpacity onPress={() => router.push('/(tabs)/login/changePassword')}>
+                    <View style={css.dateBox}>
+                        <MaterialIcons name="password" size={26} color="black" />
+                        <View>
+                            <Text style={{fontWeight: 500}}>Kliknij, aby zmienić hasło</Text>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
             </View>
             <View style={css.infoBox}>
-                <View style={css.dateBox}>
-                    <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
-                    <View>
-                        <Text style={{fontWeight: 500, color: "rgba(185, 0, 0, 1)"}}>Kliknij, aby się wylogować</Text>
+                <TouchableOpacity onPress={() => setRefresh((prev) => prev + 1)}>
+                    <View style={css.dateBox}>
+                        <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
+                        <View>
+                            <Text style={{fontWeight: 500, color: "rgba(185, 0, 0, 1)"}}>Kliknij, aby się wylogować</Text>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
             </View>
             <View style={css.postsBox}>
                 <View style={css.postsTitle}>
@@ -134,6 +143,7 @@ const MyProfile = () => {
                 </View>
             </ScrollView>
         </View>
+        </>
     );
 }
 
