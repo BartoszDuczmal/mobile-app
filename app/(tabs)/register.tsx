@@ -28,11 +28,15 @@ const register = () => {
     const [pass, setPass] = useState('')
     const [repass, setRepass] = useState('')
 
+    const [hide, setHide] = useState(true)
+    const [reHide, setReHide] = useState(true)
+
     const pValid = passValid(pass)
 
     const eValid = emailValid(email)
 
     const nValid = nameValid(name)
+
 
     return (
         <View style={css.container}>
@@ -60,8 +64,9 @@ const register = () => {
                 borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
-                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
             </View>
+            <Pressable onPress={() => setHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ hide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
                 <Text key={i} style={css.errMsg}>{msg}</Text>))
             }
@@ -70,8 +75,9 @@ const register = () => {
                 borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
-                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={reHide} autoCapitalize="none" autoCorrect={false} />
             </View>
+            <Pressable onPress={() => setReHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ reHide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             { repass !== pass && repass.length !== 0 && (
                 <Text style={css.errMsg}>Hasła muszą być takie same.</Text>
             )}

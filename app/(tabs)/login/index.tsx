@@ -23,6 +23,7 @@ const index = () => {
 
     const [login, setLogin] = useState('')
     const [pass, setPass] = useState('')
+    const [hide, setHide] = useState(true)
 
     return (
         <View style={css.container}>
@@ -32,8 +33,9 @@ const index = () => {
             </View>
             <View style={[css.inputBox, {marginTop: 20}]}>
                 <MaterialIcons name="lock-open" size={40} color={'gray'} />
-                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
             </View>
+            <Pressable onPress={() => setHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ hide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             <View style={css.helpBox}>
                 <Pressable onPress={() => router.push('/register')}>
                     {({ pressed }) => (

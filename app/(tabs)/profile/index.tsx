@@ -79,7 +79,8 @@ const MyProfile = () => {
         <>
         <LogoutModal refresh={refresh}/>
         <View style={css.container}>
-            <Text style={{fontSize: 20, fontWeight: 600}}>Panel zarządzania kontem</Text>
+            <Text style={{fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30}}>Panel zarządzania kontem</Text>
+            <ScrollView contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, paddingBottom: 30}}>
             <View style={css.infoBox}>
                 <View style={css.userBox}>
                     <FontAwesome6 name="clipboard-user" size={24}/>
@@ -133,14 +134,13 @@ const MyProfile = () => {
                     <Text style={{fontWeight: 500}}>Twoje wpisy:</Text>
                 </View>
             </View>
-            <ScrollView contentContainerStyle={[{justifyContent: 'center'}, {alignItems: 'center'}]}>
-                <View style={css.listBox}>
-                {
-                post.map((v: Post) => (
-                    <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
-                ))
-                }
-                </View>
+            <View style={css.listBox}>
+            {
+            post.map((v: Post) => (
+                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
+            ))
+            }
+            </View>
             </ScrollView>
         </View>
         </>
@@ -151,7 +151,6 @@ const css = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        padding: 30,
         alignItems: 'center',
     },
     dateBox: {

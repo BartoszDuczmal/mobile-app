@@ -1,10 +1,8 @@
 TODO:
 *NA TERAZ:
 *NA PÓŹNIEJ:
--> 2. Dodać zarzadzanie uzytkownikiem
--> 3. Dodać moj profil
--> 4. Dodac avatary?
--> 5. Dodac komentarze
+-> 1. Dodać zarzadzanie uzytkownikiem
+-> 2. Dodac komentarze
 **JAK BEDZIE ZROBIONE WSZYSTKO INNE
 -> 1. Responsywność na www, ogl zeby wszystko dzialalo na www
 -> 2. Zrobic builda i moze cos jeszcze pomyslec

@@ -1,10 +1,11 @@
 import MiniPost from '@/components/MiniPost';
 import { API_URL } from '@/config.js';
+import { useModal } from '@/providers/ModalContext';
 import { FontAwesome6 } from '@expo/vector-icons';
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -20,7 +21,20 @@ type Post = {
   likes: number,
 };
 
+const blockUser = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
+    try {
+        await axios.post(`${API_URL}:3001/admin/block`, { id: id }, { withCredentials: true })
+        openModal({ type: "info", title: 'Pomyślnie zablokowano użytkownika.', msg: 'Od teraz użytkownik nie będzie mógł wchodzić w żadne interakcje.' })
+    }
+    catch(err: any) {
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
+        openModal({ type: "error", title: 'Nie udało się zablokować użytkownika.', msg: errMsg })
+    }
+}
+
 const Profile = () => {
+    const { openModal } = useModal()
+
     const [data, setData] = useState<null | Profile>(null)
     const [post, setPost] = useState([])
 
@@ -76,9 +90,13 @@ const Profile = () => {
 
     return (
         <View style={css.container}>
-            <Text style={{fontSize: 20, fontWeight: 600}}>{data.username} {data.perms === "admin" ? "( Administrator )" : ""}</Text>
+            <Text style={{fontSize: 20, fontWeight: 600}} numberOfLines={1} ellipsizeMode="tail">
+                {data.username} 
+                { data.perms === 'admin' && ' ( Administrator )'}
+                { data.perms === 'blocked' && ' ( Zablokowany )'}
+            </Text>
             <View style={css.infoBox}>
-                <View style={css.dateBox}>
+                <View style={css.infoInBox}>
                     <FontAwesome6 name="clock" size={24}/>
                     <View>
                         <Text style={{fontWeight: 500}}>Data dołączenia:</Text>
@@ -86,8 +104,16 @@ const Profile = () => {
                     </View>
                 </View>
             </View>
+            <View style={[css.infoBox, {display: 'flex'}]}>
+                <TouchableOpacity onPress={() => blockUser(data.id, openModal)}>
+                    <View style={css.infoInBox}>
+                            <FontAwesome6 name={data.perms === 'blocked' ? 'reply' : 'ban'} size={24} color="#d00000" />
+                            <Text style={{fontWeight: 500, color: '#d00000'}}>{data.perms === 'blocked' ? 'Odblokuj użytkownika' : 'Zablokuj użytkownika'}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
             <View style={css.postsBox}>
-                <View style={css.postsTitle}>
+                <View style={css.infoInBox}>
                     <FontAwesome6 name="folder-open" size={24}/>
                     <Text style={{fontWeight: 500}}>Wpisy użytkownika:</Text>
                 </View>
@@ -112,7 +138,7 @@ const css = StyleSheet.create({
         padding: 30,
         alignItems: 'center',
     },
-    dateBox: {
+    infoInBox: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',

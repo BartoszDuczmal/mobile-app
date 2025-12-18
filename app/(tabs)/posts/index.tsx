@@ -48,7 +48,7 @@ export default function Main() {
           </TouchableHighlight>
         </View>
         <View style={css.content}>
-          <ScrollView style={css.withContent} contentContainerStyle={[{justifyContent: 'center'}, {alignItems: 'center'}]}>
+          <ScrollView style={css.withContent} contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingBottom: 30}}>
             {
               data
               .filter((item: Post) => 
@@ -114,10 +114,10 @@ const css = StyleSheet.create({
     paddingTop: 72,
     flex: 1,
     alignItems: 'center',
-    marginHorizontal: '17.5%',
   },
   withContent: {
     display: 'flex',
     width: '100%',
+    paddingHorizontal: '17.5%'
   }
 });
