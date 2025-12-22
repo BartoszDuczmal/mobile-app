@@ -1,9 +1,11 @@
 import express from 'express';
-import register from '../controllers/auth/register.js';
+import block from '../controllers/admin/block.js';
+import unblock from '../controllers/admin/unblock.js';
 
 const router = express.Router();
 
-router.post('/block', register);
+router.post('/block', block);
+router.post('/unblock', unblock);
 
 
 export default router;

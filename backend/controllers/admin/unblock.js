@@ -25,15 +25,15 @@ const check = async (req, res) => {
         }
 
         if(user.id.toString() === id.toString()) {
-            return res.status(401).json({ error: 'Nie możesz zablokować samego siebie.' })
+            return res.status(403).json({ error: 'Nie możesz odblokować samego siebie.' })
         }
 
-        const result = await query(`UPDATE users SET perms=? WHERE id=? LIMIT 1`, ['blocked', id])
+        const result = await query(`UPDATE users SET perms=? WHERE id=? LIMIT 1`, [null, id])
         if(result.affectedRows === 0) {
             return res.status(404).json({ error: 'Nie znaleziono użytkownika.'})
         }
         if (result.changedRows === 0) {
-            return res.status(400).json({ error: 'Użytkownik jest już zablokowany.' });
+            return res.status(400).json({ error: 'Użytkownik nie jest zablokowany.' });
         }
         res.json({ success: true })
     }

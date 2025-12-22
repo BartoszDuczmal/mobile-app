@@ -1,8 +1,11 @@
 TODO:
 *NA TERAZ:
-*NA PÓŹNIEJ:
--> 1. Dodać zarzadzanie uzytkownikiem
--> 2. Dodac komentarze
+-> 1. Zrobić ładowanie zasobów
+-> 2. Dodać potwierdzenie blokady uzytkownika
+-> 3. Dodac komentarze
+-> 4. Dodac rejestracje z mailem
+-> 5. Zrobic console logi dla wewnetrznych
+-> 6. Poprawic we wszystkim walidacje
 **JAK BEDZIE ZROBIONE WSZYSTKO INNE
 -> 1. Responsywność na www, ogl zeby wszystko dzialalo na www
 -> 2. Zrobic builda i moze cos jeszcze pomyslec
