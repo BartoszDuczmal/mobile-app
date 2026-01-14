@@ -1,3 +1,4 @@
+import Loading from '@/components/Loading';
 import DeletePost from '@/components/modals/DeletePost';
 import { API_URL } from "@/config.js";
 import { useModal } from '@/providers/ModalContext';
@@ -22,9 +23,9 @@ type Post = {
 
 const ViewPost = () => {
     const params = useLocalSearchParams()
-    const id = params.id
+    const id = Array.isArray(params.id) ? params.id[0] : params.id
     const idNum = parseInt(id as string, 10)
-    if (isNaN(idNum)) return;
+    if (isNaN(idNum)) return null;
 
     const [data, setData] = useState<Post | null>(null);
 
@@ -41,11 +42,12 @@ const ViewPost = () => {
     const { openModal } = useModal()
 
     useEffect(() => {
-        let blocker = true
+        let active = true
 
         const fetchAll = async () => {
             try {
-                const res = await axios.get(`${API_URL}:3001/posts/${id}`);
+                const res = await axios.get(`${API_URL}:3001/posts/${id}`)
+
                 if (res.data) {
                     setData({
                         id: res.data.id,
@@ -56,15 +58,17 @@ const ViewPost = () => {
                         date: res.data.created_at,
                     });
                     setLikes(res.data.likes)
+
+
                 } else {
                     console.warn('Brak danych dla danego ID');
                 }
 
                 const status = await isLikedBy(idNum)
-                setIsLike(status)
+                if(active) setIsLike(status)
 
                 const auth = await checkAuth();
-                setIsOwner({user: auth?.user, perm: auth?.perm});
+                if(active) setIsOwner({user: auth?.user, perm: auth?.perm});
 
             } catch (err) {
                 console.error('Błąd podczas pobierania danych:', err);
@@ -73,15 +77,11 @@ const ViewPost = () => {
 
         fetchAll()
 
-        return () => {
-            blocker = false;
-        };
+        return () => { active = false }
     }, [id]);
 
     if (!data) {
-        return (
-            <Text>Ładowanie danych...</Text>
-        )
+        return <Loading/>
     }
 
     const formattedDate = new Date(data.date).toLocaleDateString('pl-PL', {
@@ -115,7 +115,7 @@ const ViewPost = () => {
                                 const res = await handleLike(data.id, openModal)
                                 if(res) {
                                     setLikes(res.likes)
-                                    setIsLike(!isLike)
+                                    setIsLike(prev => !prev)
                                 }
                             }
                         }/>
@@ -189,6 +189,14 @@ const css = StyleSheet.create({
         justifyContent: 'flex-end',
         gap: 20,
     },
+    loadingBox: {
+        display: 'flex',
+        width: '100%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingBottom: 80,
+    }
 })
 
 export default ViewPost;

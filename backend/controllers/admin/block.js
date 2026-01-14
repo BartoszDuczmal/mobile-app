@@ -13,7 +13,6 @@ const check = async (req, res) => {
         const id = req.body.id
         
         if(!token) {
-            console.log('Wywalam sie na tokenie')
             return res.status(401).json({ error: 'Nie możesz wykonać tej czynności.' })
         }
         const user = checkFunc(token)

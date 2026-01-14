@@ -1,3 +1,4 @@
+import Loading from '@/components/Loading';
 import DeletePost from '@/components/modals/DeletePost';
 import { API_URL } from "@/config.js";
 import { useModal } from '@/providers/ModalContext';
@@ -55,11 +56,10 @@ const edit = () => {
     const [desc, setDesc] = useState<string>('')
 
     useEffect(() => {
-        let blocker = true
-
         const fetchData = async () => {
             try {
                 const res = await axios.get(`http://192.168.1.151:3001/posts/${id}`);
+
                 if (res.data) {
                     setData({
                         id: res.data.id,
@@ -75,14 +75,10 @@ const edit = () => {
             }
         };
         fetchData()
-
-        return () => {
-            blocker = false;
-        };
     }, [id]);
 
     useEffect(() => {
-        if (!data) return
+        if (!data) return 
 
         const checkOwner = async () => {
             const auth = await checkAuth()
@@ -98,9 +94,7 @@ const edit = () => {
     }, [data]); 
 
     if (!data) {
-        return (
-            <Text>Ładowanie danych...</Text>
-        )
+        return <Loading/>
     }
 
     return (

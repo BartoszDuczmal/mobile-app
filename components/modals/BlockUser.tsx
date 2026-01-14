@@ -1,20 +1,20 @@
 import { API_URL } from "@/config.js";
 import axios from "axios";
-import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const logout = async () => {
-    try {
-        const res = await axios.post(`${API_URL}:3001/auth/logout`, {}, { withCredentials: true });
-        router.replace('/(tabs)/posts')
+const blockUser = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
+        try {
+            await axios.post(`${API_URL}:3001/admin/block`, { id: id }, { withCredentials: true })
+            openModal({ type: "info", title: 'Pomyślnie zablokowano użytkownika.', msg: 'Od teraz użytkownik nie będzie mógł wchodzić w żadne interakcje.' })
+        }
+        catch(err: any) {
+            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
+            openModal({ type: "error", title: 'Nie udało się zablokować użytkownika.', msg: errMsg })
+        }
     }
-    catch(err) {
-        alert('Nie udało się wylogować!\nError: ' + err)
-    }
-}
 
-const Account = ({ refresh } : { refresh: number }) => {
+const BlockUser = ({ refresh } : { refresh: number }) => {
 
     const [visible, setVisible] = useState(false)
 
@@ -28,7 +28,7 @@ const Account = ({ refresh } : { refresh: number }) => {
         <Modal animationType="slide" visible={visible} transparent={true}>
             <View style={css.centeredView}>
                 <View style={css.modalView}>
-                    <Text style={{fontSize: 18, textAlign: 'center'}}>Czy napewno chcesz to zrobić?</Text>
+                    <Text style={{fontSize: 18, textAlign: 'center'}}>Czy napewno chcesz zablokować tego użytkownika?</Text>
                     <View style={css.buttonsView}>
                         <TouchableOpacity onPress={async () => {
                             await logout()

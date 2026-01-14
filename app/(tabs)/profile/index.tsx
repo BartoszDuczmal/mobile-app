@@ -1,3 +1,4 @@
+import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
 import LogoutModal from '@/components/modals/Account';
 import { API_URL } from '@/config.js';
@@ -62,7 +63,7 @@ const MyProfile = () => {
     }, [])
 
     if (!data) {
-        return <Text>Ładowanie danych...</Text>
+        return <Loading/>
     }
 
     const formattedDate = new Date(data.date).toLocaleDateString('pl-PL', {

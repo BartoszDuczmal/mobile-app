@@ -16,7 +16,6 @@ type Post = {
 const ViewPost = (props: Post) => {
     const [likes, setLikes] = useState(props.likes)
 
-    // Dodac automatyczne wczytywanie czy post jest polubiony
     const [isLike, setIsLike] = useState(false)
 
     useEffect(() => {

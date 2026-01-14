@@ -1,9 +1,9 @@
 TODO:
 *NA TERAZ:
 -> 1. Zrobić ładowanie zasobów
--> 2. Dodać potwierdzenie blokady uzytkownika
+-> 2. Dodać potwierdzenie blokady uzytkownika - trzeba przebudować stare modale
 -> 3. Dodac komentarze
--> 4. Dodac rejestracje z mailem
+-> 4. Dodac rejestracje z potwierdzeniem mailowo
 -> 5. Zrobic console logi dla wewnetrznych
 -> 6. Poprawic we wszystkim walidacje
 **JAK BEDZIE ZROBIONE WSZYSTKO INNE

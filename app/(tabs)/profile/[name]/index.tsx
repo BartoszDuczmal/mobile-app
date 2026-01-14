@@ -1,3 +1,4 @@
+import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
 import { API_URL } from '@/config.js';
 import { useModal } from '@/providers/ModalContext';
@@ -34,7 +35,6 @@ const Profile = () => {
         try {
             await axios.post(`${API_URL}:3001/admin/block`, { id: id }, { withCredentials: true })
             openModal({ type: "info", title: 'Pomyślnie zablokowano użytkownika.', msg: 'Od teraz użytkownik nie będzie mógł wchodzić w żadne interakcje.' })
-            fetchAll()
         }
         catch(err: any) {
             const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
@@ -46,7 +46,6 @@ const Profile = () => {
         try {
             await axios.post(`${API_URL}:3001/admin/unblock`, { id: id }, { withCredentials: true })
             openModal({ type: "info", title: 'Pomyślnie odblokowano użytkownika.', msg: 'Od teraz użytkownik będzie mógł ponownie wchodzić w interakcje.' })
-            fetchAll()
         }
         catch(err: any) {
             const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
@@ -87,7 +86,7 @@ const Profile = () => {
     }, [name])
 
     if (!data) {
-        return <Text>Ładowanie danych...</Text>
+        return <Loading/>
     }
 
     const formattedDate = new Date(data.date).toLocaleDateString('pl-PL', {
@@ -117,7 +116,16 @@ const Profile = () => {
                 </View>
             </View>
             <View style={[css.infoBox, {display: 'flex'}]}>
-                <TouchableOpacity onPress={(e) => { e.stopPropagation?.(); data.perms === 'blocked' ? unblockUser(data.id, openModal) : blockUser(data.id, openModal) }}>
+                <TouchableOpacity onPress={
+                    (e) => { 
+                        e.stopPropagation?.(); 
+                        if(data.perms === 'blocked') {
+                            unblockUser(data.id, openModal) 
+                        } else { 
+                            blockUser(data.id, openModal)
+                        }
+                        fetchAll()
+                    }}>
                     <View style={css.infoInBox}>
                             <FontAwesome6 name={data.perms === 'blocked' ? 'reply' : 'ban'} size={24} color="#d00000" />
                             <Text style={{fontWeight: 500, color: '#d00000'}}>{data.perms === 'blocked' ? 'Odblokuj użytkownika' : 'Zablokuj użytkownika'}</Text>
