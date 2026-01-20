@@ -1,7 +1,7 @@
 import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
-import LogoutModal from '@/components/modals/Account';
 import { API_URL } from '@/config.js';
+import { useModal } from '@/providers/ModalContext';
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import axios from "axios";
 import { router } from 'expo-router';
@@ -17,21 +17,35 @@ type Profile = {
 }
 
 type Post = {
-  id: number,
-  title: string,
-  desc: string,
-  likes: number,
+    id: number,
+    title: string,
+    desc: string,
+    likes: number,
 };
+
+const logout = async (openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => Promise<boolean|void>) => {
+    const result = await openModal({ type: 'inquiry', title: 'Czy napewno chcesz się wylogować?' })
+    if(!result) return
+    try {
+        const res = await axios.post(`${API_URL}:3001/auth/logout`, {}, { withCredentials: true });
+        router.replace('/(tabs)/posts')
+    }
+    catch(err: any) {
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
+        openModal({ type: 'error', title: 'Nie udało się wylogować.', msg: 'W dalszym ciągu jesteś zalogowany na konto.' })
+    }
+}
 
 const MyProfile = () => {
     const [data, setData] = useState<null | Profile>(null)
     const [post, setPost] = useState([])
-    const [refresh, setRefresh] = useState(0)
+
+    const { openModal } = useModal()
 
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const res = await axios.post(`${API_URL}:3001/profile/myShow`, { }, { withCredentials: true })
+                const res = await axios.post(`${API_URL}:3001/profile/myShow`, {}, { withCredentials: true })
                 if (res.data) {
                     setData({
                         id: res.data.id,
@@ -63,7 +77,7 @@ const MyProfile = () => {
     }, [])
 
     if (!data) {
-        return <Loading/>
+        return <Loading />
     }
 
     const formattedDate = new Date(data.date).toLocaleDateString('pl-PL', {
@@ -78,72 +92,71 @@ const MyProfile = () => {
 
     return (
         <>
-        <LogoutModal refresh={refresh}/>
-        <View style={css.container}>
-            <Text style={{fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30}}>Panel zarządzania kontem</Text>
-            <ScrollView contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, paddingBottom: 30}}>
-            <View style={css.infoBox}>
-                <View style={css.userBox}>
-                    <FontAwesome6 name="clipboard-user" size={24}/>
-                    <View>
-                        <Text style={{fontWeight: 500}}>Nazwa użytkownika:</Text>
-                        <Text>{data.username}</Text>
-                    </View>
-                </View>
-            </View>
-            <View style={css.infoBox}>
-                <View style={css.dateBox}>
-                    <MaterialIcons name="alternate-email" size={26}/>
-                    <View>
-                        <Text style={{fontWeight: 500}}>Adres email:</Text>
-                        <Text>{data.email}</Text>
-                    </View>
-                </View>
-            </View>
-            <View style={css.infoBox}>
-                <View style={css.dateBox}>
-                    <FontAwesome6 name="clock" size={24}/>
-                    <View>
-                        <Text style={{fontWeight: 500}}>Data dołączenia:</Text>
-                        <Text>{formattedDate}</Text>
-                    </View>
-                </View>
-            </View>
-            <View style={css.infoBox}>
-                <TouchableOpacity onPress={() => router.push('/(tabs)/login/changePassword')}>
-                    <View style={css.dateBox}>
-                        <MaterialIcons name="password" size={26} color="black" />
-                        <View>
-                            <Text style={{fontWeight: 500}}>Kliknij, aby zmienić hasło</Text>
+            <View style={css.container}>
+                <Text style={{ fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30 }}>Panel zarządzania kontem</Text>
+                <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, paddingBottom: 30 }}>
+                    <View style={css.infoBox}>
+                        <View style={css.userBox}>
+                            <FontAwesome6 name="clipboard-user" size={24} />
+                            <View>
+                                <Text style={{ fontWeight: 500 }}>Nazwa użytkownika:</Text>
+                                <Text>{data.username}</Text>
+                            </View>
                         </View>
                     </View>
-                </TouchableOpacity>
-            </View>
-            <View style={css.infoBox}>
-                <TouchableOpacity onPress={() => setRefresh((prev) => prev + 1)}>
-                    <View style={css.dateBox}>
-                        <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
-                        <View>
-                            <Text style={{fontWeight: 500, color: "rgba(185, 0, 0, 1)"}}>Kliknij, aby się wylogować</Text>
+                    <View style={css.infoBox}>
+                        <View style={css.dateBox}>
+                            <MaterialIcons name="alternate-email" size={26} />
+                            <View>
+                                <Text style={{ fontWeight: 500 }}>Adres email:</Text>
+                                <Text>{data.email}</Text>
+                            </View>
                         </View>
                     </View>
-                </TouchableOpacity>
+                    <View style={css.infoBox}>
+                        <View style={css.dateBox}>
+                            <FontAwesome6 name="clock" size={24} />
+                            <View>
+                                <Text style={{ fontWeight: 500 }}>Data dołączenia:</Text>
+                                <Text>{formattedDate}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={css.infoBox}>
+                        <TouchableOpacity onPress={() => router.push('/(tabs)/login/changePassword')}>
+                            <View style={css.dateBox}>
+                                <MaterialIcons name="password" size={26} color="black" />
+                                <View>
+                                    <Text style={{ fontWeight: 500 }}>Kliknij, aby zmienić hasło</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={css.infoBox}>
+                        <TouchableOpacity onPress={() => logout(openModal)}>
+                            <View style={css.dateBox}>
+                                <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
+                                <View>
+                                    <Text style={{ fontWeight: 500, color: "rgba(185, 0, 0, 1)" }}>Kliknij, aby się wylogować</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={css.postsBox}>
+                        <View style={css.postsTitle}>
+                            <FontAwesome6 name="folder-open" size={24} />
+                            <Text style={{ fontWeight: 500 }}>Twoje wpisy:</Text>
+                        </View>
+                    </View>
+                    <View style={css.listBox}>
+                        {
+                            post.map((v: Post) => (
+                                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
+                            ))
+                        }
+                    </View>
+                </ScrollView>
             </View>
-            <View style={css.postsBox}>
-                <View style={css.postsTitle}>
-                    <FontAwesome6 name="folder-open" size={24}/>
-                    <Text style={{fontWeight: 500}}>Twoje wpisy:</Text>
-                </View>
-            </View>
-            <View style={css.listBox}>
-            {
-            post.map((v: Post) => (
-                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
-            ))
-            }
-            </View>
-            </ScrollView>
-        </View>
         </>
     );
 }

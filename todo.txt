@@ -1,11 +1,12 @@
 TODO:
 *NA TERAZ:
--> 1. Zrobić ładowanie zasobów
--> 2. Dodać potwierdzenie blokady uzytkownika - trzeba przebudować stare modale
--> 3. Dodac komentarze
--> 4. Dodac rejestracje z potwierdzeniem mailowo
--> 5. Zrobic console logi dla wewnetrznych
--> 6. Poprawic we wszystkim walidacje
+-> 1. Dodac komentarze
+-> 2. Dodac rejestracje z potwierdzeniem mailowo
+*MNIEJ WAŻNE:
+-> 4. Zrobic console logi dla wewnetrznych
+-> 5. Poprawic we wszystkim walidacje
 **JAK BEDZIE ZROBIONE WSZYSTKO INNE
 -> 1. Responsywność na www, ogl zeby wszystko dzialalo na www
 -> 2. Zrobic builda i moze cos jeszcze pomyslec
+
+commit: ulepszono system modali, poprawiono niektore modale, naprawiono edytowanie postu

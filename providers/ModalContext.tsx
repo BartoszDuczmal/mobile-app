@@ -1,10 +1,11 @@
 import ErrorModal from "@/components/modals/ErrorModal"
 import InfoModal from "@/components/modals/InfoModal"
+import InquiryModal from "@/components/modals/InquiryModal"
 import { createContext, ReactNode, useContext, useState } from "react"
 
 
 type ModalContextType = {
-    openModal: ({ type, title, msg }: { type: string, title: string, msg: string }) => void
+    openModal: ({ type, title, msg }: { type: string, title: string, msg?: string }) => Promise<void | boolean>
     closeModal: () => void
 }
 
@@ -14,11 +15,23 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     const [visible, setVisible] = useState(false)
     const [modalProps, setModalProps] = useState<any>({})
     const [modalType, setModalType] = useState<string|null>(null)
+    const [resolver, setResolver] = useState<((value: boolean) => void) | null>(null)
 
-    const openModal = ({ type, title, msg }: { type: string, title: string, msg: string }) => {
+    const handleResponse = (answer: boolean) => {
+        resolver?.(answer)
+        closeModal()
+    }
+
+    const openModal = ({ type, title, msg }: { type: string, title: string, msg?: string }) => {
         setModalProps({ title, msg })
         setVisible(true)
         setModalType(type)
+
+        if(type === 'inquiry') {
+            return new Promise<boolean>(resolve => setResolver(() => resolve))
+        }
+
+        return Promise.resolve()
     }
 
     const closeModal = () => setVisible(false)
@@ -27,6 +40,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         switch(modalType) {
             case "error":
                 return <ErrorModal visible={visible} {...modalProps} onClose={closeModal}/>
+            case "inquiry":
+                return <InquiryModal visible={visible} {...modalProps} onResponse={handleResponse}/>
             case "info":
             default:
                 return <InfoModal visible={visible} {...modalProps} onClose={closeModal}/>

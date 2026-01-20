@@ -1,14 +1,14 @@
 import Loading from '@/components/Loading';
-import DeletePost from '@/components/modals/DeletePost';
 import { API_URL } from "@/config.js";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
+import { deletePost } from '@/utils/deletePost';
 import { FontAwesome6 } from '@expo/vector-icons';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 type Post = {
     id: number,
@@ -17,19 +17,15 @@ type Post = {
     author: string,
 }
 
-const fetchEdit = async (id: number, title: String, desc: String, openModal: ({title, msg}: { title: string, msg: string }) => void) => {
+const fetchEdit = async (id: number, title: string, desc: string, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any) => {
     try {
         const res = await axios.post(`${API_URL}:3001/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
-        Alert.alert('Pomyślnie edytowano wpis!', undefined, [
-            {
-                text: 'OK',
-            }
-        ])
+        openModal({ type: 'info', title: 'Pomyślnie edytowano wpis.', msg: 'Teraz możesz zobaczyć zmiany w profilu.' })
         router.back()
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        openModal({ title: 'Przepraszamy, ale nie udało się edytować tego wpisu.', msg: errMsg })
+        openModal({ type: 'error', title: 'Nie udało się edytować wpisu.', msg: errMsg })
     }
 }
 
@@ -47,10 +43,6 @@ const edit = () => {
 
     const [isOwner, setIsOwner] = useState<{user: string, perm: string} | null>(null)
 
-    const [colorDelete, setColorDelete] = useState('gray')
-
-    const [modal, setModal] = useState(0)
-
     const [title, setTitle] = useState<string>('')
 
     const [desc, setDesc] = useState<string>('')
@@ -58,7 +50,7 @@ const edit = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://192.168.1.151:3001/posts/${id}`);
+                const res = await axios.get(`${API_URL}:3001/posts/${id}`);
 
                 if (res.data) {
                     setData({
@@ -99,20 +91,19 @@ const edit = () => {
 
     return (
         <>
-            <DeletePost refresh={modal} id={idNum}/>
             <View style={css.container}>
                 <View style={css.title}>
                     <TextInput style={{ fontSize: 35 }} value={title} onChangeText={setTitle}></TextInput>
                 </View>
                 <TextInput style={{fontSize: 20}} value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
                 <View style={css.footerBox}>
-                    <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc, useModal)}>
+                    <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc, openModal)}>
                         <Text>Zapisz</Text>
                     </Pressable>
                     <Pressable style={[css.actionBoxCancel, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => router.back()}>
                         <Text>Anuluj</Text>
                     </Pressable>
-                    <Pressable onPress={() => setModal(prev => prev+1)}>
+                    <Pressable onPress={() => deletePost(data.id, openModal)}>
                         {({pressed}) => (
                             <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}

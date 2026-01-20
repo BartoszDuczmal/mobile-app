@@ -1,8 +1,8 @@
 import Loading from '@/components/Loading';
-import DeletePost from '@/components/modals/DeletePost';
 import { API_URL } from "@/config.js";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
+import { deletePost } from '@/utils/deletePost';
 import { isLikedBy } from '@/utils/isLikedBy';
 import { handleLike } from '@/utils/like-post';
 import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -34,10 +34,6 @@ const ViewPost = () => {
     const [isLike, setIsLike] = useState(false)
 
     const [isOwner, setIsOwner] = useState<{user: string, perm: string} | null>(null)
-
-    const [colorDelete, setColorDelete] = useState('gray')
-
-    const [modal, setModal] = useState(0)
 
     const { openModal } = useModal()
 
@@ -95,7 +91,6 @@ const ViewPost = () => {
 
     return (
         <>
-            <DeletePost refresh={modal} id={idNum}/>
             <View style={css.container}>
                 <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
                     <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>
@@ -131,7 +126,7 @@ const ViewPost = () => {
                             <FontAwesome6 name='edit' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}
                     </Pressable>
-                    <Pressable onPress={() => setModal(prev => prev+1)}>
+                    <Pressable onPress={() => deletePost(data.id, openModal)}>
                         {({pressed}) => (
                             <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}

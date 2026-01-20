@@ -3,7 +3,6 @@ import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import Account from "./modals/Account";
 
 const TabLogin = () => {
     const [user, setUser] = useState(null)
@@ -39,7 +38,6 @@ const TabLogin = () => {
 
     return (
     <>
-    <Account refresh={modal}/>
     <View>
         <TouchableOpacity onPress={() => (user === null) ? router.push('/(tabs)/login') : router.push('/(tabs)/profile')} style={{
             flexDirection: 'row', 

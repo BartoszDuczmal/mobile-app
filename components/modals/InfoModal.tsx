@@ -1,13 +1,13 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const InfoModal = ({ visible, title, msg, onClose }: { visible: boolean, title: string, msg: string, onClose: () => void } ) => {
+const InfoModal = ({ visible, title, msg, onClose }: { visible: boolean, title: string, msg?: string, onClose: () => void } ) => {
 
     return (
         <Modal animationType="slide" visible={visible} transparent={true}>
                 <View style={css.centeredView}>
                     <View style={css.modalView}>
                         <Text style={css.title}>{title}</Text>
-                        <Text style={css.msg}>{msg}</Text>
+                        { msg && <Text style={css.msg}>{msg}</Text> }
                         <View style={css.buttonsView}>
                         <TouchableOpacity onPress={onClose}><Text style={{fontWeight: 700}}>OK</Text>
                         </TouchableOpacity>

@@ -1,6 +1,6 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const ErrorModal = ({ visible, title, msg, onClose }: { visible: boolean, title: string, msg?: string, onClose: () => void } ) => {
+const InquiryModal = ({ visible, title, msg, onResponse }: { visible: boolean, title: string, msg?: string, onResponse: (answer: boolean) => void }) => {
 
     return (
         <Modal animationType="slide" visible={visible} transparent={true}>
@@ -9,7 +9,11 @@ const ErrorModal = ({ visible, title, msg, onClose }: { visible: boolean, title:
                         <Text style={css.title}>{title}</Text>
                         { msg && <Text style={css.msg}>{msg}</Text> }
                         <View style={css.buttonsView}>
-                        <TouchableOpacity onPress={onClose}><Text style={{fontWeight: 700}}>OK</Text>
+                        <TouchableOpacity onPress={() => onResponse(true)} style={css.button}>
+                            <Text style={{fontWeight: 700}}>TAK</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => onResponse(false)} style={css.button}>
+                            <Text style={{fontWeight: 700}}>NIE</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -30,9 +34,9 @@ const css = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
-        backgroundColor: '#fdd7d7ff',
+        backgroundColor: '#fafeffff',
         borderRadius: 30,
-        shadowColor: '#ff0000ff',
+        shadowColor: '#79c3fcff',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -59,6 +63,9 @@ const css = StyleSheet.create({
         fontSize: 15, 
         textAlign: 'center',
     },
+    button: {
+        marginHorizontal: 30,
+    }
 })
 
-export default ErrorModal;
+export default InquiryModal;
