@@ -33,7 +33,7 @@ const ViewPost = (props: Post) => {
         <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id}`) }}>
             <View style={css.contentBox}>
                 <Text style={css.title} numberOfLines={1} ellipsizeMode="tail">{props.title}</Text>
-                <Text numberOfLines={4} ellipsizeMode="tail">{props.desc}</Text>
+                <Text numberOfLines={3} ellipsizeMode="tail">{props.desc}</Text>
             </View>
             <View style={css.footerBox}>
                 <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
