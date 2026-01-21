@@ -2,7 +2,6 @@
 
 This is a full‑stack mobile application built with **React Native (Expo)** on the frontend and **Node.js (Express)** on the backend. The project includes user authentication, posts, profiles, likes, comments, and basic admin functionality.
 
----
 
 ## 🚀 Tech Stack
 
@@ -21,7 +20,6 @@ This is a full‑stack mobile application built with **React Native (Expo)** on 
 * JWT Authentication
 * Nodemailer (password recovery emails)
 
----
 
 ## 📱 Mobile App Structure (Expo)
 
@@ -47,7 +45,6 @@ app/
  └─ _layout.tsx
 ```
 
----
 
 ## 🧠 Backend Structure (Express)
 
@@ -84,7 +81,6 @@ backend/
  └─ server.js
 ```
 
----
 
 ## ⚙️ Installation & Setup
 
@@ -126,7 +122,6 @@ npm install
 npm run dev
 ```
 
----
 
 ## 🔐 Environment Variables
 
@@ -148,7 +143,6 @@ EMAIL_PASS=your_email_app_password
 # Do NOT commit real secrets to the repository
 ```
 
----
 
 ## 📄 License
 
