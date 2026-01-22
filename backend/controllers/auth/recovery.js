@@ -1,11 +1,8 @@
 import jwt from 'jsonwebtoken';
-import { promisify } from 'util';
 import { v4 as uuidv4 } from 'uuid';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import mail from '../../config/mail.js';
 import schemaLogin from "../../models/loginModel.js";
-
-const query = promisify(db.query).bind(db);
 
 const recovery = async (req, res) => {
 
@@ -17,14 +14,14 @@ const recovery = async (req, res) => {
     }
 
     try {
-        const result = await query('SELECT id FROM users WHERE email = ? LIMIT 1', [value])
+        const [result] = await db.query('SELECT id FROM users WHERE email = ? LIMIT 1', [value])
         if(result.length === 0) {
             return res.json({ success: false })
         }
         try {
             const jti = uuidv4()
-            await query('INSERT INTO pass_resets (jti, user_id) VALUES (?, ?)', [jti, result[0].id])
-            await query('DELETE FROM pass_resets WHERE user_id = ? AND id NOT IN ( SELECT id FROM ( SELECT id FROM pass_resets WHERE user_id = ? ORDER BY created_at DESC LIMIT 3 ) AS recent )', [result[0].id, result[0].id])
+            await db.query('INSERT INTO pass_resets (jti, user_id) VALUES (?, ?)', [jti, result[0].id])
+            await db.query('DELETE FROM pass_resets WHERE user_id = ? AND id NOT IN ( SELECT id FROM ( SELECT id FROM pass_resets WHERE user_id = ? ORDER BY created_at DESC LIMIT 3 ) AS recent )', [result[0].id, result[0].id])
             const token = jwt.sign({ jti: jti, user: result[0].id }, process.env.JWT_KEY, { expiresIn: '10m' });
             const resetLink = 'https://localhost:8081/login/resetPassword?token=' + token
             console.log(process.env.EMAIL_USER)

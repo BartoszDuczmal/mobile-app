@@ -1,14 +1,11 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 import schemaLogin from '../../models/loginModel.js';
 
 dotenv.config();
-
-const query = promisify(db.query).bind(db);
 
 const errMsg = "Twój token resetujący wygasł."
 
@@ -33,7 +30,7 @@ const resetPass = async (req, res) => {
             }
             
             decoded = checkFunc(jwtToken)
-            const qCheck = await query('SELECT pass FROM users WHERE id=? LIMIT 1', [decoded.id])
+            const [qCheck] = await db.query('SELECT pass FROM users WHERE id=? LIMIT 1', [decoded.id])
             const isMatch = await bcrypt.compare(currPass, qCheck[0].pass)
 
             if(!isMatch) return res.status(400).json({ error: "Nieprawidłowe hasło."})
@@ -46,7 +43,7 @@ const resetPass = async (req, res) => {
             // Reset hasła
 
             decoded = jwt.verify(resetToken, process.env.JWT_KEY)
-            const q1 = await query('SELECT id FROM pass_resets WHERE user_id = ? AND jti = ? AND expires_at > NOW() AND used = 0 LIMIT 1', [decoded.user, decoded.jti])
+            const [q1] = await db.query('SELECT id FROM pass_resets WHERE user_id = ? AND jti = ? AND expires_at > NOW() AND used = 0 LIMIT 1', [decoded.user, decoded.jti])
             
             if(q1.length === 0) return res.status(401).json({ error: errMsg })
 
@@ -63,10 +60,10 @@ const resetPass = async (req, res) => {
         }
 
         const hash = await bcrypt.hash(value, Number(process.env.SALT_ROUNDS))
-        await query('UPDATE users SET pass = ? WHERE id = ?', [hash, userId])
+        await db.query('UPDATE users SET pass = ? WHERE id = ?', [hash, userId])
 
         if(resetToken) {
-            await query('UPDATE pass_resets SET used = 1 WHERE jti = ?', [decoded.jti])
+            await db.query('UPDATE pass_resets SET used = 1 WHERE jti = ?', [decoded.jti])
         }
 
         res.json({ success: true })

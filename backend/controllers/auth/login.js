@@ -2,13 +2,10 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import Joi from "joi";
 import jwt from 'jsonwebtoken';
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import schemaLogin from "../../models/loginModel.js";
 
 dotenv.config();
-
-const query = promisify(db.query).bind(db);
 
 const login = async (req, res) => {
     const msgError = 'Nieprawidłowy login lub hasło.'
@@ -29,7 +26,7 @@ const login = async (req, res) => {
     
     // Logowanie użytkownika 
     try {
-        const result = await query('SELECT id, pass, perms FROM users WHERE email = ? OR username = ? LIMIT 1', [req.body.login, req.body.login])
+        const [result] = await db.query('SELECT id, pass, perms FROM users WHERE email = ? OR username = ? LIMIT 1', [req.body.login, req.body.login])
         if(result.length > 0) {
             const isMatch = await bcrypt.compare(req.body.pass, result[0].pass)
             if(isMatch) {

@@ -1,9 +1,6 @@
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 import schemaPost from "../../models/postModel.js";
-
-const query = promisify(db.query).bind(db);
 
 const create = async (req, res) => {
     const user = checkFunc(req.cookies.token)
@@ -20,7 +17,7 @@ const create = async (req, res) => {
     }
 
     try {
-        const result = await query('INSERT INTO posts (title, description, author) VALUES (?, ?, ?)', [value.title, value.desc, user.id])
+        const [result] = await db.query('INSERT INTO posts (title, description, author) VALUES (?, ?, ?)', [value.title, value.desc, user.id])
         res.json({ success: true, id: result.insertId });
     }
     catch(err) {

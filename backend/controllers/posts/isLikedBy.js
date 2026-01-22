@@ -1,8 +1,5 @@
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import checkFunc from "../../functions/checkFunc.js";
-
-const query = promisify(db.query).bind(db);
 
 const isLikedBy = async (req, res) => {
     const postId = parseInt(req.params.id, 10)
@@ -15,7 +12,7 @@ const isLikedBy = async (req, res) => {
         return res.json(false)
     }
     try {
-        const result = await query('SELECT id FROM likes WHERE user_id = ? AND post_id = ? LIMIT 1', [user.id, postId])
+        const [result] = await db.query('SELECT id FROM likes WHERE user_id = ? AND post_id = ? LIMIT 1', [user.id, postId])
         
         return res.json(result.length > 0)
     }

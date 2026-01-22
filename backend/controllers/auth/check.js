@@ -1,11 +1,8 @@
 import dotenv from 'dotenv';
-import { promisify } from 'util';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 
 dotenv.config();
-
-const query = promisify(db.query).bind(db);
 
 const check = async (req, res) => {
     const token = req.cookies.token
@@ -17,7 +14,7 @@ const check = async (req, res) => {
     }
 
     try {
-        const result = await query('SELECT username FROM users WHERE id = ? LIMIT 1', [user.id])
+        const [result] = await db.query('SELECT username FROM users WHERE id = ? LIMIT 1', [user.id])
         console.log('Zdekodowano: ' + result[0].username)
         res.json({ success: true, user: result[0].username, perm: user.perm })
     }

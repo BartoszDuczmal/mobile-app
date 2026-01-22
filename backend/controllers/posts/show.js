@@ -1,8 +1,5 @@
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import countLikes from "../../functions/countLikes.js";
-
-const query = promisify(db.query).bind(db);
 
 const show = async (req, res) => {
     const postId = req.params.id;
@@ -13,7 +10,7 @@ const show = async (req, res) => {
     }
 
     try {
-        const post = await query('SELECT * FROM posts WHERE id = ? LIMIT 1', [postId])
+        const [post] = await db.query('SELECT * FROM posts WHERE id = ? LIMIT 1', [postId])
         if (post.length === 0) {
             return res.status(404).json({ error: 'Post nie znaleziony' });
         }
@@ -25,7 +22,7 @@ const show = async (req, res) => {
         // Pobieranie nazwy użytkownika z id
         let author = 'Użytkownik usunięty'
         if(post[0].author !== null) {
-            const user = await query('SELECT username FROM users WHERE id = ? LIMIT 1', [post[0].author])
+            const [user] = await db.query('SELECT username FROM users WHERE id = ? LIMIT 1', [post[0].author])
             author = user[0].username
         }
 

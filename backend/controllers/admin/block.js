@@ -1,11 +1,8 @@
 import dotenv from 'dotenv';
-import { promisify } from 'util';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 
 dotenv.config();
-
-const query = promisify(db.query).bind(db);
 
 const check = async (req, res) => {
     try {
@@ -27,7 +24,7 @@ const check = async (req, res) => {
             return res.status(401).json({ error: 'Nie możesz zablokować samego siebie.' })
         }
 
-        const result = await query(`UPDATE users SET perms=? WHERE id=? LIMIT 1`, ['blocked', id])
+        const [result] = await db.query(`UPDATE users SET perms=? WHERE id=? LIMIT 1`, ['blocked', id])
         if(result.affectedRows === 0) {
             return res.status(404).json({ error: 'Nie znaleziono użytkownika.'})
         }

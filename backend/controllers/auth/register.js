@@ -1,14 +1,11 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import schemaLogin from "../../models/loginModel.js";
 
 dotenv.config()
 
 const saltRounds = Number(process.env.SALT_ROUNDS)
-
-const query = promisify(db.query).bind(db);
 
 const register = async (req, res) => {
     console.log('Otrzymano próbę zarejestrowania: ', req.body)
@@ -22,18 +19,18 @@ const register = async (req, res) => {
     
     // Sprawdzenie czy nie istnieje juz konto o podanym emailu
     try {
-      const qEmail = await query('SELECT id FROM users WHERE email = ?', [value.email])
+      const [qEmail] = await db.query('SELECT id FROM users WHERE email = ?', [value.email])
       if(qEmail.length === 0) {
 
           // Sprawdzenie czy nie istnieje juz konto o podanej nazwie uzytkownika
-          const qName = await query('SELECT id FROM users WHERE username = ?', [value.name])
+          const [qName] = await db.query('SELECT id FROM users WHERE username = ?', [value.name])
           if(qName.length === 0) {
 
             // Hashowanie hasła
             const hash = await bcrypt.hash(value.pass, saltRounds)
 
             // Dodanie użytkownika do bazy danych
-            await query('INSERT INTO users (username, email, pass) VALUES (?, ?, ?)', [value.name, value.email, hash])
+            await db.query('INSERT INTO users (username, email, pass) VALUES (?, ?, ?)', [value.name, value.email, hash])
           }
           else {
             console.log('Konto o takiej nazwie użytkownika już istnieje!')

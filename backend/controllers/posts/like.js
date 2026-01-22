@@ -1,10 +1,7 @@
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import checkFunc from "../../functions/checkFunc.js";
 import countLikes from "../../functions/countLikes.js";
-
-const query = promisify(db.query).bind(db);
-
+d
 const like = async (req, res) => {
 
     const postId = parseInt(req.params.id, 10)
@@ -19,7 +16,7 @@ const like = async (req, res) => {
 
     // Próba usunięcia polubienia - jeśli się nie usunie żadne to dodajemy polubienie
     try {
-        const qDelete = await query(`DELETE FROM likes WHERE user_id = ? AND post_id = ?`, [user.id, postId])
+        const [qDelete] = await db.query(`DELETE FROM likes WHERE user_id = ? AND post_id = ?`, [user.id, postId])
         if(qDelete.affectedRows > 0) {
             console.log('Pomyślnie usunięto polubienie postu o postId: ' + postId)
             const likes = await countLikes(postId)
@@ -27,7 +24,7 @@ const like = async (req, res) => {
         }
         else {
             // Dodawanie polubienia
-            const qInsert = await query(`INSERT INTO likes (post_id, user_id) VALUES (?, ?)`, [postId, user.id])
+            const [qInsert] = await db.query(`INSERT INTO likes (post_id, user_id) VALUES (?, ?)`, [postId, user.id])
             console.log('Pomyślnie polubiono post o postId: ' + postId)
             const likes = await countLikes(postId)
             return res.json({ success: true, likes: likes })

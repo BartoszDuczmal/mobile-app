@@ -1,25 +1,11 @@
 import dotenv from 'dotenv';
-import mysql from 'mysql';
+import mysql from 'mysql2/promise';
 
 dotenv.config();
 
 // Dane wejściowe do bazy danych
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS || '',
-  database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT),
-  connectTimeout: 10000
-});
-
-console.log({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
-});
+const db = mysql.createPool(process.env.DB_URL);
 
 // Łączenie do bazy danych
 

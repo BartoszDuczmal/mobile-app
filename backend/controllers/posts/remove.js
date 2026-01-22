@@ -1,8 +1,5 @@
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import checkFunc from "../../functions/checkFunc.js";
-
-const query = promisify(db.query).bind(db);
 
 const remove = async (req, res) => {
 
@@ -20,7 +17,7 @@ const remove = async (req, res) => {
 
     // Sprawdzanie czy użytkownik może usunąć posta
     if(user.perm !== 'admin') {
-        const qAuthor = await query(`SELECT id FROM posts WHERE id = ? AND author = ? LIMIT 1`, [postId, user.id])
+        const [qAuthor] = await db.query(`SELECT id FROM posts WHERE id = ? AND author = ? LIMIT 1`, [postId, user.id])
         if(qAuthor.length === 0) {
             return res.status(403).json({ error: 'Błąd, nie możesz wykonać tej czynności!' })
         }
@@ -28,7 +25,7 @@ const remove = async (req, res) => {
 
     // Usunięcie postu
     try {
-        const qDelete = await query('DELETE FROM posts WHERE id=?', [postId])
+        const [qDelete] = await db.query('DELETE FROM posts WHERE id=?', [postId])
         if(qDelete.affectedRows === 0) {
             return res.status(500).json({ error: 'Błąd!' })
         }

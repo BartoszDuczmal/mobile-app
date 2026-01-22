@@ -1,8 +1,6 @@
-import { promisify } from 'util';
-import db from "../../config/db.js";
+import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 
-const query = promisify(db.query).bind(db);
 
 const myShow = async (req, res) => {
     const token = req.cookies.token
@@ -14,7 +12,7 @@ const myShow = async (req, res) => {
     }
 
     try {
-        const qInfo = await query('SELECT id, username, email, perms, created_at FROM users WHERE id=? LIMIT 1', [user.id])
+        const [qInfo] = await db.query('SELECT id, username, email, perms, created_at FROM users WHERE id=? LIMIT 1', [user.id])
         if(qInfo.length === 0) {
             return res.status(400).json({ error: msg })
         }

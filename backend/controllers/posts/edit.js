@@ -1,9 +1,6 @@
-import { promisify } from 'util';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 import schemaPost from '../../models/postModel.js';
-
-const query = promisify(db.query).bind(db);
 
 const edit = async (req, res) => {
 
@@ -28,7 +25,7 @@ const edit = async (req, res) => {
 
     // Sprawdzanie czy użytkownik może edytować post
     if(user.perm !== 'admin') {
-        const qAuthor = await query('SELECT id FROM posts WHERE id = ? AND author = ? LIMIT 1', [postId, user.id])
+        const [qAuthor] = await db.query('SELECT id FROM posts WHERE id = ? AND author = ? LIMIT 1', [postId, user.id])
         if(qAuthor.length === 0) {
             return res.status(403).json({ error: 'Nie możesz wykonać tej czynności.'})
         }
@@ -36,7 +33,7 @@ const edit = async (req, res) => {
 
     // Edycja danych postu
     try {
-        const qEdit = await query('UPDATE posts SET title = ?, description = ? WHERE id = ?', [value.title, value.desc, postId])
+        const [qEdit] = await db.query('UPDATE posts SET title = ?, description = ? WHERE id = ?', [value.title, value.desc, postId])
     }
     catch(err) {
         console.log(err)
