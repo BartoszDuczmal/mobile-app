@@ -7,11 +7,4 @@ dotenv.config();
 
 const db = mysql.createPool(process.env.DB_URL);
 
-// Łączenie do bazy danych
-
-db.connect(err => {
-  if (err) throw err;
-  console.log('Połączono z MySQL');
-});
-
 export default db;
