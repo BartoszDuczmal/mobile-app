@@ -1,7 +1,7 @@
 import db from '../../config/db.js';
 import checkFunc from "../../functions/checkFunc.js";
 import countLikes from "../../functions/countLikes.js";
-d
+
 const like = async (req, res) => {
 
     const postId = parseInt(req.params.id, 10)
