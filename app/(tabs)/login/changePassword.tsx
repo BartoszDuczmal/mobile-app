@@ -8,7 +8,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fReset = async (curr: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        await axios.post(`${API_URL}:3001/auth/resetPass`, { curr: curr, pass: pass }, { withCredentials: true });
+        await axios.post(`${API_URL}/auth/resetPass`, { curr: curr, pass: pass }, { withCredentials: true });
         openModal({ type: 'info', title: 'Pomyślnie zmienono hasło.', msg: 'Hasło zostało pomyślnie zmienione.' })
     }
     catch(err: any) {

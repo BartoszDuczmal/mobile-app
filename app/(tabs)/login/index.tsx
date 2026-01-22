@@ -8,7 +8,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fLogin = async (login: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        const res = await axios.post(`${API_URL}:3001/auth/login`, { login: login, pass: pass });
+        const res = await axios.post(`${API_URL}/auth/login`, { login: login, pass: pass });
         openModal({ type: 'info', title: 'Pomyślnie się zalogowano.', msg: '' })
         router.push('/posts')
     }

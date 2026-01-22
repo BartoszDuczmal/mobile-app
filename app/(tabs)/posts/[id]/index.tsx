@@ -42,7 +42,7 @@ const ViewPost = () => {
 
         const fetchAll = async () => {
             try {
-                const res = await axios.get(`${API_URL}:3001/posts/${id}`)
+                const res = await axios.get(`${API_URL}/posts/${id}`)
 
                 if (res.data) {
                     setData({

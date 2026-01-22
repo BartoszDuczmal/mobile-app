@@ -27,7 +27,7 @@ const blockUser = async (id: number, openModal: ({type, title, msg}: { type: str
     const result = await openModal({ type: 'inquiry', title: 'Czy napewno chcesz zablokować tego użytkownika?', msg: '' })
     if(!result) return
     try {
-        await axios.post(`${API_URL}:3001/admin/block`, { id: id }, { withCredentials: true })
+        await axios.post(`${API_URL}/admin/block`, { id: id }, { withCredentials: true })
         openModal({ type: "info", title: 'Pomyślnie zablokowano użytkownika.', msg: 'Od teraz użytkownik nie będzie mógł wchodzić w żadne interakcje.' })
     }
     catch(err: any) {
@@ -50,7 +50,7 @@ const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: 
         const result = await openModal({ type: 'inquiry', title: 'Czy napewno chcesz odblokować tego użytkownika?', msg: '' })
         if(!result) return
         try {
-            await axios.post(`${API_URL}:3001/admin/unblock`, { id: id }, { withCredentials: true })
+            await axios.post(`${API_URL}/admin/unblock`, { id: id }, { withCredentials: true })
             openModal({ type: "info", title: 'Pomyślnie odblokowano użytkownika.', msg: 'Od teraz użytkownik będzie mógł ponownie wchodzić w interakcje.' })
         }
         catch(err: any) {
@@ -61,7 +61,7 @@ const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: 
 
     const fetchAll = async () => {
         try {
-            const res = await axios.post(`${API_URL}:3001/profile/show`, { name: name })
+            const res = await axios.post(`${API_URL}/profile/show`, { name: name })
             if (res.data) {
                 setData({
                     id: res.data.id,
@@ -69,7 +69,7 @@ const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: 
                     perms: res.data.perms,
                     date: res.data.created_at,
                 })
-                const res2 = await axios.post(`${API_URL}:3001/posts`, { name: name })
+                const res2 = await axios.post(`${API_URL}/posts`, { name: name })
                 setPost( res2.data.map((p: any) => ({
                     id: p.id,
                     title: p.title,

@@ -19,7 +19,7 @@ type Post = {
 
 const fetchEdit = async (id: number, title: string, desc: string, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any) => {
     try {
-        const res = await axios.post(`${API_URL}:3001/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
+        const res = await axios.post(`${API_URL}/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
         openModal({ type: 'info', title: 'Pomyślnie edytowano wpis.', msg: 'Teraz możesz zobaczyć zmiany w profilu.' })
         router.back()
     }
@@ -50,7 +50,7 @@ const edit = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`${API_URL}:3001/posts/${id}`);
+                const res = await axios.get(`${API_URL}/posts/${id}`);
 
                 if (res.data) {
                     setData({

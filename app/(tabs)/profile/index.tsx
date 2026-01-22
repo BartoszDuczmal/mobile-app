@@ -27,7 +27,7 @@ const logout = async (openModal: ({type, title, msg}: { type: string, title: str
     const result = await openModal({ type: 'inquiry', title: 'Czy napewno chcesz się wylogować?' })
     if(!result) return
     try {
-        const res = await axios.post(`${API_URL}:3001/auth/logout`, {}, { withCredentials: true });
+        const res = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
         router.replace('/(tabs)/posts')
     }
     catch(err: any) {
@@ -45,7 +45,7 @@ const MyProfile = () => {
     useEffect(() => {
         const fetchAll = async () => {
             try {
-                const res = await axios.post(`${API_URL}:3001/profile/myShow`, {}, { withCredentials: true })
+                const res = await axios.post(`${API_URL}/profile/myShow`, {}, { withCredentials: true })
                 if (res.data) {
                     setData({
                         id: res.data.id,
@@ -54,7 +54,7 @@ const MyProfile = () => {
                         perms: res.data.perms,
                         date: res.data.created_at,
                     })
-                    const res2 = await axios.post(`${API_URL}:3001/posts`, { name: res.data.username })
+                    const res2 = await axios.post(`${API_URL}/posts`, { name: res.data.username })
                     setPost(
                         res2.data.map((p: any) => ({
                             id: p.id,

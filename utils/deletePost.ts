@@ -6,7 +6,7 @@ export const deletePost = async (id: number, openModal: ({type, title, msg}: { t
     const result = await openModal({ type: 'inquiry', title: 'Czy na pewno chcesz usunąć ten wpis?'})
     if(!result) return
     try {
-        const res = await axios.delete(`${API_URL}:3001/posts/${id}/remove`, { withCredentials: true });
+        const res = await axios.delete(`${API_URL}/posts/${id}/remove`, { withCredentials: true });
         router.replace('/(tabs)/posts')
         openModal({ type: 'info', title: 'Pomyślnie usunięto.', msg: 'Wpis został usunięty.'})
     } catch(err: any) {

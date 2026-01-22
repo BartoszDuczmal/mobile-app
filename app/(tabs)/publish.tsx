@@ -6,7 +6,7 @@ import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } fro
 
 const addPost = async (title: string, desc: string, openModal: ({type, title, msg}: {type: string, title: string, msg: string }) => void) => {
   try {
-    const res = await axios.post(`${API_URL}:3001/posts/create`, { title: title, desc: desc }, { withCredentials: true });
+    const res = await axios.post(`${API_URL}/posts/create`, { title: title, desc: desc }, { withCredentials: true });
     openModal({ type: 'info', title: 'Pomyślnie opublikowano wpis.', msg: '' })
   }
   catch(err: any) {

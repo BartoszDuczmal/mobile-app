@@ -9,7 +9,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const handleRecovery = async (email: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        const res = await axios.post(`${API_URL}:3001/auth/recovery`, { email: email })
+        const res = await axios.post(`${API_URL}/auth/recovery`, { email: email })
         openModal({ type: 'info', title: 'Wysłano link odzyskujący.', msg: 'Jeśli podany email istnieje w naszej bazie danych to został na niego wysłany link odzyskujący.\n\nLink jest aktywny przez 15 minut.' })
         // Tylko do testów - przy buildzie dodać przekierowanie z myapp://
         router.push({

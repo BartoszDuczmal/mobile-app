@@ -22,7 +22,7 @@ export default function Main() {
   const [searchData, setSearchData] = useState('')
 
   useEffect(() => {
-    axios.post(`${API_URL}:3001/posts`)
+    axios.post(`${API_URL}/posts`)
     .then(
       res => {
         const mapData = res.data.map((post: any) => ({

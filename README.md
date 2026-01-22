@@ -139,8 +139,6 @@ DB_PASS=your_db_password
 
 EMAIL_USER=your_email@example.com
 EMAIL_PASS=your_email_app_password
-
-# Do NOT commit real secrets to the repository
 ```
 
 

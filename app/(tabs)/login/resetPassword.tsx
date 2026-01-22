@@ -9,7 +9,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const fReset = async (token: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
     try {
-        await axios.post(`${API_URL}:3001/auth/resetPass`, { token: token, pass: pass });
+        await axios.post(`${API_URL}/auth/resetPass`, { token: token, pass: pass });
         openModal({ type: 'info', title: 'Pomyślnie zresetowano hasło.', msg: 'Teraz możesz zalogować się na swoje konto.' })
         router.push('/(tabs)/profile/')
     }
