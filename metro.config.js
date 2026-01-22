@@ -1,11 +1,16 @@
-// metro.config.js
-const { getDefaultConfig } = require("expo/metro-config");
+import { getDefaultConfig } from "expo/metro-config";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+// Pobranie katalogu projektu w ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const config = getDefaultConfig(__dirname);
 
-// ustawienie aliasu @ -> folder app (dopasuj ścieżkę)
+// ustawienie aliasu @ -> folder app
 config.resolver.extraNodeModules = {
-  "@": __dirname + "/app",
+  "@": join(__dirname, "app"),
 };
 
-module.exports = config;
+export default config;
