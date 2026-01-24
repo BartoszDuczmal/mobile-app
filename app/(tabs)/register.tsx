@@ -44,7 +44,7 @@ const register = () => {
                 borderBottomColor: name.length === 0 ? 'gray' : nValid.valid ? 'gray': '#f2545b' 
             }]}>
                 <MaterialIcons name="person-outline" size={40} color={name.length === 0 ? 'gray' : nValid.valid ? 'gray': '#f2545b'} />
-                <TextInput placeholder="nazwa użytkownika" style={css.input} onChangeText={setName}/>
+                <TextInput placeholderTextColor="gray" placeholder="nazwa użytkownika" style={css.input} onChangeText={setName}/>
             </View>
             { !nValid.valid && name.length !== 0 && nValid.messages.map((msg, i) => (
                 <Text style={css.errMsg} key={i}>{msg}</Text>
@@ -54,7 +54,7 @@ const register = () => {
                 borderBottomColor: email.length === 0 ? 'gray' : eValid ? 'gray': '#f2545b' 
             }]}>
                 <MaterialIcons name="alternate-email" size={40} color={email.length === 0 ? 'gray' : eValid ? 'gray': '#f2545b'} />
-                <TextInput placeholder="email" style={css.input} onChangeText={setEmail} />
+                <TextInput placeholderTextColor="gray" placeholder="email" style={css.input} onChangeText={setEmail} />
             </View>
             { !eValid && email.length !== 0 && (
                 <Text style={css.errMsg}>Niepoprawny format emaila.</Text>
@@ -64,7 +64,7 @@ const register = () => {
                 borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
-                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
             </View>
             <Pressable onPress={() => setHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ hide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
@@ -75,7 +75,7 @@ const register = () => {
                 borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
-                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={reHide} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={reHide} autoCapitalize="none" autoCorrect={false} />
             </View>
             <Pressable onPress={() => setReHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ reHide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             { repass !== pass && repass.length !== 0 && (
@@ -120,6 +120,7 @@ const css = StyleSheet.create({
         fontSize: 30, 
         width: '80%', 
         marginLeft: 5,
+        color: 'black',
     },
     helpBox: {
         display: 'flex',

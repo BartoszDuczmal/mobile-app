@@ -48,7 +48,7 @@ export default function Main() {
           </TouchableHighlight>
         </View>
         <View style={css.content}>
-          <ScrollView style={css.withContent} contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingBottom: 30}}>
+          <ScrollView indicatorStyle="black" style={css.withContent} contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingBottom: 30}}>
             {
               data
               .filter((item: Post) => 

@@ -35,7 +35,7 @@ const recovery = () => {
         <View style={css.container}>
             <View style={[css.inputBox, {borderBottomColor: eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'}]}>
                 <MaterialIcons name="alternate-email" size={40} color={eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'} />
-                <TextInput placeholder="email" style={css.input} onChangeText={setEmail}/>
+                <TextInput placeholderTextColor="gray" placeholder="email" style={css.input} onChangeText={setEmail}/>
             </View>
             { !eValid && email.length !== 0 && (
                 <Text style={css.errMsg}>Niepoprawny format emaila.</Text>
@@ -76,6 +76,7 @@ const css = StyleSheet.create({
         fontSize: 30, 
         width: '80%', 
         marginLeft: 5,
+        color: 'black',
     },
     helpBox: {
         display: 'flex',

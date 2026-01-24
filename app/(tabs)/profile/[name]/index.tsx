@@ -142,7 +142,7 @@ const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: 
                     <Text style={{fontWeight: 500}}>Wpisy użytkownika:</Text>
                 </View>
             </View>
-            <ScrollView contentContainerStyle={[{justifyContent: 'center'}, {alignItems: 'center'}]}>
+            <ScrollView indicatorStyle="black" contentContainerStyle={[{justifyContent: 'center'}, {alignItems: 'center'}]}>
                 <View style={css.listBox}>
                 {
                 post.map((v: Post) => (

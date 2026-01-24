@@ -29,11 +29,11 @@ const index = () => {
         <View style={css.container}>
             <View style={css.inputBox}>
                 <MaterialIcons name="alternate-email" size={40} color={'gray'} />
-                <TextInput placeholder="login" style={css.input} onChangeText={setLogin}/>
+                <TextInput placeholderTextColor="gray" placeholder="login" style={css.input} onChangeText={setLogin}/>
             </View>
             <View style={[css.inputBox, {marginTop: 20}]}>
                 <MaterialIcons name="lock-open" size={40} color={'gray'} />
-                <TextInput placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
             </View>
             <Pressable onPress={() => setHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ hide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             <View style={css.helpBox}>
@@ -81,6 +81,7 @@ const css = StyleSheet.create({
         fontSize: 30, 
         width: '80%', 
         marginLeft: 5,
+        color: 'black',
     },
     helpBox: {
         display: 'flex',

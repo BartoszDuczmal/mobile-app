@@ -25,8 +25,8 @@ const createPost = () => {
 
     return (
         <View style={css.container}>
-            <TextInput placeholder="Tytuł" onChangeText={setTitle} style={css.title}/>
-            <TextInput placeholder="Opis" onChangeText={setDesc} style={css.description} multiline={true} numberOfLines={7} textAlignVertical="top" />
+            <TextInput placeholder="Tytuł" placeholderTextColor="gray" onChangeText={setTitle} style={css.title}/>
+            <TextInput placeholder="Opis" placeholderTextColor="gray" onChangeText={setDesc} style={css.description} multiline={true} numberOfLines={7} textAlignVertical="top" />
             <Pressable onPress={() => addPost(title, desc, openModal)}>
                 {({ pressed }) => (
                 <Text style={[ css.button, { color: pressed ? 'blue' : 'gray' } ]}>Opublikuj</Text>
@@ -49,11 +49,13 @@ const css = StyleSheet.create({
         borderBottomColor: 'gray',
         borderBottomWidth: 2,
         justifyContent: 'flex-start',
+        color: 'black',
     },
     description: {
         width: '70%',
         fontSize: 25,
         justifyContent: 'flex-start',
+        color: 'black',
     },
     button: {
         marginTop: 20,

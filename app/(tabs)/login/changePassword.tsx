@@ -37,7 +37,7 @@ const changePassword = () => {
                 borderBottomColor: 'gray'
             }]}>
                 <MaterialIcons name="lock-open" size={40} color='gray'/>
-                <TextInput placeholder="aktualne hasło" style={css.input} onChangeText={setCurr} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder="aktualne hasło" style={css.input} onChangeText={setCurr} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} />
             </View>
             <Pressable onPress={() => setHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ hide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             <View style={[css.inputBox, {
@@ -45,7 +45,7 @@ const changePassword = () => {
                 borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
-                <TextInput placeholder="nowe hasło" style={css.input} onChangeText={setPass} secureTextEntry={newHide} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder="nowe hasło" style={css.input} onChangeText={setPass} secureTextEntry={newHide} autoCapitalize="none" autoCorrect={false} />
             </View>
             <Pressable onPress={() => setNewHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ newHide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
@@ -56,7 +56,7 @@ const changePassword = () => {
                  borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
-                <TextInput placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={newReHide} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={newReHide} autoCapitalize="none" autoCorrect={false} />
             </View>
             <Pressable onPress={() => setNewReHide(v => !v)} style={{width: '60%', alignItems: 'flex-end', paddingHorizontal: 10}}><Text style={{color: 'gray'}}>{ newReHide ? 'pokaż' : 'ukryj' }</Text></Pressable>
             { repass !== pass && repass.length !== 0 && (
@@ -90,6 +90,7 @@ const css = StyleSheet.create({
         fontSize: 30, 
         width: '80%', 
         marginLeft: 5,
+        color: 'black',
     },
     helpBox: {
         display: 'flex',

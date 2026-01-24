@@ -93,9 +93,9 @@ const edit = () => {
         <>
             <View style={css.container}>
                 <View style={css.title}>
-                    <TextInput style={{ fontSize: 35 }} value={title} onChangeText={setTitle}></TextInput>
+                    <TextInput placeholderTextColor="gray" style={{ fontSize: 35, color: 'black' }} value={title} onChangeText={setTitle}></TextInput>
                 </View>
-                <TextInput style={{fontSize: 20}} value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
+                <TextInput placeholderTextColor="gray" style={{fontSize: 20, color: 'black'}} value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
                 <View style={css.footerBox}>
                     <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc, openModal)}>
                         <Text>Zapisz</Text>

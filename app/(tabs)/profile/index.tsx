@@ -94,7 +94,7 @@ const MyProfile = () => {
         <>
             <View style={css.container}>
                 <Text style={{ fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30 }}>Panel zarządzania kontem</Text>
-                <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, paddingBottom: 30 }}>
+                <ScrollView indicatorStyle="black" contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, paddingBottom: 30 }}>
                     <View style={css.infoBox}>
                         <View style={css.userBox}>
                             <FontAwesome6 name="clipboard-user" size={24} />
