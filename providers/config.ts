@@ -1,1 +1,1 @@
-export const API_URL = __DEV__ ? 'http://192.168.1.151:3001' : 'https://abcdefghijk.onrender.com'
+export const API_URL = 'https://mobile-app-production-822c.up.railway.app'
