@@ -1,16 +1,14 @@
-const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 
-const config = getDefaultConfig(__dirname);
-
-config.resolver.extraNodeModules = {
-  '@': path.resolve(__dirname), // Wskazuje na główny folder "native"
+const config = {
+  resolver: {
+    extraNodeModules: {
+      '@': path.resolve(__dirname),
+    },
+  },
+  // Ensure Metro watches the mapped folders
+  watchFolders: [path.resolve(__dirname)],
 };
 
-// To wymusza na Metro, by śledziło pliki w Twoim projekcie pod kątem tych aliasów
-config.watchFolders = [path.resolve(__dirname)];
-
-// Dodajemy obsługę rozszerzeń, aby Metro wiedziało, że config może być .js lub .ts
-config.resolver.sourceExts = [...config.resolver.sourceExts, 'ts', 'tsx', 'js', 'jsx'];
-
-module.exports = config; // Upewnij się, że używasz module.exports, a nie export default
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);
