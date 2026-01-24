@@ -36,7 +36,7 @@ export default function RootLayout() {
       <Stack.Screen name='(tabs)/login/recovery' options={{ title: 'Odzyskiwanie', headerRight: () => null }} />
       <Stack.Screen name='(tabs)/register' options={{ title: 'Rejestracja', headerRight: () => null }} />
       <Stack.Screen name='(tabs)/login/resetPassword' options={{ title: 'Resetowanie hasła', headerRight: () => null }} />
-      <Stack.Screen name='(tabs)/profile/[name]/index' options={({ route }) => ({ title: `Profil ${route.params?.name}` })} />
+      <Stack.Screen name='(tabs)/profile/[name]/index' options={({ route } : ( any )) => ({ title: `Profil ${route.params?.name}` })} />
       <Stack.Screen name='(tabs)/profile/index' options={({ route }) => ({ title: `Twoje konto`, headerRight: () => null })} />
       <Stack.Screen name='(tabs)/login/changePassword' options={({ route }) => ({ title: `Zmiana hasła`, headerRight: () => null })} />
     </Stack>

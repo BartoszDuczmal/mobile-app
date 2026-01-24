@@ -1,5 +1,5 @@
 import MiniPost from '@/components/MiniPost';
-import { API_URL } from "@/config.js";
+import { API_URL } from "@/providers/config";
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';

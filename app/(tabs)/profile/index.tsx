@@ -1,6 +1,6 @@
 import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
-import { API_URL } from '@/config.js';
+import { API_URL } from '@/providers/config';
 import { useModal } from '@/providers/ModalContext';
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import axios from "axios";

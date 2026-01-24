@@ -1,4 +1,4 @@
-import { API_URL } from "@/config.js";
+import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import emailValid from "@/utils/validation/email";
 import nameValid from "@/utils/validation/name";

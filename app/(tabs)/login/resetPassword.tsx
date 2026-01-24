@@ -1,4 +1,4 @@
-import { API_URL } from "@/config.js";
+import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";

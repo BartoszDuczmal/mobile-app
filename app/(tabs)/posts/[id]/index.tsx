@@ -1,5 +1,5 @@
 import Loading from '@/components/Loading';
-import { API_URL } from "@/config.js";
+import { API_URL } from "@/providers/config";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { deletePost } from '@/utils/deletePost';

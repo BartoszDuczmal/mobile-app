@@ -1,4 +1,4 @@
-import { API_URL } from "@/config.js";
+import { API_URL } from "@/providers/config";
 import axios from "axios";
 
 export const handleLike = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {

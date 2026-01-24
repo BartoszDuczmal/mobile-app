@@ -44,4 +44,4 @@ app-example
 .vscode
 
 # config
-config.js
+config.ts
