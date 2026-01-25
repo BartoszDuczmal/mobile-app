@@ -28,7 +28,7 @@ const recovery = async (req, res) => {
 
             const { data, error } = await mail.emails.send({
                 from: 'onboarding@resend.dev',
-                to: value, 
+                to: value,
                 subject: 'Odzyskiwanie konta',
                 html: 
                 `
@@ -40,7 +40,7 @@ const recovery = async (req, res) => {
                 console.error('Błąd Resend:', error);
                 return res.status(500).json({ error: 'Wystąpił błąd poczty.' });
             }
-            
+
             res.json({ success: 'true', token: token })
         }
         catch(err) {
