@@ -25,29 +25,32 @@ const recovery = async (req, res) => {
             const token = jwt.sign({ jti: jti, user: result[0].id }, process.env.JWT_KEY, { expiresIn: '10m' });
             const resetLink = `https://mobile-app-ochre-two.vercel.app?token=${token}`
             console.log(process.env.EMAIL_USER)
-            await mail.sendMail(
-                { 
-                    from: process.env.EMAIL_USER, 
-                    to: value, 
-                    subject: 'Odzyskiwanie konta', 
-                    text: resetLink,
-                    html: 
-                    `
+
+            const { data, error } = await mail.emails.send({
+                from: 'onboarding@resend.dev',
+                to: value, 
+                subject: 'Odzyskiwanie konta',
+                html: 
+                `
                     <h2>Aby zmienić hasło do konta kliknij w przycisk poniżej.</h2>
                     <a href="${resetLink}" target="_blank">Zmień hasło</a>
-                    `
-                }
-            )
+                `
+            });
+            if (error) {
+                console.error('Błąd Resend:', error);
+                return res.status(500).json({ error: 'Wystąpił błąd poczty.' });
+            }
+            
             res.json({ success: 'true', token: token })
         }
         catch(err) {
             console.error('Blad podczas wysylania!', err)
-            return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera!' })
+            return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
         }
     }
     catch(err) {
         console.error('Blad!', err)
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera!' })
+        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
     }
     
 }
