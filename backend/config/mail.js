@@ -14,6 +14,8 @@ const mail = nodemailer.createTransport({
 
     connectionTimeout: 10000,
     greetingTimeout: 10000,
+    debug: true,
+    logger: true,
 });
 
 export default mail;
