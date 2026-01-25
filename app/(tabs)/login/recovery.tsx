@@ -14,7 +14,7 @@ const handleRecovery = async (email: string, openModal: ({type, title, msg}: { t
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        openModal({ type: "error", title: 'Nie udało się zarejestrować.', msg: errMsg })
+        openModal({ type: "error", title: 'Wystąpił błąd.', msg: errMsg })
     }
 }
 
