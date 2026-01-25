@@ -27,7 +27,13 @@ const resetPassword = () => {
 
     const { token } = useLocalSearchParams<{ token?: string }>()
 
-    if(!token) return;
+    if(!token) {
+        return (
+            <View>
+                <Text>Błędny token resetujący.</Text>
+            </View>
+        );
+    }
 
     const pValid = passValid(pass)
 

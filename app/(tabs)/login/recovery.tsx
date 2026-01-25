@@ -11,11 +11,6 @@ const handleRecovery = async (email: string, openModal: ({type, title, msg}: { t
     try {
         const res = await axios.post(`${API_URL}/auth/recovery`, { email: email })
         openModal({ type: 'info', title: 'Wysłano link odzyskujący.', msg: 'Jeśli podany email istnieje w naszej bazie danych to został na niego wysłany link odzyskujący.\n\nLink jest aktywny przez 15 minut.' })
-        // Tylko do testów - przy buildzie dodać przekierowanie z myapp://
-        router.push({
-            pathname: '/login/resetPassword',
-            params: { token: res.data.token }
-        });
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'

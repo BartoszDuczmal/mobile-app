@@ -23,7 +23,7 @@ const recovery = async (req, res) => {
             await db.query('INSERT INTO pass_resets (jti, user_id) VALUES (?, ?)', [jti, result[0].id])
             await db.query('DELETE FROM pass_resets WHERE user_id = ? AND id NOT IN ( SELECT id FROM ( SELECT id FROM pass_resets WHERE user_id = ? ORDER BY created_at DESC LIMIT 3 ) AS recent )', [result[0].id, result[0].id])
             const token = jwt.sign({ jti: jti, user: result[0].id }, process.env.JWT_KEY, { expiresIn: '10m' });
-            const resetLink = 'https://localhost:8081/login/resetPassword?token=' + token
+            const resetLink = `https://mobile-app-ochre-two.vercel.app?token=${token}`
             console.log(process.env.EMAIL_USER)
             await mail.sendMail(
                 { 
