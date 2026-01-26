@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import db from '../../config/db.js';
-import mail from '../../config/mail.js';
+import sendMail from '../../config/mail.js';
 import schemaLogin from "../../models/loginModel.js";
 
 const recovery = async (req, res) => {
@@ -26,18 +26,18 @@ const recovery = async (req, res) => {
             const resetLink = `https://mobile-app-ochre-two.vercel.app?token=${token}`
             console.log(process.env.EMAIL_USER)
 
-            const { data, error } = await mail.emails.send({
-                from: 'onboarding@resend.dev',
-                to: value,
-                subject: 'Odzyskiwanie konta',
-                html: 
-                `
-                    <h2>Aby zmienić hasło do konta kliknij w przycisk poniżej.</h2>
-                    <a href="${resetLink}" target="_blank">Zmień hasło</a>
-                `
-            });
-            if (error) {
-                console.error('Błąd Resend:', error);
+            try {
+                await sendMail({
+                    to: value,
+                    subject: 'Resetowanie hasła.',
+                    htmlContent: 
+                    `
+                        <h2>Aby zmienić hasło do konta kliknij w przycisk poniżej.</h2>
+                        <a href="${resetLink}" target="_blank">Zmień hasło</a>
+                    `
+                });
+            } catch(err) {
+                console.error('Błąd poczty:', error);
                 return res.status(500).json({ error: 'Wystąpił błąd poczty.' });
             }
 
