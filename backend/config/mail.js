@@ -1,16 +1,18 @@
-import * as SibApiV3Sdk from '@getbrevo/brevo';
+import { ApiClient, TransactionalEmailsApi, SendSmtpEmail } from '@getbrevo/brevo';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const defaultClient = SibApiV3Sdk.ApiClient.instance;
+// 1. Konfiguracja klienta
+const defaultClient = ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.MAIL_KEY;
 
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+const apiInstance = new TransactionalEmailsApi();
 
 const sendMail = async ({ to, subject, htmlContent }) => {
-  const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+  // 2. Tworzenie obiektu email
+  const sendSmtpEmail = new SendSmtpEmail();
 
   sendSmtpEmail.sender = { 
     email: process.env.MAIL_ADRESS,
@@ -24,8 +26,10 @@ const sendMail = async ({ to, subject, htmlContent }) => {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
     return { success: true, data };
   } catch (error) {
-    console.error('Błąd Brevo API:', error.response ? error.response.body : error);
-    return { success: false, error };
+    // Brevo wyrzuca szczegóły błędu w error.response.body
+    const errorDetail = error.response?.body || error.message;
+    console.error('Błąd Brevo API:', errorDetail);
+    return { success: false, error: errorDetail };
   }
 };
 
