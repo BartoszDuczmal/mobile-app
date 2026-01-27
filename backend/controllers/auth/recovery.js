@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import db from '../../config/db.js';
-import sendMail from '../../config/mail.js';
+import sendMail from '../../config/mail.cjs';
 import schemaLogin from "../../models/loginModel.js";
 
 const recovery = async (req, res) => {

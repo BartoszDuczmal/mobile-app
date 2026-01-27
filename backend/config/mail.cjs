@@ -1,18 +1,15 @@
-import pkg from '@getbrevo/brevo';
-import dotenv from 'dotenv';
+const SibApiV3Sdk = require('sib-api-v3-sdk');
+require('dotenv').config();
 
-const { ApiClient, TransactionalEmailsApi, SendSmtpEmail } = pkg;
-
-dotenv.config();
-
-const defaultClient = ApiClient.instance;
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.MAIL_KEY;
 
-const apiInstance = new TransactionalEmailsApi();
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
+// Funkcja wysyłająca
 const sendMail = async ({ to, subject, htmlContent }) => {
-  const sendSmtpEmail = new SendSmtpEmail();
+  const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
   sendSmtpEmail.sender = { 
     email: process.env.MAIL_ADRESS, 
@@ -32,4 +29,4 @@ const sendMail = async ({ to, subject, htmlContent }) => {
   }
 };
 
-export default sendMail;
+module.exports = sendMail;
