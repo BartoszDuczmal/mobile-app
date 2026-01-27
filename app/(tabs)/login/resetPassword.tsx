@@ -11,7 +11,7 @@ const fReset = async (token: string, pass: string, openModal: ({type, title, msg
     try {
         await axios.post(`${API_URL}/auth/resetPass`, { token: token, pass: pass });
         openModal({ type: 'info', title: 'Pomyślnie zresetowano hasło.', msg: 'Teraz możesz zalogować się na swoje konto.' })
-        router.push('/(tabs)/profile/')
+        router.push('/(tabs)/posts/')
     }
     catch(err: any) {
         openModal({ type: "error", title: 'Nie udało się zresetować hasła.', msg: 'Wystąpił wewnętrzny błąd serwera.'})
