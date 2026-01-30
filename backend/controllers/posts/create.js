@@ -13,7 +13,7 @@ const create = async (req, res) => {
     const { error, value } = schemaPost.validate(req.body)
     if(error) {
         console.log('Bledna walidacja! Error: ' + error)
-        return res.status(400).json({ error: 'Błędny format wpisu.' });
+        return res.status(400).json({ error: 'Niepoprawny format wpisu.' });
     }
 
     try {
