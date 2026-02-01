@@ -3,6 +3,14 @@
 This is a full‑stack mobile application built with **React Native (Expo)** on the frontend and **Node.js (Express)** on the backend. The project includes user authentication, posts, profiles, likes, comments, and basic admin functionality.
 
 
+## 📚 Features
+
+* **Accounts Management:** Login, registration, session validation and email-based recovery.
+* **Post System:** Create, edit, delete, and view posts.
+* **Interactions:** Like/unlike posts. _(SOON: Commenting functionality.)_
+* **Admin Tools:** Functionality to block/unblock users and delete posts.
+
+
 ## 🚀 Tech Stack
 
 ### Frontend
@@ -21,7 +29,7 @@ This is a full‑stack mobile application built with **React Native (Expo)** on 
 * Nodemailer (password recovery emails)
 
 
-## 📱 Mobile App Structure (Expo)
+## 📱 App Structure (Expo)
 
 ```
 app/
