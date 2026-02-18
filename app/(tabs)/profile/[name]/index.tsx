@@ -1,5 +1,6 @@
 import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
+import '@/locales/config';
 import { API_URL } from '@/providers/config';
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
@@ -7,6 +8,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Profile = {
@@ -23,41 +25,43 @@ type Post = {
   likes: number,
 };
 
-const blockUser = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => Promise<boolean|void>) => {
-    const result = await openModal({ type: 'inquiry', title: 'Czy napewno chcesz zablokować tego użytkownika?', msg: '' })
+const blockUser = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => Promise<boolean|void>, t: any) => {
+    const result = await openModal({ type: 'inquiry', title: t('profile.block.inquiry'), msg: '' })
     if(!result) return
     try {
         await axios.post(`${API_URL}/admin/block`, { id: id }, { withCredentials: true })
-        openModal({ type: "info", title: 'Pomyślnie zablokowano użytkownika.', msg: 'Od teraz użytkownik nie będzie mógł wchodzić w żadne interakcje.' })
+        openModal({ type: "info", title: t('profile.block.scs.title'), msg: t('proifle.block.scs.msg') })
     }
     catch(err: any) {
-        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        openModal({ type: "error", title: 'Nie udało się zablokować użytkownika.', msg: errMsg })
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+        openModal({ type: "error", title: t('profile.block.err.title'), msg: t(errMsg) })
+    }
+}
+
+const unblockUser = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => Promise<boolean|void>, t: any) => {
+    const result = await openModal({ type: 'inquiry', title: t('profile.unblock.inquiry'), msg: '' })
+    if(!result) return
+    try {
+        await axios.post(`${API_URL}/admin/unblock`, { id: id }, { withCredentials: true })
+        openModal({ type: "info", title: t('profile.unblock.scs.title'), msg: t('proifle.unblock.scs.msg') })
+    }
+    catch(err: any) {
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+        openModal({ type: "error", title: t('profile.unblock.err.title'), msg: t(errMsg) })
     }
 }
 
 const Profile = () => {
+    const { t } = useTranslation()
+
     const { openModal } = useModal()
 
     const [data, setData] = useState<null | Profile>(null)
     const [post, setPost] = useState([])
-const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: string}>({ loggedIn: false })
+    const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: string}>({ loggedIn: false })
 
     const params = useLocalSearchParams()
     const name = params.name
-
-    const unblockUser = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => Promise<boolean|void>) => {
-        const result = await openModal({ type: 'inquiry', title: 'Czy napewno chcesz odblokować tego użytkownika?', msg: '' })
-        if(!result) return
-        try {
-            await axios.post(`${API_URL}/admin/unblock`, { id: id }, { withCredentials: true })
-            openModal({ type: "info", title: 'Pomyślnie odblokowano użytkownika.', msg: 'Od teraz użytkownik będzie mógł ponownie wchodzić w interakcje.' })
-        }
-        catch(err: any) {
-            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-            openModal({ type: "error", title: 'Nie udało się odblokować użytkownika.', msg: errMsg })
-        }
-    } 
 
     const fetchAll = async () => {
         try {
@@ -108,14 +112,14 @@ const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: 
         <View style={css.container}>
             <Text style={{fontSize: 20, fontWeight: 600}} numberOfLines={1} ellipsizeMode="tail">
                 {data.username} 
-                { data.perms === 'admin' && ' ( Administrator )'}
-                { data.perms === 'blocked' && ' ( Zablokowany )'}
+                { data.perms === 'admin' && ` ( ${t('profile.perms.admin')} ) `}
+                { data.perms === 'blocked' && ` ( ${t('profile.perms.blocked')} ) `}
             </Text>
             <View style={css.infoBox}>
                 <View style={css.infoInBox}>
                     <FontAwesome6 name="clock" size={24}/>
                     <View>
-                        <Text style={{fontWeight: 500}}>Data dołączenia:</Text>
+                        <Text style={{fontWeight: 500}}>{t('profile.joinBox')}</Text>
                         <Text>{formattedDate}</Text>
                     </View>
                 </View>
@@ -126,12 +130,12 @@ const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: 
                 <TouchableOpacity onPress={
                     async (e) => { 
                         e.stopPropagation?.();
-                        data.perms === 'blocked' ? await unblockUser(data.id, openModal) : await blockUser(data.id, openModal)
+                        data.perms === 'blocked' ? await unblockUser(data.id, openModal, t) : await blockUser(data.id, openModal, t)
                         await fetchAll()
                     }}>
                     <View style={css.infoInBox}>
                             <FontAwesome6 name={data.perms === 'blocked' ? 'reply' : 'ban'} size={24} color="#d00000" />
-                            <Text style={{fontWeight: 500, color: '#d00000'}}>{data.perms === 'blocked' ? 'Odblokuj użytkownika' : 'Zablokuj użytkownika'}</Text>
+                            <Text style={{fontWeight: 500, color: '#d00000'}}>{data.perms === 'blocked' ? t('profile.unblockBox') : t('profile.blockBox')}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -139,7 +143,7 @@ const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: 
             <View style={css.postsBox}>
                 <View style={css.infoInBox}>
                     <FontAwesome6 name="folder-open" size={24}/>
-                    <Text style={{fontWeight: 500}}>Wpisy użytkownika:</Text>
+                    <Text style={{fontWeight: 500}}>{t('profile.postsBox')}</Text>
                 </View>
             </View>
             <ScrollView indicatorStyle="black" contentContainerStyle={[{justifyContent: 'center'}, {alignItems: 'center'}]}>

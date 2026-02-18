@@ -8,7 +8,7 @@ const myShow = async (req, res) => {
     const user = checkFunc(token)
     if(user === null) {
         console.log('Nieautoryzano!')
-        return res.status(401).json({ error: 'Błąd autoryzacji!' })
+        return res.status(401).json({ error: 'common.authErr' })
     }
 
     try {
@@ -19,7 +19,7 @@ const myShow = async (req, res) => {
         return res.json(qInfo[0])
     }
     catch(err) {
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
+        return res.status(500).json({ error: 'common.internalErr' })
     }
 }
 

@@ -2,9 +2,12 @@ import { checkAuth } from "@/utils/checkAuth";
 import { Feather } from "@expo/vector-icons";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from "react-native";
 
 const TabLogin = () => {
+    const { t } = useTranslation()
+
     const [user, setUser] = useState(null)
 
     const [modal, setModal] = useState(0)
@@ -44,7 +47,7 @@ const TabLogin = () => {
             alignItems: 'center',
             marginRight: 5,
         }}>
-            <Text style={{ fontWeight: 'bold', marginRight: 15, flexWrap: 'nowrap', maxWidth: 70, }} numberOfLines={1}>{ (user === null) ? 'Zaloguj się' : user }</Text>
+            <Text style={{ fontWeight: 'bold', marginRight: 15, flexWrap: 'nowrap', maxWidth: 70, }} numberOfLines={1}>{ (user === null) ? t('common.login') : user }</Text>
             <Feather name="user" size={24} color="#000" />
         </TouchableOpacity>
     </View>

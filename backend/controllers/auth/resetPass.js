@@ -7,7 +7,7 @@ import schemaLogin from '../../models/loginModel.js';
 
 dotenv.config();
 
-const errMsg = "Twój token resetujący wygasł."
+const errMsg = "auth.resetPass.tokenExpired"
 
 const resetPass = async (req, res) => {
 
@@ -33,7 +33,7 @@ const resetPass = async (req, res) => {
             const [qCheck] = await db.query('SELECT pass FROM users WHERE id=? LIMIT 1', [decoded.id])
             const isMatch = await bcrypt.compare(currPass, qCheck[0].pass)
 
-            if(!isMatch) return res.status(400).json({ error: "Nieprawidłowe hasło."})
+            if(!isMatch) return res.status(400).json({ error: "auth.changePass.wrongPass"})
 
             userId = decoded.id
             
@@ -56,7 +56,7 @@ const resetPass = async (req, res) => {
         const { error, value } = schemaLogin.extract('pass').validate(req.body.pass);
         
         if (error) {
-            return res.status(400).json({ error: "Niepoprawny format hasła." });
+            return res.status(400).json({ error: "auth.resetPass.incorrect" });
         }
 
         const hash = await bcrypt.hash(value, Number(process.env.SALT_ROUNDS))
@@ -75,7 +75,7 @@ const resetPass = async (req, res) => {
         if (err.name === "TokenExpiredError") {
             return res.status(401).json({ error: errMsg });
         } else {
-            return res.status(500).json({ error: "Wystąpił wewnętrzny błąd serwera." });
+            return res.status(500).json({ error: 'common.internalErr' });
         }
 
     }

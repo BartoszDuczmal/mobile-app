@@ -10,6 +10,7 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type Post = {
@@ -22,6 +23,7 @@ type Post = {
 }
 
 const ViewPost = () => {
+    const { t } = useTranslation()
     const params = useLocalSearchParams()
     const id = Array.isArray(params.id) ? params.id[0] : params.id
     const idNum = parseInt(id as string, 10)
@@ -80,7 +82,7 @@ const ViewPost = () => {
         return <Loading/>
     }
 
-    const formattedDate = new Date(data.date).toLocaleDateString('pl-PL', {
+    const formattedDate = new Date(data.date).toLocaleDateString('en-EN', {
         timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',
@@ -126,7 +128,7 @@ const ViewPost = () => {
                             <FontAwesome6 name='edit' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}
                     </Pressable>
-                    <Pressable onPress={() => deletePost(data.id, openModal)}>
+                    <Pressable onPress={() => deletePost(data.id, openModal, t)}>
                         {({pressed}) => (
                             <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}

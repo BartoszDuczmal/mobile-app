@@ -1,24 +1,26 @@
+import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import emailValid from "@/utils/validation/email";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
-import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const handleRecovery = async (email: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
+const handleRecovery = async (email: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void, t: any) => {
     try {
         const res = await axios.post(`${API_URL}/auth/recovery`, { email: email })
-        openModal({ type: 'info', title: 'Wysłano link odzyskujący.', msg: 'Jeśli podany email istnieje w naszej bazie danych to został na niego wysłany link odzyskujący.\n\nLink jest aktywny przez 15 minut.' })
+        openModal({ type: 'info', title: t('auth.recovery.scs.title'), msg: t('auth.recovery.scs.msg') })
     }
     catch(err: any) {
-        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        openModal({ type: "error", title: 'Wystąpił błąd.', msg: errMsg })
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+        openModal({ type: "error", title: t('common.err'), msg: t(errMsg) })
     }
 }
 
 const recovery = () => {
+    const { t } = useTranslation()
 
     const { openModal } = useModal()
 
@@ -30,21 +32,21 @@ const recovery = () => {
         <View style={css.container}>
             <View style={[css.inputBox, {borderBottomColor: eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'}]}>
                 <MaterialIcons name="alternate-email" size={40} color={eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'} />
-                <TextInput placeholderTextColor="gray" placeholder="email" style={css.input} onChangeText={setEmail}/>
+                <TextInput placeholderTextColor="gray" placeholder={t('input.email')} style={css.input} onChangeText={setEmail}/>
             </View>
             { !eValid && email.length !== 0 && (
-                <Text style={css.errMsg}>Niepoprawny format emaila.</Text>
+                <Text style={css.errMsg}>{t('input.error.emailFormat')}</Text>
             )}
             <View style={css.helpBox}>
-                <Text style={{ color: 'gray', textAlign: 'center' }}>Po kliknięciu przycisku poniżej wyślemy na podany email link odzyskujący</Text>
+                <Text style={{ color: 'gray', textAlign: 'center' }}>{t('auth.recovery.infoMsg')}</Text>
             </View>
-            <Pressable onPress={() => handleRecovery(email, openModal)} disabled={!eValid}>
+            <Pressable onPress={() => handleRecovery(email, openModal, t)} disabled={!eValid}>
                 {({ pressed }) => (
                 <Text style={{ 
                     fontSize: 20, 
                     color: pressed ? 'blue' : 'black' , 
                     opacity: !eValid ? 0.5 : 1
-                }}>Wyślij</Text>
+                }}>{t('input.button.recovery')}</Text>
                 )}
             </Pressable>
         </View>

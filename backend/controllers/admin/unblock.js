@@ -11,32 +11,32 @@ const check = async (req, res) => {
         
         if(!token) {
             console.log('Wywalam sie na tokenie')
-            return res.status(401).json({ error: 'Nie możesz wykonać tej czynności.' })
+            return res.status(401).json({ error: 'common.actionErr' })
         }
         const user = checkFunc(token)
         if(user === null || user.perm !== 'admin') {
-            return res.status(403).json({ error: 'Nie możesz wykonać tej czynności.' })
+            return res.status(403).json({ error: 'common.actionErr' })
         }
         if (!id || isNaN(id)) {
-            return res.status(400).json({ error: 'Nieprawidłowe ID.' });
+            return res.status(400).json({ error: 'common.wrongIdErr' });
         }
 
         if(user.id.toString() === id.toString()) {
-            return res.status(403).json({ error: 'Nie możesz odblokować samego siebie.' })
+            return res.status(403).json({ error: 'profile.unblock.self' })
         }
 
         const [result] = await db.query(`UPDATE users SET perms=? WHERE id=? LIMIT 1`, [null, id])
         if(result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Nie znaleziono użytkownika.'})
+            return res.status(404).json({ error: 'common.noUserErr' })
         }
         if (result.changedRows === 0) {
-            return res.status(400).json({ error: 'Użytkownik nie jest zablokowany.' });
+            return res.status(400).json({ error: 'profile.unblock.already' });
         }
         res.json({ success: true })
     }
     catch(err) {
         console.error('Błąd podczas blokowania użytkonika:\n', err)
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
+        return res.status(500).json({ error: 'common.internalErr' })
     }
 }
 

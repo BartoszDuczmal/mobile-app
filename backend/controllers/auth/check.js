@@ -10,7 +10,7 @@ const check = async (req, res) => {
     const user = checkFunc(token)
     if(user === null) {
         console.log('Nieautoryzano!')
-        return res.status(401).json({ error: 'Błąd autoryzacji!' })
+        return res.status(401).json({ error: 'common.authErr' })
     }
 
     try {
@@ -20,7 +20,7 @@ const check = async (req, res) => {
     }
     catch(err) {
         console.log('Błąd autoryzacji!')
-        return res.status(401).json({ error: 'Błąd autoryzacji!' })
+        return res.status(401).json({ error: 'common.authErr' })
     }
 }
 

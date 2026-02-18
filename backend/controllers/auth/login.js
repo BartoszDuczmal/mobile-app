@@ -8,7 +8,7 @@ import schemaLogin from "../../models/loginModel.js";
 dotenv.config();
 
 const login = async (req, res) => {
-    const msgError = 'Nieprawidłowy login lub hasło.'
+    const msgError = 'auth.login.incorrect'
     
     console.log('Otrzymano próbę logowania: ', req.body)
     
@@ -55,7 +55,7 @@ const login = async (req, res) => {
     }
     catch(err) {
         console.log('Blad podczas zapytania do bazy. Error: ' + err)
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' });
+        return res.status(500).json({ error: 'common.internalErr' });
     }
 }
 

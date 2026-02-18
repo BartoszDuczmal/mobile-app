@@ -3,7 +3,7 @@ import schemaLogin from "../../models/loginModel.js";
 
 const show = async (req, res) => {
     console.log("REQ BODY:", req.body)
-    const msg = "Podany użytkownik nie istnieje."
+    const msg = "common.noUserErr"
 
     const { error, value } = schemaLogin.extract('name').validate(req.body.name)
     if(error) {
@@ -18,7 +18,7 @@ const show = async (req, res) => {
         return res.json(qName[0])
     }
     catch(err) {
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
+        return res.status(500).json({ error: 'common.internalErr' })
     }
 
 }

@@ -1,0 +1,203 @@
+{
+    "auth" : {
+        "changePass": {
+            "header": "Zmiana hasła",
+            "scs": {
+                "title": "Pomyślnie zmienono hasło.",
+                "msg": "Hasło zostało pomyślnie zmienione."
+            },
+            "err": {
+                "title": "Nie udało się zmienić hasła."
+            },
+            "wrongPass": "Nieprawidłowe hasło."
+        },
+        "login": {
+            "header": "Logowanie",
+            "scs": {
+                "title": "Pomyślnie się zalogowano."
+            },
+            "err": {
+                "title": "Nie udało się zalogować."
+            },
+            "noAccount": "Nie masz konta?",
+            "forgetPass": "Zapomniałeś hasła?",
+            "incorrect": "Nieprawidłowy login lub hasło."
+        },
+        "recovery": {
+            "header": "Odzyskiwanie",
+            "scs": {
+                "title": "Wysłano link odzyskujący.",
+                "msg": "Jeśli podany email istnieje w naszej bazie danych to został na niego wysłany link odzyskujący.\n\nLink jest aktywny przez 15 minut."
+            },
+            "infoMsg": "Po kliknięciu przycisku poniżej wyślemy na podany email link odzyskujący.",
+            "incorrect": "Nieprawidłowy email.",
+            "mailSystem": "Wystąpił błąd poczty."
+        },
+        "resetPass": {
+            "header": "Resetowanie hasła",
+            "scs": {
+                "title": "Pomyślnie zresetowano hasło.",
+                "msg": "Teraz możesz zalogować się na swoje konto."
+            },
+            "err": {
+                "title": "Nie udało się zresetować hasła."
+            },
+            "tokenExpired": "Twój token resetujący wygasł.",
+            "incorrect": "Niepoprawny format hasła."
+        },
+        "register": {
+            "header": "Rejestracja",
+            "scs": {
+                "title": "Pomyślnie udało się zarejestrować.",
+                "msg": "Teraz możesz zalogować się na swoje konto."
+            },
+            "err": {
+                "title": "Nie udało się zarejestrować."
+            },
+            "haveAccount": "Masz już konto?",
+            "incorrect": "Błędny format danych.",
+            "alreadyTakenUsername": "Wpisana nazwa użytkownika jest już zajęta.",
+            "alreadyTakenEmail": "Konto z takim emailem już istnieje."
+        }
+    },
+    "posts": {
+        "edit": {
+            "header": "Edytowawnie",
+            "scs": {
+                "title": "Pomyślnie edytowano wpis.",
+                "msg": "Teraz możesz zobaczyć zmiany w profilu."
+            },
+            "err": {
+                "title": "Nie udało się edytować wpisu."
+            },
+            "notFound": "Nie znaleziono wpisu.",
+            "incorrect": "Niepoprawny format wpisu."
+        },
+        "show": {
+            "header": "Przegląd",
+            "notFound": "Nie znaleziono wpisu."
+        },
+        "fetch": {
+            "header": "Strona Główna",
+            "search": "Szukaj..."
+        },
+        "publish": {
+            "header": "Publikowanie",
+            "scs": {
+                "title": "Pomyślnie opublikowano wpis."
+            },
+            "err": {
+                "title": "Nie udało się opublikować wpisu."
+            },
+            "incorrect": "Niepoprawny format wpisu."
+        },
+        "delete": {
+            "inquiry": "Czy na pewno chcesz usunąć ten wpis?",
+            "scs": {
+                "title": "Pomyślnie usunięto.",
+                "msg": "Wpis został usunięty."
+            },
+            "err": {
+                "title": "Nie udało się usunąć.",
+                "msg": "Wpis nie został usunięty i dalej jest dostępny."
+            }
+        }
+    },
+    "myProfile": {
+        "header": "Twoje konto",
+        "logout": {
+            "inquiry": "Czy napewno chcesz się wylogować?",
+            "err": {
+                "title": "Nie udało się wylogować.",
+                "msg": "W dalszym ciągu jesteś zalogowany na konto."
+            }
+        },
+        "noUser": "Podany użytkownik nie istnieje.",
+        "titlePanel": "Panel zarządzania kontem",
+        "usernameBox": "Nazwa użytkownika:",
+        "emailBox": "Adres email:",
+        "joinBox": "Data dołączenia:",
+        "changePassBox": "Kliknij, aby zmienić hasło",
+        "logoutBox": "Kliknij, aby się wylogować",
+        "postsBox": "Twoje wpisy:"
+    },
+    "profile": {
+        "header": "Profil",
+        "block": {
+            "inquiry": "Czy napewno chcesz zablokować tego użytkownika?",
+            "scs": {
+                "title": "Pomyślnie zablokowano użytkownika.",
+                "msg": "Od teraz użytkownik nie będzie mógł wchodzić w żadne interakcje."
+            },
+            "err": {
+                "title": "Nie udało się zablokować użytkownika."
+            },
+            "self": "Nie możesz zablokować samego siebie.",
+            "already": "Użytkownik jest już zablokowany."
+        },
+        "unblock": {
+            "inquiry": "Czy napewno chcesz odblokować tego użytkownika?",
+            "scs": {
+                "title": "Pomyślnie odblokowano użytkownika.",
+                "msg": "Od teraz użytkownik będzie mógł ponownie wchodzić w interakcje."
+            },
+            "err": {
+                "title": "Nie udało się odblokować użytkownika."
+            },
+            "self": "Nie możesz odblokować samego siebie.",
+            "already": "Użytkownik nie jest zablokowany."
+        },
+        "unblockBox": "Odblokuj użytkownika",
+        "blockBox": "Zablokuj użytkownika", 
+        "joinBox": "Data dołączenia:",
+        "postsBox": "Wpisy użytkownika:",
+        "perms": {
+            "admin": "Administrator",
+            "blocked": "Zablokowany"
+        }
+    },
+
+
+    "input": {
+        "pass": "hasło",
+        "currPass": "aktualne hasło",
+        "newPass": "nowe hasło",
+        "rePass": "powtórz hasło",
+        "email": "email",
+        "login": "login",
+        "username": "nazwa użytkownika",
+        "postTitle": "Tytuł",
+        "postDesc": "Opis",
+        "button": {
+            "publish": "Opublikuj",
+            "changePass": "Zmień hasło",
+            "recovery": "Wyślij",
+            "login": "Zaloguj",
+            "register": "Zarejestruj",
+            "save": "Zapisz",
+            "cancel": "Anuluj"
+        },
+        "error": {
+            "samePass": "Hasła muszą być takie same.",
+            "emailFormat": "Niepoprawny format emaila."
+        },
+        "option": {
+            "hide": "ukryj",
+            "show": "pokaż"
+        }
+    },
+
+    "common": {
+        "internalErr": "Wystąpił wewnętrzny błąd serwera.",
+        "err": "Wystąpił błąd.",
+        "actionErr": "Nie możesz wykonać tej czynności.",
+        "wrongIdErr": "Nieprawidłowy identyfikator.",
+        "noUserErr": "Nie znaleziono użytkownika.",
+        "authErr": "Błąd autoryzacji.",
+        "login": "Zaloguj się",
+        "mustLogInErr": "Musisz najpierw się zalogować.",
+        "yes": "TAK",
+        "no": "NIE",
+        "likeErr": "Nie udało się polubić wpisu."
+    }
+}

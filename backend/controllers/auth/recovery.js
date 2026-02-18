@@ -10,7 +10,7 @@ const recovery = async (req, res) => {
     const { error, value } = schemaLogin.extract('email').validate(req.body.email)
     if(error) {
       console.log('Bledna walidacja! Error: ' + error)
-      return res.status(400).json({ error: "Niepoprawny format emaila." });
+      return res.status(400).json({ error: "auth.recovery.incorrect" });
     }
 
     try {
@@ -33,24 +33,24 @@ const recovery = async (req, res) => {
                     htmlContent: 
                     `
                         <h2>Aby zmienić hasło do konta kliknij w przycisk poniżej.</h2>
-                        <a href="${resetLink}" target="_blank">Zmień hasło</a>
+                        <a href="${resetLink}" target="_blank">{t('input.button.changePass')}</a>
                     `
                 });
             } catch(err) {
                 console.error('Błąd poczty:', error);
-                return res.status(500).json({ error: 'Wystąpił błąd poczty.' });
+                return res.status(500).json({ error: "auth.recovery.mailSystem" });
             }
 
             res.json({ success: 'true', token: token })
         }
         catch(err) {
             console.error('Blad podczas wysylania!', err)
-            return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
+            return res.status(500).json({ error: 'common.internalErr' })
         }
     }
     catch(err) {
         console.error('Blad!', err)
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
+        return res.status(500).json({ error: 'common.internalErr' })
     }
     
 }

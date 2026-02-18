@@ -9,4 +9,4 @@ TODO:
 -> 1. Responsywność na www, ogl zeby wszystko dzialalo na www
 -> 2. Zrobic builda i moze cos jeszcze pomyslec
 
-commit: ulepszono system modali, poprawiono niektore modale, naprawiono edytowanie postu
+zrob ogolne wiadomosci jeszcze, wiadomosci w backendzie, konwersja daty na jezyk, wybor jezyka

@@ -14,7 +14,7 @@ const register = async (req, res) => {
     const { error, value } = schemaLogin.validate(req.body)
     if(error) {
       console.log('Bledna walidacja! Error: ' + error)
-      return res.status(400).json({ error: 'Błędny format danych.' });
+      return res.status(400).json({ error: 'auth.register.incorrect' });
     }
     
     // Sprawdzenie czy nie istnieje juz konto o podanym emailu
@@ -34,17 +34,17 @@ const register = async (req, res) => {
           }
           else {
             console.log('Konto o takiej nazwie użytkownika już istnieje!')
-            return res.status(409).json({ error: 'Wpisana nazwa użytkownika jest już zajęta.' });
+            return res.status(409).json({ error: 'auth.register.alreadyTakenUsername' });
           }
       }
       else {
         console.log('Konto o takim emailu już istnieje!')
-        return res.status(409).json({ error: 'Konto z takim emailem już istnieje.' });
+        return res.status(409).json({ error: 'auth.register.alreadyTakenEmail' });
       }
     }
     catch(err) {
       console.log('Blad! Error: ' + err)
-      return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' });
+      return res.status(500).json({ error: 'common.internalErr' });
     }
 
     res.json({ success: true })

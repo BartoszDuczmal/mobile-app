@@ -1,8 +1,10 @@
 import MiniPost from '@/components/MiniPost';
+import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, useWindowDimensions, View } from 'react-native';
 
 type Post = {
@@ -13,6 +15,8 @@ type Post = {
 };
 
 export default function Main() {
+  const { t } = useTranslation()
+  
   const screenSize = useWindowDimensions()
 
   const router = useRouter()
@@ -40,7 +44,7 @@ export default function Main() {
     <>
     <View style={css.container}>
         <View style={css.header}>
-          <TextInput placeholder='Szukaj...' placeholderTextColor='gray' style={css.inputSearch} onChangeText={text => setSearchData(text)}></TextInput>
+          <TextInput placeholder={t('posts.fetch.search')} placeholderTextColor='gray' style={css.inputSearch} onChangeText={text => setSearchData(text)}></TextInput>
         </View>
         <View style={[css.footer, { marginBottom: screenSize.height * 0.1 }]}>
           <TouchableHighlight onPress={() => router.push('/publish')} style={css.buttonFooter} underlayColor='darkgray'>

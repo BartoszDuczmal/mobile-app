@@ -5,7 +5,7 @@ import schemaPost from "../../models/postModel.js";
 const create = async (req, res) => {
     const user = checkFunc(req.cookies.token)
     if(user === null) {
-        return res.status(401).json({ error: 'Musisz najpierw się zalogować.' })
+        return res.status(401).json({ error: 'common.mustLogInErr' })
     }
 
     console.log('Otrzymano post: ', req.body, '-> ID: ', user.id)
@@ -13,7 +13,7 @@ const create = async (req, res) => {
     const { error, value } = schemaPost.validate(req.body)
     if(error) {
         console.log('Bledna walidacja! Error: ' + error)
-        return res.status(400).json({ error: 'Niepoprawny format wpisu.' });
+        return res.status(400).json({ error: 'posts.publish.incorrect' });
     }
 
     try {
@@ -22,7 +22,7 @@ const create = async (req, res) => {
     }
     catch(err) {
         console.log('Blad podczas zapytania do bazy! Error: ' + err)
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' });
+        return res.status(500).json({ error: 'common.internalErr' });
     }
 }
 

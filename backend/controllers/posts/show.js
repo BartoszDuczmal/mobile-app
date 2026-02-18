@@ -6,13 +6,13 @@ const show = async (req, res) => {
     console.log('Otrzymano próbę wyświetlenia posta. ID: ', postId)
 
     if (isNaN(Number(postId))) {
-        return res.status(400).json({ error: 'Nieprawidłowy identyfikator' });
+        return res.status(400).json({ error: 'common.wrongIdErr' });
     }
 
     try {
         const [post] = await db.query('SELECT * FROM posts WHERE id = ? LIMIT 1', [postId])
         if (post.length === 0) {
-            return res.status(404).json({ error: 'Post nie znaleziony' });
+            return res.status(404).json({ error: 'posts.show.notFound' });
         }
 
         // Zliczamy ilość polubień dla posta
@@ -34,7 +34,7 @@ const show = async (req, res) => {
     catch(err) {
 
         console.error('Błąd podczas zapytania do bazy:', err);
-        return res.status(500).json({ error: 'Błąd serwera' });
+        return res.status(500).json({ error: 'common.internalErr' });
     }
 }
 

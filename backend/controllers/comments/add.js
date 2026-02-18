@@ -25,7 +25,7 @@ const add = async (req, res) => {
         res.json({ success: true, id: qAdd.insertId })
     } 
     catch(err) {
-        return res.status(500).json({ error: 'Wystąpił wewnętrzny błąd serwera.' })
+        return res.status(500).json({ error: 'common.internalErr' })
     }
 }
 

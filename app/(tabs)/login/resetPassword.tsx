@@ -1,3 +1,5 @@
+import Loading from "@/components/Loading";
+import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import passValid from "@/utils/validation/pass";
@@ -5,20 +7,23 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const fReset = async (token: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void) => {
+const fReset = async (token: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void, t: any) => {
     try {
         await axios.post(`${API_URL}/auth/resetPass`, { token: token, pass: pass });
-        openModal({ type: 'info', title: 'Pomyślnie zresetowano hasło.', msg: 'Teraz możesz zalogować się na swoje konto.' })
+        openModal({ type: 'info', title: t('auth.resetPass.scs.title'), msg: t('auth.resetPass.scs.msg') })
         router.push('/(tabs)/posts/')
     }
     catch(err: any) {
-        openModal({ type: "error", title: 'Nie udało się zresetować hasła.', msg: 'Wystąpił wewnętrzny błąd serwera.'})
+        openModal({ type: "error", title: t('auth.resetPass.err.title'), msg: t('common.internalErr')})
     }
 }
 
 const resetPassword = () => {
+    const { t } = useTranslation()
+
     const { openModal } = useModal()
 
     const [pass, setPass] = useState('')
@@ -27,13 +32,7 @@ const resetPassword = () => {
 
     const { token } = useLocalSearchParams<{ token?: string }>()
 
-    if(!token) {
-        return (
-            <View>
-                <Text>Błędny token resetujący.</Text>
-            </View>
-        );
-    }
+    if(!token) return <Loading/>
 
     const pValid = passValid(pass)
 
@@ -44,7 +43,7 @@ const resetPassword = () => {
                 borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
-                <TextInput placeholderTextColor="gray" placeholder="hasło" style={css.input} onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder={t('input.pass')} style={css.input} onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
             </View>
             { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
                 <Text key={i} style={css.errMsg}>{msg}</Text>))
@@ -54,14 +53,14 @@ const resetPassword = () => {
                  borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
             }]}>
                 <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
-                <TextInput placeholderTextColor="gray" placeholder="powtórz hasło" style={css.input} onChangeText={setRepass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
+                <TextInput placeholderTextColor="gray" placeholder={t('input.rePass')} style={css.input} onChangeText={setRepass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
             </View>
             { repass !== pass && repass.length !== 0 && (
-                            <Text style={css.errMsg}>Hasła muszą być takie same.</Text>
+                            <Text style={css.errMsg}>{t('input.error.samePass')}</Text>
             )}
-            <Pressable onPress={() => fReset(token, pass, openModal)} style={[css.button, {opacity: !(pValid.valid && pass === repass) ? 0.5 : 1}]} disabled={ !(pValid.valid && pass === repass) }>
+            <Pressable onPress={() => fReset(token, pass, openModal, t)} style={[css.button, {opacity: !(pValid.valid && pass === repass) ? 0.5 : 1}]} disabled={ !(pValid.valid && pass === repass) }>
                 {({ pressed }) => (
-                <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>Zmień hasło</Text>
+                <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>{t('input.button.changePass')}</Text>
                 )}
             </Pressable>
         </View>

@@ -11,7 +11,7 @@ const like = async (req, res) => {
 
     const user = checkFunc(req.cookies.token)
     if(user === null) {
-        return res.status(401).json({ error: 'Musisz być zalogowany, aby polubić wpis.' })
+        return res.status(401).json({ error: 'common.mustLogInErr' })
     }
 
     // Próba usunięcia polubienia - jeśli się nie usunie żadne to dodajemy polubienie

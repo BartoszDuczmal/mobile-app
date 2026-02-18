@@ -1,3 +1,4 @@
+import i18n from '@/locales/config';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const InquiryModal = ({ visible, title, msg, onResponse }: { visible: boolean, title: string, msg?: string, onResponse: (answer: boolean) => void }) => {
@@ -10,10 +11,10 @@ const InquiryModal = ({ visible, title, msg, onResponse }: { visible: boolean, t
                         { msg && <Text style={css.msg}>{msg}</Text> }
                         <View style={css.buttonsView}>
                         <TouchableOpacity onPress={() => onResponse(true)} style={css.button}>
-                            <Text style={{fontWeight: 700}}>TAK</Text>
+                            <Text style={{fontWeight: 700}}>{i18n.t('common.yes')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => onResponse(false)} style={css.button}>
-                            <Text style={{fontWeight: 700}}>NIE</Text>
+                            <Text style={{fontWeight: 700}}>{i18n.t('common.no')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -1,21 +1,25 @@
+import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import axios from "axios";
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
-const addPost = async (title: string, desc: string, openModal: ({type, title, msg}: {type: string, title: string, msg: string }) => void) => {
+const addPost = async (title: string, desc: string, openModal: ({type, title, msg}: {type: string, title: string, msg: string }) => void, t: any) => {
   try {
     const res = await axios.post(`${API_URL}/posts/create`, { title: title, desc: desc }, { withCredentials: true });
     openModal({ type: 'info', title: 'Pomyślnie opublikowano wpis.', msg: '' })
   }
   catch(err: any) {
-    const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-    openModal({ type: "error", title: 'Nie udało się opublikować wpisu.', msg: errMsg })
+    const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+    openModal({ type: "error", title: 'Nie udało się opublikować wpisu.', msg: t(errMsg) })
   }
 }
 
 const createPost = () => {
+    const { t } = useTranslation()
+
     const { openModal } = useModal()
 
     const screenSize = useWindowDimensions();
@@ -25,11 +29,11 @@ const createPost = () => {
 
     return (
         <View style={css.container}>
-            <TextInput placeholder="Tytuł" placeholderTextColor="gray" onChangeText={setTitle} style={css.title}/>
-            <TextInput placeholder="Opis" placeholderTextColor="gray" onChangeText={setDesc} style={css.description} multiline={true} numberOfLines={7} textAlignVertical="top" />
-            <Pressable onPress={() => addPost(title, desc, openModal)}>
+            <TextInput placeholder={t('input.postTitle')} placeholderTextColor="gray" onChangeText={setTitle} style={css.title}/>
+            <TextInput placeholder={t('input.postDesc')} placeholderTextColor="gray" onChangeText={setDesc} style={css.description} multiline={true} numberOfLines={7} textAlignVertical="top" />
+            <Pressable onPress={() => addPost(title, desc, openModal, t)}>
                 {({ pressed }) => (
-                <Text style={[ css.button, { color: pressed ? 'blue' : 'gray' } ]}>Opublikuj</Text>
+                <Text style={[ css.button, { color: pressed ? 'blue' : 'gray' } ]}>{t('input.button.publish')}</Text>
                 )}
             </Pressable>
         </View>

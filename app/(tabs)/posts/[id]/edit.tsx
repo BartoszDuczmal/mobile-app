@@ -1,4 +1,5 @@
 import Loading from '@/components/Loading';
+import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
@@ -8,6 +9,7 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 type Post = {
@@ -17,19 +19,21 @@ type Post = {
     author: string,
 }
 
-const fetchEdit = async (id: number, title: string, desc: string, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any) => {
+const fetchEdit = async (id: number, title: string, desc: string, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any, t: any) => {
     try {
         const res = await axios.post(`${API_URL}/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
-        openModal({ type: 'info', title: 'Pomyślnie edytowano wpis.', msg: 'Teraz możesz zobaczyć zmiany w profilu.' })
+        openModal({ type: 'info', title: t('posts.edit.scs.title'), msg: t('posts.edit.scs.msg') })
         router.back()
     }
     catch(err: any) {
-        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-        openModal({ type: 'error', title: 'Nie udało się edytować wpisu.', msg: errMsg })
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+        openModal({ type: 'error', title: t('posts.edit.err.title'), msg: t(errMsg) })
     }
 }
 
 const edit = () => {
+    const { t } = useTranslation()
+
     const { openModal } = useModal()
 
     const { width } = useWindowDimensions()
@@ -97,13 +101,13 @@ const edit = () => {
                 </View>
                 <TextInput placeholderTextColor="gray" style={{fontSize: 20, color: 'black'}} value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
                 <View style={css.footerBox}>
-                    <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc, openModal)}>
-                        <Text>Zapisz</Text>
+                    <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc, openModal, t)}>
+                        <Text>{t('input.button.save')}</Text>
                     </Pressable>
                     <Pressable style={[css.actionBoxCancel, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => router.back()}>
-                        <Text>Anuluj</Text>
+                        <Text>{t('input.button.cancel')}</Text>
                     </Pressable>
-                    <Pressable onPress={() => deletePost(data.id, openModal)}>
+                    <Pressable onPress={() => deletePost(data.id, openModal, t)}>
                         {({pressed}) => (
                             <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
                         )}
