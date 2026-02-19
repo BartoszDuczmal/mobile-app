@@ -39,7 +39,7 @@ const logout = async (openModal: ({type, title, msg}: { type: string, title: str
 }
 
 const MyProfile = () => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
 
     const [data, setData] = useState<null | Profile>(null)
     const [post, setPost] = useState([])
@@ -84,7 +84,7 @@ const MyProfile = () => {
         return <Loading />
     }
 
-    const formattedDate = new Date(data.date).toLocaleDateString('en-EN', {
+    const formattedDate = new Date(data.date).toLocaleDateString(i18n.language, {
         timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',

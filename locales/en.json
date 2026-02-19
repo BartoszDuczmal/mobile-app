@@ -195,6 +195,7 @@
         "mustLogInErr": "You must log in first.",
         "yes": "YES",
         "no": "NO",
-        "likeErr": "Failed to like the post."
+        "likeErr": "Failed to like the post.",
+        "changeLang": "Zmień język na Polski"
     }
 }

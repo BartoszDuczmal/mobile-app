@@ -52,7 +52,7 @@ const unblockUser = async (id: number, openModal: ({type, title, msg}: { type: s
 }
 
 const Profile = () => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
 
     const { openModal } = useModal()
 
@@ -98,7 +98,7 @@ const Profile = () => {
         return <Loading/>
     }
 
-    const formattedDate = new Date(data.date).toLocaleDateString('pl-PL', {
+    const formattedDate = new Date(data.date).toLocaleDateString(i18n.language, {
         timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',

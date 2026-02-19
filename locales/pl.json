@@ -198,6 +198,7 @@
         "mustLogInErr": "Musisz najpierw się zalogować.",
         "yes": "TAK",
         "no": "NIE",
-        "likeErr": "Nie udało się polubić wpisu."
+        "likeErr": "Nie udało się polubić wpisu.",
+        "changeLang": "Change language to English"
     }
 }

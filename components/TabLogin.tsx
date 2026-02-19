@@ -1,16 +1,21 @@
 import { checkAuth } from "@/utils/checkAuth";
 import { Feather } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from "react-native";
+import MenuModal from "./modals/MenuModal";
 
 const TabLogin = () => {
+    const handleClose = () => {
+        setModal(false)
+    }
+
     const { t } = useTranslation()
 
     const [user, setUser] = useState(null)
 
-    const [modal, setModal] = useState(0)
+    const [modal, setModal] = useState<boolean>(false)
 
     useFocusEffect(
         useCallback(() => {
@@ -41,8 +46,9 @@ const TabLogin = () => {
 
     return (
     <>
+    <MenuModal isVisible={modal} user={user} close={handleClose}/>
     <View>
-        <TouchableOpacity onPress={() => (user === null) ? router.push('/(tabs)/login') : router.push('/(tabs)/profile')} style={{
+        <TouchableOpacity onPress={() => setModal(true)} style={{
             flexDirection: 'row', 
             alignItems: 'center',
             marginRight: 5,

@@ -23,7 +23,7 @@ type Post = {
 }
 
 const ViewPost = () => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const params = useLocalSearchParams()
     const id = Array.isArray(params.id) ? params.id[0] : params.id
     const idNum = parseInt(id as string, 10)
@@ -82,7 +82,7 @@ const ViewPost = () => {
         return <Loading/>
     }
 
-    const formattedDate = new Date(data.date).toLocaleDateString('en-EN', {
+    const formattedDate = new Date(data.date).toLocaleDateString(i18n.language, {
         timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',
