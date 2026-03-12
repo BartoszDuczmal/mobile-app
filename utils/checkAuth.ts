@@ -4,7 +4,7 @@ import axios from "axios"
 export const checkAuth = async () => {
     try {
         const res = await axios.get(`${API_URL}/auth/check`, { withCredentials: true })
-        return { loggedIn: true, user: res.data.user, perm: res.data.perm}
+        return { loggedIn: true, user: res.data.user, perm: res.data.perm, id: res.data.id}
     }
     catch {
         return { loggedIn: false }

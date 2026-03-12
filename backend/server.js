@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
+import commentsRoutes from './routes/comments.js';
 import postsRoutes from './routes/posts.js';
 import profileRoutes from './routes/profile.js';
 
@@ -17,6 +18,7 @@ app.use('/auth', authRoutes);
 app.use('/posts', postsRoutes);
 app.use('/profile', profileRoutes)
 app.use('/admin', adminRoutes)
+app.use('/comments', commentsRoutes)
 
 const PORT  = process.env.PORT || 3001
 

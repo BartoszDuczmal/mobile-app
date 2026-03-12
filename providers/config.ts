@@ -1,1 +1,1 @@
-export const API_URL = 'https://mobile-app-production-822c.up.railway.app'
+export const API_URL = 'http://10.137.108.45:3001' //https://mobile-app-production-822c.up.railway.app //http://10.125.104.45:3001

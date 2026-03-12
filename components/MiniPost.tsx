@@ -36,16 +36,21 @@ const ViewPost = (props: Post) => {
                 <Text numberOfLines={3} ellipsizeMode="tail">{props.desc}</Text>
             </View>
             <View style={css.footerBox}>
-                <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
-                    async () => {
-                        const res = await handleLike(props.id, openModal)
-                        if(res) {
-                            setLikes(res.likes)
-                            setIsLike(!isLike)
+                <View style={css.footerLeft}>
+                    <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
+                        async () => {
+                            const res = await handleLike(props.id, openModal)
+                            if(res) {
+                                setLikes(res.likes)
+                                setIsLike(!isLike)
+                            }
                         }
-                    }
-                }/>
-                <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
+                    }/>
+                    <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
+                </View>
+                <View style={css.footerRight}>
+                    <MaterialCommunityIcons name='comment-outline' style={{ zIndex: 10 }} size={25} color={isLike ? '#ec5353' : 'gray'}/>
+                </View>
             </View>
         </Pressable>
     );
@@ -77,9 +82,25 @@ const css = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 20,
         alignItems: 'center',
-        justifyContent: 'flex-end',
         gap: 7,
     },
+    footerRight: {
+        display: 'flex',
+        flexDirection: 'row',
+        flex: 1,
+        width: '100%',
+        justifyContent: 'flex-end',
+        gap: 7
+    },
+    footerLeft: {
+        display: 'flex',
+        flexDirection: 'row',
+        flex: 1,
+        width: '100%',
+        justifyContent: 'flex-start',
+        gap: 5,
+        alignItems: 'center'
+    }
 })
 
 export default ViewPost;

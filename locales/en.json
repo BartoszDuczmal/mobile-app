@@ -184,6 +184,22 @@
             "show": "show"
         }
     },
+    "comments": {
+        "add": {
+            "header": "Adding a comment",
+            "scs": {
+                "title": "Comment added successfully.",
+                "msg": "Your comment is now visible under this post."
+            },
+            "err": {
+                "title": "Failed to add comment."
+            },
+            "wrongFormat": "Invalid comment format."
+        },
+        "fetch": {
+            "notLoad": "Failed to load comments."
+        }
+    },
     "common": {
         "internalErr": "Internal server error occurred.",
         "err": "An error occurred.",

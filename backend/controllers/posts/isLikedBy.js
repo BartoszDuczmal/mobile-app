@@ -12,7 +12,7 @@ const isLikedBy = async (req, res) => {
         return res.json(false)
     }
     try {
-        const [result] = await db.query('SELECT id FROM likes WHERE user_id = ? AND post_id = ? LIMIT 1', [user.id, postId])
+        const [result] = await db.query('SELECT id FROM posts_likes WHERE user_id = ? AND post_id = ? LIMIT 1', [user.id, postId])
         
         return res.json(result.length > 0)
     }

@@ -156,8 +156,22 @@
             "blocked": "Zablokowany"
         }
     },
-
-
+    "comments": {
+        "add": {
+            "header": "Dodawanie komentarza",
+            "scs": {
+                "title": "Pomyślnie dodano komentarz.",
+                "msg": "Od teraz twój komenatrz będzie widoczny pod wpisem."
+            },
+            "err": {
+                "title": "Nie udało się dodać komentarza."
+            },
+            "wrongFormat": "Nieprawidłowy format komentarza."
+        },
+        "fetch": {
+            "notLoad": "Nie można wczytać komentarzy."
+        }
+    },
     "input": {
         "pass": "hasło",
         "currPass": "aktualne hasło",

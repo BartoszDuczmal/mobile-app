@@ -1,5 +1,5 @@
 import db from '../../config/db.js';
-import countLikes from "../../functions/countLikes.js";
+import countLikes from "../../functions/countPostLikes.js";
 
 const show = async (req, res) => {
     const postId = req.params.id;
@@ -20,7 +20,7 @@ const show = async (req, res) => {
         post[0].likes = likes
 
         // Pobieranie nazwy użytkownika z id
-        let author = 'Użytkownik usunięty'
+        let author = 'Deleted User'
         if(post[0].author !== null) {
             const [user] = await db.query('SELECT username FROM users WHERE id = ? LIMIT 1', [post[0].author])
             author = user[0].username

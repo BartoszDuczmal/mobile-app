@@ -1,4 +1,5 @@
 import Loading from '@/components/Loading';
+import MiniComment from '@/components/MiniComment';
 import { API_URL } from "@/providers/config";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
@@ -11,7 +12,7 @@ import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 type Post = {
     id: number,
@@ -21,6 +22,23 @@ type Post = {
     likes: number,
     date: string,
 }
+type Comment = {
+    id: number,
+    author_name: string,
+    content: string,
+    created_at: string
+}
+
+const handleAddComment = async (content: string, postId: number, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any, t: any) => {
+    try {
+        const res = await axios.post(`${API_URL}/comment/add`, { content: content, post: postId }, { withCredentials: true })
+        openModal({ type: 'info', title: t('comments.add.scs.title'), msg: t('comments.add.scs.msg') })
+    }
+    catch(err: any) {
+        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+        openModal({ type: 'error', title: t('comments.add.err.title'), msg: t(errMsg) })
+    }
+}
 
 const ViewPost = () => {
     const { t, i18n } = useTranslation()
@@ -29,13 +47,17 @@ const ViewPost = () => {
     const idNum = parseInt(id as string, 10)
     if (isNaN(idNum)) return null;
 
-    const [data, setData] = useState<Post | null>(null);
+    const [data, setData] = useState<Post | null>(null)
+
+    const [comments, setComments] = useState<Comment[] | null>(null)
 
     const [likes, setLikes] = useState<number>(0)
 
     const [isLike, setIsLike] = useState(false)
 
     const [isOwner, setIsOwner] = useState<{user: string, perm: string} | null>(null)
+
+    const [comment, setComment] = useState<string>('')
 
     const { openModal } = useModal()
 
@@ -78,6 +100,28 @@ const ViewPost = () => {
         return () => { active = false }
     }, [id]);
 
+    useEffect(() => {
+        let active = true
+
+        const fetchAll = async () => {
+            try {
+                const res = await axios.get(`${API_URL}/comments/fetch/${id}`)
+
+                if (res.data) {
+                    setComments(res.data);
+                } else {
+                    console.warn('Brak komentarzy dla wpisu.');
+                }
+            } catch (err) {
+                console.error('Błąd podczas pobierania danych:', err);
+            }
+        };
+
+        fetchAll()
+
+        return () => { active = false }
+    }, [id]);
+
     if (!data) {
         return <Loading/>
     }
@@ -93,7 +137,7 @@ const ViewPost = () => {
 
     return (
         <>
-            <View style={css.container}>
+            <ScrollView style={css.container}>
                 <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
                     <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>
                         <Feather name="user" size={24} color='gray' />
@@ -107,6 +151,7 @@ const ViewPost = () => {
                 <Text style={{fontSize: 20}}>{data.desc}</Text>
                 <View style={css.footerBox}>
                     <View style={css.likeFooter}>
+                        
                         <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
                             async () => {
                                 const res = await handleLike(data.id, openModal)
@@ -123,19 +168,30 @@ const ViewPost = () => {
                 { 
                 (isOwner?.user === data.author || isOwner?.perm === 'admin') &&
                 <View style={css.editBox}>
-                    <Pressable onPress={() => router.push(`/posts/${idNum}/edit`)}>
-                        {({pressed}) => (
-                            <FontAwesome6 name='edit' size={24} color={pressed ? 'silver' : 'gray'}/>
-                        )}
-                    </Pressable>
-                    <Pressable onPress={() => deletePost(data.id, openModal, t)}>
-                        {({pressed}) => (
-                            <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
-                        )}
-                    </Pressable>
+                    <TouchableOpacity onPress={() => router.push(`/posts/${idNum}/edit`)}>
+                        <FontAwesome6 name='edit' size={24} color='gray'/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => deletePost(data.id, openModal, t)}>
+                        <FontAwesome6 name='trash-can' size={24} color='gray'/>
+                    </TouchableOpacity>
                 </View> 
                 }
-            </View>
+                {/* Renderowanie komentarzy */}
+                <View style={css.commentsHeader}>
+                    <Text style={{fontSize: 15}}>Komentarze:</Text>
+                </View>
+                <View style={css.addBox}>
+                    <View style={css.addInput}>
+                        <TextInput placeholderTextColor="gray" placeholder="Dodaj komenatrz" autoCapitalize="none" value={comment} onChangeText={setComment} />
+                    </View>
+                    <TouchableOpacity style={{margin: 10, paddingHorizontal: 15, paddingVertical: 7, borderRadius: 25}} onPress={() => handleAddComment(comment, data.id, openModal, t)}>
+                        <Text>Skomentuj</Text>
+                    </TouchableOpacity>
+                </View>
+                {comments?.map((c: Comment, i: number) => {
+                    return (<MiniComment key={i} id={c.id} date={c.created_at} author={c.author_name} content={c.content} />)
+                })}
+            </ScrollView>
         </>
     );
 }
@@ -193,6 +249,30 @@ const css = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingBottom: 80,
+    },
+    commentsRightHeader: {
+        display: 'flex',
+        gap: 5,
+        flexDirection: 'row',
+    },
+    commentsHeader: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 5
+    },
+    addInput: {
+        margin: 5,
+        borderBottomColor: 'black',
+        borderBottomWidth: 1,
+        flex: 1
+    },
+    addBox: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+
     }
 })
 

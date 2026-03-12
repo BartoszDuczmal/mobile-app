@@ -1,5 +1,5 @@
 import db from '../../config/db.js';
-import countLikes from '../../functions/countLikes.js';
+import countLikes from '../../functions/countPostLikes.js';
 
 const fetchPosts = async (req, res) => {
     try {
