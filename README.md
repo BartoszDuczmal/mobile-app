@@ -1,5 +1,7 @@
 ![React Native](https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![Expo Router](https://img.shields.io/badge/Expo_Router-%23000020.svg?style=for-the-badge&logo=expo&logoColor=white) ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
 
+[mobile-app](header-image.png)
+
 # React Native Expo + Express App
 
 This is a full‑stack mobile application built with **React Native (Expo)** on the frontend and **Node.js (Express)** on the backend where people can communicate with each other. The project includes user authentication, posts, profiles, likes, comments, and basic admin functionality. 
