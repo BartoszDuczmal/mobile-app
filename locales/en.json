@@ -198,6 +198,15 @@
         },
         "fetch": {
             "notLoad": "Failed to load comments."
+        },
+        "remove": {
+            "scs": {
+                "title": "Comment deleted successfully.",
+                "msg": "Your comment will no longer visible under this post."
+            },
+            "err": {
+                "title": "Failed to delete comment."
+            }
         }
     },
     "common": {
@@ -208,10 +217,11 @@
         "noUserErr": "User not found.",
         "authErr": "Authorization error.",
         "login": "Log In",
-        "mustLogInErr": "You must log in first.",
+        "unauthorized": "You must log in first.",
         "yes": "YES",
         "no": "NO",
         "likeErr": "Failed to like the post.",
-        "changeLang": "Zmień język na Polski"
+        "changeLang": "Zmień język na Polski",
+        "noAccess": "Access denied."
     }
 }

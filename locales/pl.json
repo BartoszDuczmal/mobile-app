@@ -170,6 +170,15 @@
         },
         "fetch": {
             "notLoad": "Nie można wczytać komentarzy."
+        },
+        "remove": {
+            "scs": {
+                "title": "Pomyślnie usunięto komentarz.",
+                "msg": "Twój komenatrz nie będzie już widoczny pod wpisem."
+            },
+            "err": {
+                "title": "Nie udało się usunąć komentarza."
+            }
         }
     },
     "input": {
@@ -209,10 +218,11 @@
         "noUserErr": "Nie znaleziono użytkownika.",
         "authErr": "Błąd autoryzacji.",
         "login": "Zaloguj się",
-        "mustLogInErr": "Musisz najpierw się zalogować.",
+        "unauthorized": "Musisz najpierw się zalogować.",
         "yes": "TAK",
         "no": "NIE",
         "likeErr": "Nie udało się polubić wpisu.",
-        "changeLang": "Change language to English"
+        "changeLang": "Change language to English",
+        "noAccess": "Nie możesz wykonać tej czynności."
     }
 }

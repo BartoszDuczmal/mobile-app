@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 type Post = {
     id: number,
@@ -27,17 +27,6 @@ type Comment = {
     author_name: string,
     content: string,
     created_at: string
-}
-
-const handleAddComment = async (content: string, postId: number, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any, t: any) => {
-    try {
-        const res = await axios.post(`${API_URL}/comment/add`, { content: content, post: postId }, { withCredentials: true })
-        openModal({ type: 'info', title: t('comments.add.scs.title'), msg: t('comments.add.scs.msg') })
-    }
-    catch(err: any) {
-        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-        openModal({ type: 'error', title: t('comments.add.err.title'), msg: t(errMsg) })
-    }
 }
 
 const ViewPost = () => {
@@ -59,7 +48,42 @@ const ViewPost = () => {
 
     const [comment, setComment] = useState<string>('')
 
+    const [refreshing, setRefreshing] = useState<boolean>(false)
+
     const { openModal } = useModal()
+
+    const handleAddComment = async (content: string, postId: number, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any, t: any) => {
+        try {
+            const res = await axios.post(`${API_URL}/comments/add`, { content: content, post: postId }, { withCredentials: true })
+            openModal({ type: 'info', title: t('comments.add.scs.title'), msg: t('comments.add.scs.msg') })
+            setComment('')
+            await fetchComments()
+        }
+        catch(err: any) {
+            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+            openModal({ type: 'error', title: t('comments.add.err.title'), msg: t(errMsg) })
+        }
+    }
+
+    const onRefresh = async () => {
+        setRefreshing(true)
+        await fetchComments()
+        setRefreshing(false)
+    }
+
+    const fetchComments = async () => {
+            try {
+                const res = await axios.get(`${API_URL}/comments/fetch/${id}`)
+
+                if (res.data) {
+                    setComments(res.data);
+                } else {
+                    console.warn('Brak komentarzy dla wpisu.');
+                }
+            } catch (err) {
+                console.error('Błąd podczas pobierania danych:', err);
+            }
+        };
 
     useEffect(() => {
         let active = true
@@ -102,22 +126,7 @@ const ViewPost = () => {
 
     useEffect(() => {
         let active = true
-
-        const fetchAll = async () => {
-            try {
-                const res = await axios.get(`${API_URL}/comments/fetch/${id}`)
-
-                if (res.data) {
-                    setComments(res.data);
-                } else {
-                    console.warn('Brak komentarzy dla wpisu.');
-                }
-            } catch (err) {
-                console.error('Błąd podczas pobierania danych:', err);
-            }
-        };
-
-        fetchAll()
+        fetchComments()
 
         return () => { active = false }
     }, [id]);
@@ -137,7 +146,11 @@ const ViewPost = () => {
 
     return (
         <>
-            <ScrollView style={css.container}>
+            <ScrollView 
+            style={css.container} 
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+            }>
                 <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
                     <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>
                         <Feather name="user" size={24} color='gray' />
@@ -189,8 +202,9 @@ const ViewPost = () => {
                     </TouchableOpacity>
                 </View>
                 {comments?.map((c: Comment, i: number) => {
-                    return (<MiniComment key={i} id={c.id} date={c.created_at} author={c.author_name} content={c.content} />)
+                    return (<MiniComment key={i} id={c.id} date={c.created_at} author={c.author_name} content={c.content} refresh={onRefresh} />)
                 })}
+                <View style={{width: '100%', padding: 30}}/>
             </ScrollView>
         </>
     );
@@ -272,7 +286,7 @@ const css = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-
+        marginBottom: 15,
     }
 })
 

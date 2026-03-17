@@ -5,7 +5,7 @@ import schemaPost from "../../models/postModel.js";
 const create = async (req, res) => {
     const user = checkFunc(req.cookies.token)
     if(user === null) {
-        return res.status(401).json({ error: 'common.mustLogInErr' })
+        return res.status(401).json({ error: 'common.unauthorized' })
     }
 
     console.log('Otrzymano post: ', req.body, '-> ID: ', user.id)

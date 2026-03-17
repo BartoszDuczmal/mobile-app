@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import db from '../../config/db';
-import checkFunc from '../../functions/checkFunc';
-import schemaPost from '../../models/postModel';
+import db from '../../config/db.js';
+import checkFunc from '../../functions/checkFunc.js';
+import schemaPost from '../../models/postModel.js';
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ const add = async (req, res) => {
     
         const user = checkFunc(token)
         if(user === null) {
-            return res.status(401).json({ error: 'common.mustLogInErr' })
+            return res.status(401).json({ error: 'common.unauthorized' })
         }
 
         const { error, value } = schemaPost.extract('desc').validate(req.body.content)
@@ -24,7 +24,6 @@ const add = async (req, res) => {
         res.json({ success: true, id: qAdd.insertId })
     } 
     catch(err) {
-        console.error("Wystąpił błąd:", err)
         return res.status(500).json({ error: 'common.internalErr' })
     }
 }

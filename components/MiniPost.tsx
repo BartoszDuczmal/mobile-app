@@ -49,7 +49,7 @@ const ViewPost = (props: Post) => {
                     <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
                 </View>
                 <View style={css.footerRight}>
-                    <MaterialCommunityIcons name='comment-outline' style={{ zIndex: 10 }} size={25} color={isLike ? '#ec5353' : 'gray'}/>
+                    <MaterialCommunityIcons name='comment-outline' style={{ zIndex: 10 }} size={25} color='gray' />
                 </View>
             </View>
         </Pressable>

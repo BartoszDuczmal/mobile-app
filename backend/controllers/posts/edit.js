@@ -20,7 +20,7 @@ const edit = async (req, res) => {
     // Pobieranie ID użytkownika
     const user = checkFunc(req.cookies.token)
     if(user === null) {
-        return res.status(401).json({ error: 'common.mustLogInErr' })
+        return res.status(401).json({ error: 'common.unauthorized' })
     }
 
     // Sprawdzanie czy użytkownik może edytować post
