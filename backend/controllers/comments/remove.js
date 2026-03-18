@@ -11,12 +11,15 @@ const remove = async (req, res) => {
             return res.status(401).json({ error: 'common.unauthorized' });
         }
 
+        // Sprawdzenie czy ma uprawnienia (admin albo autor)
         if(keyUser.perm !== 'admin') {
             const [ qOwner ] = await db.query('SELECT id FROM comments WHERE id=? AND author_id=? LIMIT 1', [id, keyUser.id])
             if(qOwner.length === 0) {
                 return res.status(403).json({ error: 'common.noAccess' }) 
             }
         }
+        
+        // Usunięcie komentarza
         const [ qDelete ] = await db.query('DELETE FROM comments WHERE id=?', [id])
         return res.json({ success: true })
     }

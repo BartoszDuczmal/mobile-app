@@ -7,12 +7,15 @@ import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const MiniComment = ({id, content, date, author, refresh}: {id: number, content: string, date: string, author: string, refresh: () => void}) => {
+const MiniComment = ({id, content, date, author, likes, isLiked, refresh}: {id: number, content: string, date: string, author: string, likes: number, isLiked: boolean, refresh: () => void}) => {
     const { t, i18n } = useTranslation()
 
     const { openModal } = useModal()
 
     const [user, setUser] = useState<any>(null)
+
+    const [isLike, setIsLike] = useState<boolean>(isLiked)
+    const [useLikes, setUseLikes] = useState<number>(likes)
 
     const formattedDate = new Date(date).toLocaleDateString(i18n.language, {
         timeZone: 'Europe/Warsaw',
@@ -35,27 +38,48 @@ const MiniComment = ({id, content, date, author, refresh}: {id: number, content:
         }
     }
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const keyData = await checkAuth()
-            setUser(keyData)
+    const handleLike = async () => {
+        try {
+            const res = await axios.post(`${API_URL}/comments/like`, { id: id }, { withCredentials: true })
+            if(res.data.type === 'remove') {
+                setUseLikes((prev) => prev - 1)
+                setIsLike(false)
+            }
+            else {
+                setUseLikes((prev) => prev + 1)
+                setIsLike(true)
+            }
         }
+        catch(err: any) {
+            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+            openModal({ type: 'error', title: t('comment.like.err.title'), msg: t(errMsg) })
+        }
+    }
+
+    const fetchUser = async () => {
+        const keyData = await checkAuth()
+        setUser(keyData)
+    }
+
+    useEffect(() => {
         fetchUser()
-    }, [])
+        setIsLike(isLiked)
+        setUseLikes(likes)
+    }, [isLiked, likes])
 
     return (
         <View style={css.commentBox}>
             <Text style={{color: '#9a9a9a', fontSize: 12, marginLeft: 35, marginBottom: -5, marginTop: 5}}>{formattedDate}</Text>
             <View style={css.commentHeader}>
                 <Feather name="corner-down-right" size={24} color="#5c5c5c" />
-                <Text style={{color: '#5c5c5c'}}>komentarz użytkownika {author}:</Text>
+                <Text style={{color: '#5c5c5c'}}>{t('comments.whose', { user: author })}</Text>
             </View>
             <Text style={{color: '#5c5c5c', fontSize: 15, marginLeft: 35}}>{content}</Text>
             <View style={css.commentFooter}>
-                <TouchableOpacity style={{flexDirection: 'row', gap: 3}}>
-                    <MaterialCommunityIcons name="heart-outline" size={20} color="#5c5c5c"/>
+                <TouchableOpacity style={{flexDirection: 'row', gap: 3}} onPress={() => handleLike()}>
+                    <MaterialCommunityIcons name={isLike ? "heart" : "heart-outline"} size={20} color={isLike ? '#ec5353' : "#5c5c5c"}/>
                 </TouchableOpacity>
-                <Text style={{color: '#5c5c5c'}}>67</Text>
+                <Text style={{color: '#5c5c5c'}}>{useLikes}</Text>
                 { (user?.user === author || user?.perm === 'admin')  &&
                 <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', marginLeft: 5}} onPress={() => fetchDelete()}>
                     <FontAwesome6 name='trash-can' size={16} color='#5c5c5c'/>

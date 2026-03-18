@@ -17,16 +17,18 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, Tou
 type Post = {
     id: number,
     title: string,
-    desc: string,
+    description: string,
     author: string,
     likes: number,
-    date: string,
+    created_at: string,
 }
 type Comment = {
     id: number,
     author_name: string,
     content: string,
-    created_at: string
+    created_at: string,
+    likes: number,
+    isLiked: number,
 }
 
 const ViewPost = () => {
@@ -52,7 +54,7 @@ const ViewPost = () => {
 
     const { openModal } = useModal()
 
-    const handleAddComment = async (content: string, postId: number, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any, t: any) => {
+    const handleAddComment = async (content: string, postId: number) => {
         try {
             const res = await axios.post(`${API_URL}/comments/add`, { content: content, post: postId }, { withCredentials: true })
             openModal({ type: 'info', title: t('comments.add.scs.title'), msg: t('comments.add.scs.msg') })
@@ -72,60 +74,46 @@ const ViewPost = () => {
     }
 
     const fetchComments = async () => {
-            try {
-                const res = await axios.get(`${API_URL}/comments/fetch/${id}`)
+        try {
+            const res = await axios.get(`${API_URL}/comments/fetch/${id}`, { withCredentials: true })
 
-                if (res.data) {
-                    setComments(res.data);
-                } else {
-                    console.warn('Brak komentarzy dla wpisu.');
-                }
-            } catch (err) {
-                console.error('Błąd podczas pobierania danych:', err);
+            if (res.data) {
+                setComments(res.data);
+            } else {
+                console.warn('Brak komentarzy dla wpisu.');
             }
-        };
+
+        } catch (err) {
+            console.error('Błąd podczas pobierania danych:', err);
+        }
+    };
+
+    const fetchPost = async () => {
+        try {
+            const res = await axios.get(`${API_URL}/posts/${id}`)
+
+            if (res.data) {
+                setData(res.data);
+                setLikes(res.data.likes)
+            } else {
+                console.warn('Brak danych dla danego ID');
+            }
+
+            const status = await isLikedBy(idNum)
+            setIsLike(status)
+
+            const auth = await checkAuth();
+            setIsOwner({user: auth?.user, perm: auth?.perm});
+
+        } catch (err) {
+            console.error('Błąd podczas pobierania danych:', err);
+        }
+    };
 
     useEffect(() => {
         let active = true
 
-        const fetchAll = async () => {
-            try {
-                const res = await axios.get(`${API_URL}/posts/${id}`)
-
-                if (res.data) {
-                    setData({
-                        id: res.data.id,
-                        title: res.data.title,
-                        desc: res.data.description,
-                        author: res.data.author,
-                        likes: res.data.likes,
-                        date: res.data.created_at,
-                    });
-                    setLikes(res.data.likes)
-
-
-                } else {
-                    console.warn('Brak danych dla danego ID');
-                }
-
-                const status = await isLikedBy(idNum)
-                if(active) setIsLike(status)
-
-                const auth = await checkAuth();
-                if(active) setIsOwner({user: auth?.user, perm: auth?.perm});
-
-            } catch (err) {
-                console.error('Błąd podczas pobierania danych:', err);
-            }
-        };
-
-        fetchAll()
-
-        return () => { active = false }
-    }, [id]);
-
-    useEffect(() => {
-        let active = true
+        fetchPost()
         fetchComments()
 
         return () => { active = false }
@@ -135,7 +123,7 @@ const ViewPost = () => {
         return <Loading/>
     }
 
-    const formattedDate = new Date(data.date).toLocaleDateString(i18n.language, {
+    const formattedDate = new Date(data.created_at ).toLocaleDateString(i18n.language, {
         timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',
@@ -161,7 +149,7 @@ const ViewPost = () => {
                 <View style={css.title}>
                     <Text style={{ fontSize: 35 }} numberOfLines={3}>{data.title}</Text>
                 </View>
-                <Text style={{fontSize: 20}}>{data.desc}</Text>
+                <Text style={{fontSize: 20}}>{data.description}</Text>
                 <View style={css.footerBox}>
                     <View style={css.likeFooter}>
                         
@@ -189,20 +177,20 @@ const ViewPost = () => {
                     </TouchableOpacity>
                 </View> 
                 }
-                {/* Renderowanie komentarzy */}
+                {/* Renderowanie komentarzy DODAJ SPRAWDZANIE FORMATU*/}
                 <View style={css.commentsHeader}>
-                    <Text style={{fontSize: 15}}>Komentarze:</Text>
+                    <Text style={{fontSize: 15}}>{t('comments.info')}</Text>
                 </View>
                 <View style={css.addBox}>
                     <View style={css.addInput}>
-                        <TextInput placeholderTextColor="gray" placeholder="Dodaj komenatrz" autoCapitalize="none" value={comment} onChangeText={setComment} />
+                        <TextInput placeholderTextColor="gray" placeholder={t('input.addComment')} autoCapitalize="none" value={comment} onChangeText={setComment} />
                     </View>
-                    <TouchableOpacity style={{margin: 10, paddingHorizontal: 15, paddingVertical: 7, borderRadius: 25}} onPress={() => handleAddComment(comment, data.id, openModal, t)}>
-                        <Text>Skomentuj</Text>
+                    <TouchableOpacity style={{margin: 10, paddingHorizontal: 15, paddingVertical: 7, borderRadius: 25}} onPress={() => handleAddComment(comment, data.id)}>
+                        <Text>{t('input.button.comment')}</Text>
                     </TouchableOpacity>
                 </View>
                 {comments?.map((c: Comment, i: number) => {
-                    return (<MiniComment key={i} id={c.id} date={c.created_at} author={c.author_name} content={c.content} refresh={onRefresh} />)
+                    return (<MiniComment key={i} id={c.id} date={c.created_at} author={c.author_name} content={c.content} likes={c.likes} isLiked={!!c.isLiked} refresh={onRefresh} />)
                 })}
                 <View style={{width: '100%', padding: 30}}/>
             </ScrollView>

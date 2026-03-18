@@ -15,6 +15,7 @@ const fRegister = async (name: string, email: string, pass: string, openModal: (
     try {
         const res = await axios.post(`${API_URL}/auth/register`, { name: name, email: email, pass: pass });
         openModal({ type: 'info', title: t('auth.register.scs.title'), msg: t('auth.register.scs.msg') })
+        router.push('/posts')
     }
     catch(err: any) {
         const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'

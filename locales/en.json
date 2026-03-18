@@ -166,6 +166,7 @@
         "username": "username",
         "postTitle": "Title",
         "postDesc": "Description",
+        "addComment": "Add comment",
         "button": {
             "publish": "Publish",
             "changePass": "Change password",
@@ -173,7 +174,8 @@
             "login": "Login",
             "register": "Register",
             "save": "Save",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "comment": "Comment"
         },
         "error": {
             "samePass": "Passwords must be the same.",
@@ -207,7 +209,14 @@
             "err": {
                 "title": "Failed to delete comment."
             }
-        }
+        },
+        "like": {
+            "err": {
+                "title": "Failed to like comment"
+            }
+        },
+        "whose": "{{user}}'s comment:",
+        "info": "Comments:"
     },
     "common": {
         "internalErr": "Internal server error occurred.",

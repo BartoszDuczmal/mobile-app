@@ -179,7 +179,14 @@
             "err": {
                 "title": "Nie udało się usunąć komentarza."
             }
-        }
+        },
+        "like": {
+            "err": {
+                "title": "Nie polubionio komentarza."
+            }
+        },
+        "whose": "komentarz użytkownika {{user}}",
+        "info": "Komentarze:"
     },
     "input": {
         "pass": "hasło",
@@ -191,6 +198,7 @@
         "username": "nazwa użytkownika",
         "postTitle": "Tytuł",
         "postDesc": "Opis",
+        "addComment": "Dodaj komentarz",
         "button": {
             "publish": "Opublikuj",
             "changePass": "Zmień hasło",
@@ -198,7 +206,8 @@
             "login": "Zaloguj",
             "register": "Zarejestruj",
             "save": "Zapisz",
-            "cancel": "Anuluj"
+            "cancel": "Anuluj",
+            "comment": "Skomentuj"
         },
         "error": {
             "samePass": "Hasła muszą być takie same.",

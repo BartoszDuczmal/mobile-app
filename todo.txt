@@ -1,8 +1,10 @@
 TODO:
-*NA TERAZ:
--> 1. Dodac komentarze
--> + dodac animacje przyciskow wszedzie
--> 2. Dodac rejestracje z potwierdzeniem mailowo
+*NA TERAZ
+-> dodac potwierdzenie usuniecia komantarza
+-> dodac animacje(opacity) przyciskow wszedzie + moze jakies animacje polubien czy cos
+-> zmienic system polubien postow tak jak to zrobilem w komentarzach
+-> ustawic date z uwglednieniem strefy czasowej
+-> dodac rejestracje z potwierdzeniem mailowo
 *MNIEJ WAŻNE:
 -> 4. Zrobic console logi dla wewnetrznych
 -> 5. Poprawic we wszystkim walidacje

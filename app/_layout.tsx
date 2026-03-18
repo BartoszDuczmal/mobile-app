@@ -43,7 +43,6 @@ export default function RootLayout() {
       <Stack.Screen name='(tabs)/profile/[name]/index' options={({ route } : ( any )) => ({ title: `${t('profile.header')} ${route.params?.name}` })} />
       <Stack.Screen name='(tabs)/profile/index' options={{ title: t('myProfile.header'), headerRight: () => null }} />
       <Stack.Screen name='(tabs)/login/changePassword' options={{ title: t('auth.changePass.header'), headerRight: () => null }} />
-      <Stack.Screen name='(tabs)/comments/add' options={{ title: t('comments.add.header') }} />
     </Stack>
   </ModalProvider>
   );
