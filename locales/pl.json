@@ -178,7 +178,8 @@
             },
             "err": {
                 "title": "Nie udało się usunąć komentarza."
-            }
+            },
+            "inquiry": "Czy na pewno chcesz usunąć ten komentarz?"
         },
         "like": {
             "err": {

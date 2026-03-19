@@ -19,10 +19,11 @@ type Profile = {
 }
 
 type Post = {
-  id: number,
-  title: string,
-  desc: string,
-  likes: number,
+    id: number,
+    title: string,
+    desc: string,
+    likes: number,
+    isLiked: number
 };
 
 const blockUser = async (id: number, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => Promise<boolean|void>, t: any) => {
@@ -57,7 +58,7 @@ const Profile = () => {
     const { openModal } = useModal()
 
     const [data, setData] = useState<null | Profile>(null)
-    const [post, setPost] = useState([])
+    const [posts, setPosts] = useState([])
     const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: string}>({ loggedIn: false })
 
     const params = useLocalSearchParams()
@@ -73,13 +74,11 @@ const Profile = () => {
                     perms: res.data.perms,
                     date: res.data.created_at,
                 })
-                const res2 = await axios.post(`${API_URL}/posts`, { name: name })
-                setPost( res2.data.map((p: any) => ({
-                    id: p.id,
-                    title: p.title,
-                    desc: p.description,
-                    likes: p.likes,
-                })))
+
+                const res2 = await axios.post(`${API_URL}/posts`, { name: name }, { withCredentials: true })
+                if(res2.data) {
+                    setPosts(res2.data)
+                }
 
                 setLogged(await checkAuth())
             }
@@ -99,7 +98,6 @@ const Profile = () => {
     }
 
     const formattedDate = new Date(data.date).toLocaleDateString(i18n.language, {
-        timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -149,8 +147,8 @@ const Profile = () => {
             <ScrollView indicatorStyle="black" contentContainerStyle={[{justifyContent: 'center'}, {alignItems: 'center'}]}>
                 <View style={css.listBox}>
                 {
-                post.map((v: Post) => (
-                    <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
+                posts.map((v: Post) => (
+                    <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes} isLiked={!!v.isLiked}></MiniPost>
                 ))
                 }
                 </View>

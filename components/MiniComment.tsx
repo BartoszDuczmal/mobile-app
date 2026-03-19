@@ -18,7 +18,6 @@ const MiniComment = ({id, content, date, author, likes, isLiked, refresh}: {id: 
     const [useLikes, setUseLikes] = useState<number>(likes)
 
     const formattedDate = new Date(date).toLocaleDateString(i18n.language, {
-        timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -27,6 +26,8 @@ const MiniComment = ({id, content, date, author, likes, isLiked, refresh}: {id: 
     })
 
     const fetchDelete = async () => {
+        const result = await openModal({ type: 'inquiry', title: i18n.t('comments.remove.inquiry') })
+        if(!result) return
         try {
             const res = await axios.post(`${API_URL}/comments/remove`, { id: id }, { withCredentials: true })
             openModal({ type: 'info', title: t('comments.remove.scs.title'), msg: t('comments.remove.scs.msg') })
@@ -34,7 +35,7 @@ const MiniComment = ({id, content, date, author, likes, isLiked, refresh}: {id: 
         }
         catch(err: any) {
             const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-            openModal({ type: 'error', title: t('comment.remove.err.title'), msg: t(errMsg) })
+            openModal({ type: 'error', title: t('comments.remove.err.title'), msg: t(errMsg) })
         }
     }
 
@@ -52,7 +53,7 @@ const MiniComment = ({id, content, date, author, likes, isLiked, refresh}: {id: 
         }
         catch(err: any) {
             const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-            openModal({ type: 'error', title: t('comment.like.err.title'), msg: t(errMsg) })
+            openModal({ type: 'error', title: t('comments.like.err.title'), msg: t(errMsg) })
         }
     }
 

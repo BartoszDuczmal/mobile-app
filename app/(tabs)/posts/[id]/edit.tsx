@@ -66,8 +66,8 @@ const edit = () => {
                 } else {
                     console.warn('Brak danych dla danego ID');
                 }
-            } catch (error) {
-                console.error('Błąd podczas pobierania wpisu:', error);
+            } catch (err) {
+                console.error('Błąd podczas pobierania wpisu:', err);
             }
         };
         fetchData()

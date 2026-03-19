@@ -15,7 +15,7 @@ const check = async (req, res) => {
 
     try {
         const [result] = await db.query('SELECT username FROM users WHERE id = ? LIMIT 1', [user.id])
-        console.log('Zdekodowano: ' + result[0].username)
+        console.log('Autoryzowano: ' + result[0].username)
         res.json({ success: true, user: result[0].username, perm: user.perm, id: user.id })
     }
     catch(err) {

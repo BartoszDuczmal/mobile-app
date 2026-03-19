@@ -5,13 +5,14 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, useWindowDimensions, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, useWindowDimensions, View } from 'react-native';
 
 type Post = {
   id: number,
   title: string,
-  desc: string,
+  description: string,
   likes: number,
+  isLiked: number
 };
 
 export default function Main() {
@@ -21,24 +22,32 @@ export default function Main() {
 
   const router = useRouter()
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState<Post[]>([])
 
   const [searchData, setSearchData] = useState('')
 
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+
+  const fetchPosts = async () => {
+    try {
+      const res = await axios.post(`${API_URL}/posts`, {}, { withCredentials: true })
+      if(res.data) {
+        setData(res.data)
+      }
+    } catch(err) {
+      console.log('Błąd podczas pobierania danych: ', err)
+    }
+  }
+
   useEffect(() => {
-    axios.post(`${API_URL}/posts`)
-    .then(
-      res => {
-        const mapData = res.data.map((post: any) => ({
-          id: post.id,
-          title: post.title,
-          desc: post.description,
-          likes: post.likes,
-        }));
-        setData(mapData)
-    })
-    .catch( err => console.log(err) )
+    fetchPosts()
   }, []);
+
+  const onRefresh = async () => {
+        setRefreshing(true)
+        await fetchPosts()
+        setRefreshing(false)
+    }
 
   return (
     <>
@@ -52,14 +61,14 @@ export default function Main() {
           </TouchableHighlight>
         </View>
         <View style={css.content}>
-          <ScrollView indicatorStyle="black" style={css.withContent} contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingBottom: 30}}>
+          <ScrollView indicatorStyle="black" style={css.withContent} contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingBottom: 30}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
             {
               data
               .filter((item: Post) => 
-                (item.title.toLowerCase().includes(searchData.toLowerCase())) || (item.desc.toLowerCase().includes(searchData.toLowerCase()))
+                (item.title.toLowerCase().includes(searchData.toLowerCase())) || (item.description.toLowerCase().includes(searchData.toLowerCase()))
               )
               .map((v: Post) => (
-                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
+                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.description} likes={v.likes} isLiked={!!v.isLiked}></MiniPost>
               ))
             }
           </ScrollView>

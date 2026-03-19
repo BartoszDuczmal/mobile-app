@@ -2,6 +2,7 @@ import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import axios from "axios";
+import { router } from 'expo-router';
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
@@ -9,11 +10,12 @@ import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } fro
 const addPost = async (title: string, desc: string, openModal: ({type, title, msg}: {type: string, title: string, msg: string }) => void, t: any) => {
   try {
     const res = await axios.post(`${API_URL}/posts/create`, { title: title, desc: desc }, { withCredentials: true });
-    openModal({ type: 'info', title: 'Pomyślnie opublikowano wpis.', msg: '' })
+    openModal({ type: 'info', title: t('posts.publish.scs.title'), msg: '' })
+    router.push('/posts')
   }
   catch(err: any) {
     const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-    openModal({ type: "error", title: 'Nie udało się opublikować wpisu.', msg: t(errMsg) })
+    openModal({ type: "error", title: t('posts.publish.err.title'), msg: t(errMsg) })
   }
 }
 

@@ -208,7 +208,8 @@
             },
             "err": {
                 "title": "Failed to delete comment."
-            }
+            },
+            "inquiry": "Are you sure you want to delete this comment?"
         },
         "like": {
             "err": {
@@ -229,7 +230,7 @@
         "unauthorized": "You must log in first.",
         "yes": "YES",
         "no": "NO",
-        "likeErr": "Failed to like the post.",
+        "likeErr": "Failed to like post.",
         "changeLang": "Zmień język na Polski",
         "noAccess": "Access denied."
     }

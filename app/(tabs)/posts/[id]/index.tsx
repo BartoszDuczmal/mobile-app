@@ -4,8 +4,6 @@ import { API_URL } from "@/providers/config";
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { deletePost } from '@/utils/deletePost';
-import { isLikedBy } from '@/utils/isLikedBy';
-import { handleLike } from '@/utils/like-post';
 import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { router } from 'expo-router';
@@ -38,18 +36,22 @@ const ViewPost = () => {
     const idNum = parseInt(id as string, 10)
     if (isNaN(idNum)) return null;
 
+    // Dla danych posta
     const [data, setData] = useState<Post | null>(null)
 
+    // Dla komentarzy posta
     const [comments, setComments] = useState<Comment[] | null>(null)
 
+    // Dla polubień posta
     const [likes, setLikes] = useState<number>(0)
-
-    const [isLike, setIsLike] = useState(false)
+    const [isLike, setIsLike] = useState<boolean>(false)
 
     const [isOwner, setIsOwner] = useState<{user: string, perm: string} | null>(null)
 
+    // Dla inputa do komentowania
     const [comment, setComment] = useState<string>('')
 
+    // Dla pull-to-refresh
     const [refreshing, setRefreshing] = useState<boolean>(false)
 
     const { openModal } = useModal()
@@ -93,14 +95,12 @@ const ViewPost = () => {
             const res = await axios.get(`${API_URL}/posts/${id}`)
 
             if (res.data) {
-                setData(res.data);
+                setData(res.data)
                 setLikes(res.data.likes)
+                setIsLike(res.data.isLiked)
             } else {
                 console.warn('Brak danych dla danego ID');
             }
-
-            const status = await isLikedBy(idNum)
-            setIsLike(status)
 
             const auth = await checkAuth();
             setIsOwner({user: auth?.user, perm: auth?.perm});
@@ -109,6 +109,23 @@ const ViewPost = () => {
             console.error('Błąd podczas pobierania danych:', err);
         }
     };
+
+    const handleLike = async () => {
+        try {
+            const res = await axios.post(`${API_URL}/posts/${id}/like`, { }, { withCredentials: true });
+            if(res.data.type === 'remove') {
+                setLikes((prev) => prev - 1)
+                setIsLike(false)
+            }
+            else {
+                setLikes((prev) => prev + 1)
+                setIsLike(true)
+            }
+        } catch(err: any) {
+            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+            openModal({ type: "error", title: i18n.t('common.likeErr'), msg: i18n.t(errMsg) })
+        }
+    }
 
     useEffect(() => {
         let active = true
@@ -124,7 +141,6 @@ const ViewPost = () => {
     }
 
     const formattedDate = new Date(data.created_at ).toLocaleDateString(i18n.language, {
-        timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -152,16 +168,9 @@ const ViewPost = () => {
                 <Text style={{fontSize: 20}}>{data.description}</Text>
                 <View style={css.footerBox}>
                     <View style={css.likeFooter}>
-                        
-                        <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
-                            async () => {
-                                const res = await handleLike(data.id, openModal)
-                                if(res) {
-                                    setLikes(res.likes)
-                                    setIsLike(prev => !prev)
-                                }
-                            }
-                        }/>
+                        <TouchableOpacity onPress={() => handleLike()}>
+                            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'}/>
+                        </TouchableOpacity>
                         <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
                     </View>
                     <Text style={{ color: 'gray', fontSize: 18 }}>{formattedDate}</Text>
@@ -177,7 +186,7 @@ const ViewPost = () => {
                     </TouchableOpacity>
                 </View> 
                 }
-                {/* Renderowanie komentarzy DODAJ SPRAWDZANIE FORMATU*/}
+                {/* Renderowanie komentarzy */}
                 <View style={css.commentsHeader}>
                     <Text style={{fontSize: 15}}>{t('comments.info')}</Text>
                 </View>

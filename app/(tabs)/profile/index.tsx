@@ -21,8 +21,9 @@ type Profile = {
 type Post = {
     id: number,
     title: string,
-    desc: string,
+    description: string,
     likes: number,
+    isLiked: number
 };
 
 const logout = async (openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => Promise<boolean|void>, t: any) => {
@@ -42,7 +43,7 @@ const MyProfile = () => {
     const { t, i18n } = useTranslation()
 
     const [data, setData] = useState<null | Profile>(null)
-    const [post, setPost] = useState([])
+    const [posts, setPosts] = useState([])
 
     const { openModal } = useModal()
 
@@ -58,15 +59,11 @@ const MyProfile = () => {
                         perms: res.data.perms,
                         date: res.data.created_at,
                     })
-                    const res2 = await axios.post(`${API_URL}/posts`, { name: res.data.username })
-                    setPost(
-                        res2.data.map((p: any) => ({
-                            id: p.id,
-                            title: p.title,
-                            desc: p.description,
-                            likes: p.likes,
-                        }))
-                    )
+
+                    const res2 = await axios.post(`${API_URL}/posts`, { name: res.data.username }, { withCredentials: true })
+                    if(res2.data) {
+                        setPosts(res2.data)
+                    }
                 } else {
                     return <Text>{t('myProfile.noUser')}</Text>
                 }
@@ -85,7 +82,6 @@ const MyProfile = () => {
     }
 
     const formattedDate = new Date(data.date).toLocaleDateString(i18n.language, {
-        timeZone: 'Europe/Warsaw',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -154,8 +150,8 @@ const MyProfile = () => {
                     </View>
                     <View style={css.listBox}>
                         {
-                            post.map((v: Post) => (
-                                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes}></MiniPost>
+                            posts.map((v: Post) => (
+                                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.description} likes={v.likes} isLiked={!!v.isLiked}></MiniPost>
                             ))
                         }
                     </View>

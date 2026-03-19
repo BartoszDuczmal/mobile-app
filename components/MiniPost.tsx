@@ -1,33 +1,44 @@
+import { API_URL } from "@/providers/config";
 import { useModal } from '@/providers/ModalContext';
-import { isLikedBy } from '@/utils/isLikedBy';
-import { handleLike } from '@/utils/like-post';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import axios from 'axios';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Post = {
     id: number,
     title: string,
     desc: string,
     likes: number,
+    isLiked: boolean
 }
 
 const ViewPost = (props: Post) => {
-    const [likes, setLikes] = useState(props.likes)
-
-    const [isLike, setIsLike] = useState(false)
-
-    useEffect(() => {
-        const fetchIsLike = async () => {
-            const status = await isLikedBy(props.id)
-            setIsLike(status)
-        }
-
-        fetchIsLike()
-    }, [props.id])
+    const [likes, setLikes] = useState<number>(props.likes)
+    const [isLike, setIsLike] = useState<boolean>(props.isLiked)
 
     const { openModal } = useModal()
+
+    const { t, i18n } = useTranslation()
+
+    const handleLike = async () => {
+        try {
+            const res = await axios.post(`${API_URL}/posts/${props.id}/like`, { }, { withCredentials: true });
+            if(res.data.type === 'remove') {
+                setLikes((prev) => prev - 1)
+                setIsLike(false)
+            }
+            else {
+                setLikes((prev) => prev + 1)
+                setIsLike(true)
+            }
+        } catch(err: any) {
+            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+            openModal({ type: "error", title: i18n.t('common.likeErr'), msg: i18n.t(errMsg) })
+        }
+    }
 
     return (
         <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id}`) }}>
@@ -37,15 +48,9 @@ const ViewPost = (props: Post) => {
             </View>
             <View style={css.footerBox}>
                 <View style={css.footerLeft}>
-                    <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'} onPress={
-                        async () => {
-                            const res = await handleLike(props.id, openModal)
-                            if(res) {
-                                setLikes(res.likes)
-                                setIsLike(!isLike)
-                            }
-                        }
-                    }/>
+                    <TouchableOpacity onPress={() => handleLike()}>
+                        <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'}/>
+                    </TouchableOpacity>
                     <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
                 </View>
                 <View style={css.footerRight}>
