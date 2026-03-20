@@ -3,9 +3,9 @@ import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import axios from 'axios';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, useWindowDimensions, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, Text, TextInput, TouchableHighlight, useWindowDimensions, View } from 'react-native';
 
 type Post = {
   id: number,
@@ -35,7 +35,7 @@ export default function Main() {
         setData(res.data)
       }
     } catch(err) {
-      console.log('Błąd podczas pobierania danych: ', err)
+      console.error('Błąd podczas pobierania danych.')
     }
   }
 
@@ -47,7 +47,14 @@ export default function Main() {
         setRefreshing(true)
         await fetchPosts()
         setRefreshing(false)
-    }
+  }
+
+  const filteredData = useMemo(() => {
+    return data.filter((item) => 
+      item.title.toLowerCase().includes(searchData.toLowerCase()) || 
+      item.description.toLowerCase().includes(searchData.toLowerCase())
+    );
+  }, [data, searchData]);
 
   return (
     <>
@@ -61,17 +68,37 @@ export default function Main() {
           </TouchableHighlight>
         </View>
         <View style={css.content}>
-          <ScrollView indicatorStyle="black" style={css.withContent} contentContainerStyle={{justifyContent: 'center', alignItems: 'center', paddingBottom: 30}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
-            {
-              data
-              .filter((item: Post) => 
-                (item.title.toLowerCase().includes(searchData.toLowerCase())) || (item.description.toLowerCase().includes(searchData.toLowerCase()))
-              )
-              .map((v: Post) => (
-                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.description} likes={v.likes} isLiked={!!v.isLiked}></MiniPost>
-              ))
-            }
-          </ScrollView>
+          <FlatList 
+          indicatorStyle="black" 
+          style={css.withContent} 
+          contentContainerStyle={{
+              justifyContent: 'center', 
+              paddingBottom: 30,
+              width: '100%'
+            }} 
+          refreshControl={ 
+            <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            /> 
+          }
+          data={filteredData}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <MiniPost 
+            id={item.id} 
+            title={item.title} 
+            desc={item.description} 
+            likes={item.likes} 
+            isLiked={!!item.isLiked}
+            />
+          )}
+          ListEmptyComponent={
+          <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+          }
+          removeClippedSubviews={true}
+          keyboardShouldPersistTaps="handled"
+          />
         </View>
     </View>
     </>
@@ -131,6 +158,6 @@ const css = StyleSheet.create({
   withContent: {
     display: 'flex',
     width: '100%',
-    paddingHorizontal: '17.5%'
+    paddingHorizontal: '17.5%',
   }
 });

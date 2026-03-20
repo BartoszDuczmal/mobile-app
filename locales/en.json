@@ -79,7 +79,8 @@
         },
         "fetch": {
             "header": "Home Page",
-            "search": "Search..."
+            "search": "Search...",
+            "notLoad": "Failed to load posts."
         },
         "publish": {
             "header": "Publishing",
@@ -232,6 +233,8 @@
         "no": "NO",
         "likeErr": "Failed to like post.",
         "changeLang": "Zmień język na Polski",
-        "noAccess": "Access denied."
+        "noAccess": "Access denied.",
+        "notFound": "Not found.",
+        "nothingThere": "Nothing there."
     }
 }

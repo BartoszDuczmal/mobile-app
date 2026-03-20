@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
-
-dotenv.config();
 
 const check = async (req, res) => {
     const token = req.cookies.token

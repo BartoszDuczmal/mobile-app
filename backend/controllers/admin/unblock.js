@@ -1,16 +1,12 @@
-import dotenv from 'dotenv';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 
-dotenv.config();
-
-const check = async (req, res) => {
+const unblock = async (req, res) => {
     try {
         const token = req.cookies.token
         const id = req.body.id
         
         if(!token) {
-            console.log('Wywalam sie na tokenie')
             return res.status(401).json({ error: 'common.actionErr' })
         }
         const user = checkFunc(token)
@@ -22,7 +18,7 @@ const check = async (req, res) => {
         }
 
         if(user.id.toString() === id.toString()) {
-            return res.status(403).json({ error: 'profile.unblock.self' })
+            return res.status(400).json({ error: 'profile.unblock.self' })
         }
 
         const [result] = await db.query(`UPDATE users SET perms=? WHERE id=? LIMIT 1`, [null, id])
@@ -40,4 +36,4 @@ const check = async (req, res) => {
     }
 }
 
-export default check;
+export default unblock;

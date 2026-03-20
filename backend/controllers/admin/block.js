@@ -1,10 +1,7 @@
-import dotenv from 'dotenv';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 
-dotenv.config();
-
-const check = async (req, res) => {
+const block = async (req, res) => {
     try {
         const token = req.cookies.token
         const id = req.body.id
@@ -21,7 +18,7 @@ const check = async (req, res) => {
         }
 
         if(user.id.toString() === id.toString()) {
-            return res.status(401).json({ error: 'profile.block.self' })
+            return res.status(400).json({ error: 'profile.block.self' })
         }
 
         const [result] = await db.query(`UPDATE users SET perms=? WHERE id=? LIMIT 1`, ['blocked', id])
@@ -39,4 +36,4 @@ const check = async (req, res) => {
     }
 }
 
-export default check;
+export default block;

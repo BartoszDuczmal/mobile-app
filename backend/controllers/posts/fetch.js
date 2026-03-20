@@ -40,7 +40,7 @@ const fetch = async (req, res) => {
         res.json(posts)
     }
     catch(err) {
-        return res.status(500).json({ error: err })
+        return res.status(500).json({ error: 'posts.fetch.notLoad' })
     }
 }
 

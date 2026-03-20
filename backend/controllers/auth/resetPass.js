@@ -1,11 +1,8 @@
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 import schemaLogin from '../../models/loginModel.js';
-
-dotenv.config();
 
 const errMsg = "auth.resetPass.tokenExpired"
 

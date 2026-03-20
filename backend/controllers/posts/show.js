@@ -32,8 +32,6 @@ const show = async (req, res) => {
         res.json(post[0]);
     }
     catch(err) {
-
-        console.error('Błąd podczas zapytania do bazy:', err);
         return res.status(500).json({ error: 'common.internalErr' });
     }
 }

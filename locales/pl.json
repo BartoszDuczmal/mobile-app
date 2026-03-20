@@ -79,7 +79,8 @@
         },
         "fetch": {
             "header": "Strona Główna",
-            "search": "Szukaj..."
+            "search": "Szukaj...",
+            "notLoad": "Nie można wczytać wpisów."
         },
         "publish": {
             "header": "Publikowanie",
@@ -233,6 +234,8 @@
         "no": "NIE",
         "likeErr": "Nie udało się polubić wpisu.",
         "changeLang": "Change language to English",
-        "noAccess": "Nie możesz wykonać tej czynności."
+        "noAccess": "Nie możesz wykonać tej czynności.",
+        "notFound": "Nie znaleziono.",
+        "nothingThere": "Nic tu nie ma."
     }
 }

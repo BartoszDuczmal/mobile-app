@@ -1,11 +1,8 @@
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import Joi from "joi";
 import jwt from 'jsonwebtoken';
 import db from '../../config/db.js';
 import schemaLogin from "../../models/loginModel.js";
-
-dotenv.config();
 
 const login = async (req, res) => {
     const msgError = 'auth.login.incorrect'
@@ -32,7 +29,7 @@ const login = async (req, res) => {
             if(isMatch) {
 
                 // Nadawanie użytkownikowi tokenu JWT
-                const token = jwt.sign({ id: result[0].id, perm: result[0].perms }, process.env.JWT_KEY, { expiresIn: '1h' });
+                const token = jwt.sign({ id: result[0].id, perm: result[0].perms }, process.env.JWT_KEY, { expiresIn: '30m' });
                 res.cookie('token', token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',

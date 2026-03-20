@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-
-dotenv.config();
 
 const checkFunc = (token) => {
 

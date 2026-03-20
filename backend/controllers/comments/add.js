@@ -1,9 +1,6 @@
-import dotenv from 'dotenv';
 import db from '../../config/db.js';
 import checkFunc from '../../functions/checkFunc.js';
 import schemaPost from '../../models/postModel.js';
-
-dotenv.config();
 
 const add = async (req, res) => {
     try {
