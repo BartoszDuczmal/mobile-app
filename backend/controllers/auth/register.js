@@ -8,12 +8,10 @@ dotenv.config()
 const saltRounds = Number(process.env.SALT_ROUNDS)
 
 const register = async (req, res) => {
-    console.log('Otrzymano próbę zarejestrowania: ', req.body)
     
     // Walidacja otrzymanych danych
     const { error, value } = schemaLogin.validate(req.body)
     if(error) {
-      console.log('Bledna walidacja! Error: ' + error)
       return res.status(400).json({ error: 'auth.register.incorrect' });
     }
     
@@ -33,17 +31,14 @@ const register = async (req, res) => {
             await db.query('INSERT INTO users (username, email, pass) VALUES (?, ?, ?)', [value.name, value.email, hash])
           }
           else {
-            console.log('Konto o takiej nazwie użytkownika już istnieje!')
             return res.status(409).json({ error: 'auth.register.alreadyTakenUsername' });
           }
       }
       else {
-        console.log('Konto o takim emailu już istnieje!')
         return res.status(409).json({ error: 'auth.register.alreadyTakenEmail' });
       }
     }
     catch(err) {
-      console.log('Blad! Error: ' + err)
       return res.status(500).json({ error: 'common.internalErr' });
     }
 

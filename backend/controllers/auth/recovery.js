@@ -9,7 +9,6 @@ const recovery = async (req, res) => {
     // Walidacja otrzymanych danych
     const { error, value } = schemaLogin.extract('email').validate(req.body.email)
     if(error) {
-      console.log('Bledna walidacja! Error: ' + error)
       return res.status(400).json({ error: "auth.recovery.incorrect" });
     }
 
@@ -37,19 +36,16 @@ const recovery = async (req, res) => {
                     `
                 });
             } catch(err) {
-                console.error('Błąd poczty:', error);
                 return res.status(500).json({ error: "auth.recovery.mailSystem" });
             }
 
             res.json({ success: 'true', token: token })
         }
         catch(err) {
-            console.error('Blad podczas wysylania!', err)
             return res.status(500).json({ error: 'common.internalErr' })
         }
     }
     catch(err) {
-        console.error('Blad!', err)
         return res.status(500).json({ error: 'common.internalErr' })
     }
     

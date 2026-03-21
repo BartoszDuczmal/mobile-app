@@ -7,17 +7,13 @@ import schemaLogin from "../../models/loginModel.js";
 const login = async (req, res) => {
     const msgError = 'auth.login.incorrect'
     
-    console.log('Otrzymano próbę logowania: ', req.body)
-    
     // Walidacja otrzymanych danych
     const vPass = schemaLogin.extract('pass').validate(req.body.pass)
     if(vPass.error) {
-        console.log('Bledne hasło. Error: ' + vPass.error)
         return res.status(400).json({ error: msgError })
     }
     const vLogin = Joi.string().min(3).max(50).required().validate(req.body.login)
     if(vLogin.error) {
-        console.log('Bledny login. Error: ' + vLogin.error)
         return res.status(400).json({ error: msgError })
     }
     
@@ -41,17 +37,14 @@ const login = async (req, res) => {
                 res.json({ success: true }); 
             }
             else {
-                console.log('Nieprawidłowy login lub hasło.')
                 return res.status(401).json({ error: msgError });
             }
         }
         else {
-            console.log('Nieprawidłowy login lub hasło.')
             return res.status(401).json({ error: msgError });
         }
     }
     catch(err) {
-        console.log('Blad podczas zapytania do bazy. Error: ' + err)
         return res.status(500).json({ error: 'common.internalErr' });
     }
 }

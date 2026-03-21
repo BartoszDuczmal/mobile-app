@@ -33,10 +33,15 @@ This is a full‑stack mobile application built with **React Native (Expo)** on 
 * JWT Authentication
 * Nodemailer (password recovery emails)
 
+## 🚅 Optimization
+* The app __got rid N+1__ queries
+* Database had indexes on most often using columns to __avoid full table scans__
+* All of list which had data mapping use scrolable FlatList component which using __lazy loading__
+Thanks to this all app works visibly faster. -> [video](video.mp4)
 
 ## 📺 Demo
 
-If you want to try out this project go to [releases](https://github.com/BartoszDuczmal/mobile-app/releases) and check out the latest demo version. You must have an android device.
+If you want to try out this project go to [releases](https://github.com/BartoszDuczmal/mobile-app/releases) and check out the latest demo version. You must have an android device. You can see how the application works in [this video](video.mp4)
 
 
 ## 📄 License
