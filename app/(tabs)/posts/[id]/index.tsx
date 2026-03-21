@@ -10,7 +10,7 @@ import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 type Post = {
     id: number,
@@ -148,13 +148,9 @@ const ViewPost = () => {
         minute: '2-digit',
     });
 
-    return (
-        <>
-            <ScrollView 
-            style={css.container} 
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-            }>
+    const PostComponent = () => {
+        return (
+            <>
                 <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
                     <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>
                         <Feather name="user" size={24} color='gray' />
@@ -186,7 +182,7 @@ const ViewPost = () => {
                     </TouchableOpacity>
                 </View> 
                 }
-                {/* Renderowanie komentarzy */}
+                
                 <View style={css.commentsHeader}>
                     <Text style={{fontSize: 15}}>{t('comments.info')}</Text>
                 </View>
@@ -198,12 +194,41 @@ const ViewPost = () => {
                         <Text>{t('input.button.comment')}</Text>
                     </TouchableOpacity>
                 </View>
-                {comments?.map((c: Comment, i: number) => {
-                    return (<MiniComment key={i} id={c.id} date={c.created_at} author={c.author_name} content={c.content} likes={c.likes} isLiked={!!c.isLiked} refresh={onRefresh} />)
-                })}
-                <View style={{width: '100%', padding: 30}}/>
-            </ScrollView>
-        </>
+            </>
+        )
+    }
+
+    return (
+        <FlatList 
+        style={css.container} 
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+        }
+        keyExtractor={( item ) => item.id.toString()}
+        data={comments}
+        ListHeaderComponent={ 
+            <PostComponent/> 
+        }
+        renderItem={({ item }) => ( 
+            <MiniComment 
+            id={item.id} 
+            date={item.created_at} 
+            author={item.author_name} 
+            content={item.content} 
+            likes={item.likes} 
+            isLiked={!!item.isLiked} 
+            refresh={onRefresh} 
+            /> 
+        )}
+        ListFooterComponent={ 
+            <View style={{width: '100%', padding: 30}}/> 
+        }
+        ListEmptyComponent={
+            <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+        }
+        removeClippedSubviews={true}
+        keyboardShouldPersistTaps="handled"
+        />
     );
 }
 

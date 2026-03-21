@@ -69,7 +69,6 @@ export default function Main() {
         </View>
         <View style={css.content}>
           <FlatList 
-          indicatorStyle="black" 
           style={css.withContent} 
           contentContainerStyle={{
               justifyContent: 'center', 

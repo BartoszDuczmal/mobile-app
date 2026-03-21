@@ -8,7 +8,7 @@ import axios from "axios";
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -43,37 +43,43 @@ const MyProfile = () => {
     const { t, i18n } = useTranslation()
 
     const [data, setData] = useState<null | Profile>(null)
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState<Post[]>([])
+
+    const [refreshing, setRefreshing] = useState<boolean>(false)
 
     const { openModal } = useModal()
 
-    useEffect(() => {
-        const fetchAll = async () => {
-            try {
-                const res = await axios.post(`${API_URL}/profile/myShow`, {}, { withCredentials: true })
-                if (res.data) {
-                    setData({
-                        id: res.data.id,
-                        username: res.data.username,
-                        email: res.data.email,
-                        perms: res.data.perms,
-                        date: res.data.created_at,
-                    })
-
-                    const res2 = await axios.post(`${API_URL}/posts`, { name: res.data.username }, { withCredentials: true })
-                    if(res2.data) {
-                        setPosts(res2.data)
-                    }
-                } else {
-                    return <Text>{t('myProfile.noUser')}</Text>
+    const fetchAll = async () => {
+        try {
+            const res = await axios.post(`${API_URL}/profile/myShow`, {}, { withCredentials: true })
+            if (res.data) {
+                setData({
+                    id: res.data.id,
+                    username: res.data.username,
+                    email: res.data.email,
+                    perms: res.data.perms,
+                    date: res.data.created_at,
+                })
+                const res2 = await axios.post(`${API_URL}/posts`, { name: res.data.username }, { withCredentials: true })
+                if(res2.data) {
+                    setPosts(res2.data)
                 }
-
-            } catch (err: any) {
-                const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-                return <Text>{errMsg}</Text>
+            } else {
+                return <Text>{t('myProfile.noUser')}</Text>
             }
-        };
+        } catch (err: any) {
+            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+            return <Text>{errMsg}</Text>
+        }
+    };
 
+    const onRefresh = async () => {
+        setRefreshing(true)
+        await fetchAll()
+        setRefreshing(false)
+    }
+
+    useEffect(() => {
         fetchAll()
     }, [])
 
@@ -89,75 +95,98 @@ const MyProfile = () => {
         minute: '2-digit',
     });
 
-
-    return (
-        <>
-            <View style={css.container}>
-                <Text style={{ fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30 }}>{t('myProfile.titlePanel')}</Text>
-                <ScrollView indicatorStyle="black" contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30, paddingBottom: 30 }}>
-                    <View style={css.infoBox}>
-                        <View style={css.userBox}>
-                            <FontAwesome6 name="clipboard-user" size={24} />
-                            <View>
-                                <Text style={{ fontWeight: 500 }}>{t('myProfile.usernameBox')}</Text>
-                                <Text>{data.username}</Text>
-                            </View>
+    const ProfileTiles = () => {
+        return (
+            <>
+                <View style={css.infoBox}>
+                    <View style={css.userBox}>
+                        <FontAwesome6 name="clipboard-user" size={24} />
+                        <View>
+                            <Text style={{ fontWeight: 500 }}>{t('myProfile.usernameBox')}</Text>
+                            <Text>{data.username}</Text>
                         </View>
                     </View>
-                    <View style={css.infoBox}>
+                </View>
+                <View style={css.infoBox}>
+                    <View style={css.dateBox}>
+                        <MaterialIcons name="alternate-email" size={26} />
+                        <View>
+                            <Text style={{ fontWeight: 500 }}>{t('myProfile.emailBox')}</Text>
+                            <Text>{data.email}</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={css.infoBox}>
+                    <View style={css.dateBox}>
+                        <FontAwesome6 name="clock" size={24} />
+                        <View>
+                            <Text style={{ fontWeight: 500 }}>{t('myProfile.joinBox')}</Text>
+                            <Text>{formattedDate}</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={css.infoBox}>
+                    <TouchableOpacity onPress={() => router.push('/(tabs)/login/changePassword')}>
                         <View style={css.dateBox}>
-                            <MaterialIcons name="alternate-email" size={26} />
+                            <MaterialIcons name="password" size={26} color="black" />
                             <View>
-                                <Text style={{ fontWeight: 500 }}>{t('myProfile.emailBox')}</Text>
-                                <Text>{data.email}</Text>
+                                <Text style={{ fontWeight: 500 }}>{t('myProfile.changePassBox')}</Text>
                             </View>
                         </View>
-                    </View>
-                    <View style={css.infoBox}>
+                    </TouchableOpacity>
+                </View>
+                <View style={css.infoBox}>
+                    <TouchableOpacity onPress={() => logout(openModal, t)}>
                         <View style={css.dateBox}>
-                            <FontAwesome6 name="clock" size={24} />
+                            <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
                             <View>
-                                <Text style={{ fontWeight: 500 }}>{t('myProfile.joinBox')}</Text>
-                                <Text>{formattedDate}</Text>
+                                <Text style={{ fontWeight: 500, color: "rgba(185, 0, 0, 1)" }}>{t('myProfile.logoutBox')}</Text>
                             </View>
                         </View>
-                    </View>
-                    <View style={css.infoBox}>
-                        <TouchableOpacity onPress={() => router.push('/(tabs)/login/changePassword')}>
-                            <View style={css.dateBox}>
-                                <MaterialIcons name="password" size={26} color="black" />
-                                <View>
-                                    <Text style={{ fontWeight: 500 }}>{t('myProfile.changePassBox')}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={css.infoBox}>
-                        <TouchableOpacity onPress={() => logout(openModal, t)}>
-                            <View style={css.dateBox}>
-                                <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
-                                <View>
-                                    <Text style={{ fontWeight: 500, color: "rgba(185, 0, 0, 1)" }}>{t('myProfile.logoutBox')}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
+                </View>
+                <View style={css.infoBox}>
                     <View style={css.postsBox}>
                         <View style={css.postsTitle}>
                             <FontAwesome6 name="folder-open" size={24} />
                             <Text style={{ fontWeight: 500 }}>{t('myProfile.postsBox')}</Text>
                         </View>
                     </View>
+                </View>
+            </>
+        )
+    }
+
+    return (
+            <View style={css.container}>
+                <Text style={{ fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30, alignSelf: 'center' }}>{t('myProfile.titlePanel')}</Text>
+                <FlatList 
+                contentContainerStyle={{ 
+                    justifyContent: 'center',
+                }}
+                refreshControl={ 
+                    <RefreshControl 
+                    refreshing={refreshing} 
+                    onRefresh={onRefresh}
+                    /> 
+                }
+                data={posts}
+                keyExtractor={( item ) => item.id.toString()}
+                ListHeaderComponent={
+                    <ProfileTiles/>
+                }
+                renderItem={({ item }) => (
                     <View style={css.listBox}>
-                        {
-                            posts.map((v: Post) => (
-                                <MiniPost key={v.id} id={v.id} title={v.title} desc={v.description} likes={v.likes} isLiked={!!v.isLiked}></MiniPost>
-                            ))
-                        }
+                        <MiniPost id={item.id} title={item.title} desc={item.description} likes={item.likes} isLiked={!!item.isLiked}/>
                     </View>
-                </ScrollView>
+                )}
+                ListEmptyComponent={
+                    <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+                }
+                removeClippedSubviews={true}
+                keyboardShouldPersistTaps="handled"
+                />
             </View>
-        </>
     );
 }
 
@@ -165,7 +194,6 @@ const css = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        alignItems: 'center',
     },
     dateBox: {
         display: 'flex',
@@ -184,23 +212,18 @@ const css = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 20,
-        marginHorizontal: 15,
         marginTop: 15,
         padding: 15,
-        width: '100%',
+        width: '80%',
         display: 'flex',
         gap: 15,
+        margin: 'auto'
     },
     postsBox: {
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 20,
-        marginHorizontal: 15,
-        marginTop: 15,
-        padding: 15,
-        width: '100%',
         display: 'flex',
-        gap: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
     },
     postsTitle: {
         display: 'flex',
@@ -210,9 +233,8 @@ const css = StyleSheet.create({
     },
     listBox: {
         display: 'flex',
-        width: '100%',
-        alignItems: 'center',
-        paddingHorizontal: 30,
+        width: '70%',
+        margin: 'auto'
     }
 })
 

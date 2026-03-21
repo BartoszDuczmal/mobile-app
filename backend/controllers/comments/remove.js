@@ -5,7 +5,10 @@ const remove = async (req, res) => {
     try {
         const token = req.cookies.token
         const keyUser = checkFunc(token)
-        const id = req.body.id
+        const id = parseInt(req.body.id, 10)
+        if(isNaN(id)) {
+            return res.status(400).json({ error: 'common.internalErr' })
+        }
 
         if (!keyUser) {
             return res.status(401).json({ error: 'common.unauthorized' });

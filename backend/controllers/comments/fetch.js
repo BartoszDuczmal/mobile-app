@@ -4,6 +4,9 @@ import checkFunc from '../../functions/checkFunc.js';
 const fetch = async (req, res) => {
     try {
         const postId = parseInt(req.params.id, 10)
+        if(isNaN(postId)) {
+            return res.status(400).json({ error: 'common.internalErr' })
+        }
 
         const keyUser = checkFunc(req.cookies.token)
 

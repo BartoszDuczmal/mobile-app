@@ -1,6 +1,8 @@
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import express from 'express';
+import helmet from 'helmet';
+import hpp from 'hpp';
 import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
 import commentsRoutes from './routes/comments.js';
@@ -11,6 +13,9 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet());
+app.use(hpp())
+app.set('trust proxy', 1);
 
 app.use('/auth', authRoutes);
 app.use('/posts', postsRoutes);

@@ -235,6 +235,8 @@
         "changeLang": "Zmień język na Polski",
         "noAccess": "Access denied.",
         "notFound": "Not found.",
-        "nothingThere": "Nothing there."
+        "nothingThere": "Nothing there.",
+        "toManyAttempts5": "Too many attempts. Please try again in 5 minutes.",
+        "toManyAttempts15": "Too many attempts. Please try again in 15 minutes."
     }
 }

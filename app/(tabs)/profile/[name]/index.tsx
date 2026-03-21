@@ -9,7 +9,7 @@ import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -21,7 +21,7 @@ type Profile = {
 type Post = {
     id: number,
     title: string,
-    desc: string,
+    description: string,
     likes: number,
     isLiked: number
 };
@@ -58,8 +58,10 @@ const Profile = () => {
     const { openModal } = useModal()
 
     const [data, setData] = useState<null | Profile>(null)
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState<Post[]>([])
     const [logged, setLogged] = useState<{ loggedIn: boolean, user?: string, perm?: string}>({ loggedIn: false })
+
+    const [refreshing, setRefreshing] = useState<boolean>(false)
 
     const params = useLocalSearchParams()
     const name = params.name
@@ -88,9 +90,14 @@ const Profile = () => {
         }
     }
 
+    const onRefresh = async () => {
+        setRefreshing(true)
+        await fetchAll()
+        setRefreshing(false)
+    }
+
     useEffect(() => {
-        const load = async () => await fetchAll()
-        load()
+        fetchAll()
     }, [name])
 
     if (!data) {
@@ -105,16 +112,10 @@ const Profile = () => {
         minute: '2-digit',
     });
 
-
-    return (
-        <View style={css.container}>
-            <Text style={{fontSize: 20, fontWeight: 600}} numberOfLines={1} ellipsizeMode="tail">
-                {data.username} 
-                { data.perms === 'admin' && ` ( ${t('profile.perms.admin')} ) `}
-                { data.perms === 'blocked' && ` ( ${t('profile.perms.blocked')} ) `}
-            </Text>
+    const ProfileTiles = () => (
+        <>
             <View style={css.infoBox}>
-                <View style={css.infoInBox}>
+                <View style={css.dateBox}>
                     <FontAwesome6 name="clock" size={24}/>
                     <View>
                         <Text style={{fontWeight: 500}}>{t('profile.joinBox')}</Text>
@@ -131,28 +132,55 @@ const Profile = () => {
                         data.perms === 'blocked' ? await unblockUser(data.id, openModal, t) : await blockUser(data.id, openModal, t)
                         await fetchAll()
                     }}>
-                    <View style={css.infoInBox}>
+                        <View style={css.dateBox}>
                             <FontAwesome6 name={data.perms === 'blocked' ? 'reply' : 'ban'} size={24} color="#d00000" />
                             <Text style={{fontWeight: 500, color: '#d00000'}}>{data.perms === 'blocked' ? t('profile.unblockBox') : t('profile.blockBox')}</Text>
-                    </View>
+                        </View>
                 </TouchableOpacity>
             </View>
             }
-            <View style={css.postsBox}>
-                <View style={css.infoInBox}>
+            <View style={css.infoBox}>
+                <View style={css.postsBox}>
                     <FontAwesome6 name="folder-open" size={24}/>
                     <Text style={{fontWeight: 500}}>{t('profile.postsBox')}</Text>
                 </View>
             </View>
-            <ScrollView indicatorStyle="black" contentContainerStyle={[{justifyContent: 'center'}, {alignItems: 'center'}]}>
+        </>
+    )
+
+    return (
+        <View style={css.container}>
+            <Text style={{ fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30, alignSelf: 'center' }} numberOfLines={1} ellipsizeMode="tail">
+                {data.username} 
+                { data.perms === 'admin' && ` ( ${t('profile.perms.admin')} ) `}
+                { data.perms === 'blocked' && ` ( ${t('profile.perms.blocked')} ) `}
+            </Text>
+            <FlatList 
+            contentContainerStyle={{ 
+                justifyContent: 'center',
+            }}
+            refreshControl={ 
+                <RefreshControl 
+                refreshing={refreshing} 
+                onRefresh={onRefresh}
+                /> 
+            }
+            keyExtractor={(item) => item.id.toString()}
+            data={posts}
+            ListHeaderComponent={
+                <ProfileTiles/>
+            }
+            renderItem={({ item }) => (
                 <View style={css.listBox}>
-                {
-                posts.map((v: Post) => (
-                    <MiniPost key={v.id} id={v.id} title={v.title} desc={v.desc} likes={v.likes} isLiked={!!v.isLiked}></MiniPost>
-                ))
-                }
+                    <MiniPost key={item.id} id={item.id} title={item.title} desc={item.description} likes={item.likes} isLiked={!!item.isLiked}/>
                 </View>
-            </ScrollView>
+            )}
+            ListEmptyComponent={
+                <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+            }
+            removeClippedSubviews={true}
+            keyboardShouldPersistTaps="handled"
+            />
         </View>
     );
 }
@@ -161,36 +189,23 @@ const css = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        padding: 30,
-        alignItems: 'center',
-    },
-    infoInBox: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
     },
     infoBox: {
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 20,
-        marginHorizontal: 15,
         marginTop: 15,
         padding: 15,
-        width: '100%',
+        width: '80%',
         display: 'flex',
         gap: 15,
+        margin: 'auto'
     },
     postsBox: {
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 20,
-        marginHorizontal: 15,
-        marginTop: 15,
-        padding: 15,
-        width: '100%',
         display: 'flex',
-        gap: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
     },
     postsTitle: {
         display: 'flex',
@@ -200,10 +215,15 @@ const css = StyleSheet.create({
     },
     listBox: {
         display: 'flex',
-        width: '100%',
+        width: '70%',
+        margin: 'auto'
+    },
+    dateBox: {
+        display: 'flex',
+        flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 30,
-    }
+        gap: 10,
+    },
 })
 
 export default Profile;

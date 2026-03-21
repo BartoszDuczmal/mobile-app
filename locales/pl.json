@@ -236,6 +236,8 @@
         "changeLang": "Change language to English",
         "noAccess": "Nie możesz wykonać tej czynności.",
         "notFound": "Nie znaleziono.",
-        "nothingThere": "Nic tu nie ma."
+        "nothingThere": "Nic tu nie ma.",
+        "toManyAttempts5": "Zbyt wiele prób. Spróbuj ponownie za 5 minut.",
+        "toManyAttempts15": "Zbyt wiele prób. Spróbuj ponownie za 15 minut."
     }
 }
