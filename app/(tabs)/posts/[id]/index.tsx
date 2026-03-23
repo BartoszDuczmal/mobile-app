@@ -227,7 +227,6 @@ const ViewPost = () => {
             <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
         }
         removeClippedSubviews={true}
-        keyboardShouldPersistTaps="handled"
         />
     );
 }

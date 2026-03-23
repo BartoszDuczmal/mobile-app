@@ -41,7 +41,7 @@ Thanks to this all app works visibly faster. -> [video](video.mp4)
 
 ## 📺 Demo
 
-If you want to try out this project go to [releases](https://github.com/BartoszDuczmal/mobile-app/releases) and check out the latest demo version. You must have an android device. You can see how the application works in [this video](video.mp4)
+If you want to try out this project go to [releases](https://github.com/BartoszDuczmal/mobile-app/releases) and check out the latest demo version. You must have an android device. You can also see how the application works in [this video](video.mp4).
 
 
 ## 📄 License
