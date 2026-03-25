@@ -148,8 +148,15 @@ const ViewPost = () => {
         minute: '2-digit',
     });
 
-    const PostComponent = () => {
-        return (
+    return (
+        <FlatList 
+        style={css.container} 
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+        }
+        keyExtractor={( item ) => item.id.toString()}
+        data={comments}
+        ListHeaderComponent={ 
             <>
                 <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
                     <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>
@@ -195,19 +202,6 @@ const ViewPost = () => {
                     </TouchableOpacity>
                 </View>
             </>
-        )
-    }
-
-    return (
-        <FlatList 
-        style={css.container} 
-        refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-        }
-        keyExtractor={( item ) => item.id.toString()}
-        data={comments}
-        ListHeaderComponent={ 
-            <PostComponent/> 
         }
         renderItem={({ item }) => ( 
             <MiniComment 
@@ -227,6 +221,7 @@ const ViewPost = () => {
             <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
         }
         removeClippedSubviews={true}
+        keyboardShouldPersistTaps='handled'
         />
     );
 }
