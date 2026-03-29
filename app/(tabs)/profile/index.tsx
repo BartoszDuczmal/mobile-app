@@ -4,6 +4,7 @@ import '@/locales/config';
 import { API_URL } from '@/providers/config';
 import { useModal } from '@/providers/ModalContext';
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from "axios";
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -40,6 +41,7 @@ const logout = async (openModal: ({type, title, msg}: { type: string, title: str
 }
 
 const MyProfile = () => {
+    const headerHeight = useHeaderHeight()
     const { t, i18n } = useTranslation()
 
     const [data, setData] = useState<null | Profile>(null)
@@ -97,7 +99,7 @@ const MyProfile = () => {
 
     const ProfileTiles = () => {
         return (
-            <>
+            <View>
                 <View style={css.infoBox}>
                     <View style={css.userBox}>
                         <FontAwesome6 name="clipboard-user" size={24} />
@@ -153,17 +155,14 @@ const MyProfile = () => {
                         </View>
                     </View>
                 </View>
-            </>
+            </View>
         )
     }
 
     return (
-            <View style={css.container}>
-                <Text style={{ fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30, alignSelf: 'center' }}>{t('myProfile.titlePanel')}</Text>
+            <View>
                 <FlatList 
-                contentContainerStyle={{ 
-                    justifyContent: 'center',
-                }}
+                contentContainerStyle={[ css.container, { paddingTop: headerHeight } ]}
                 refreshControl={ 
                     <RefreshControl 
                     refreshing={refreshing} 
@@ -194,6 +193,8 @@ const css = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
+        justifyContent: 'center',
+        paddingBottom: 30,
     },
     dateBox: {
         display: 'flex',

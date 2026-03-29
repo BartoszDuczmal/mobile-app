@@ -5,6 +5,7 @@ import { API_URL } from '@/providers/config';
 import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
@@ -53,6 +54,7 @@ const unblockUser = async (id: number, openModal: ({type, title, msg}: { type: s
 }
 
 const Profile = () => {
+    const headerHeight = useHeaderHeight()
     const { t, i18n } = useTranslation()
 
     const { openModal } = useModal()
@@ -113,7 +115,7 @@ const Profile = () => {
     });
 
     const ProfileTiles = () => (
-        <>
+        <View>
             <View style={css.infoBox}>
                 <View style={css.dateBox}>
                     <FontAwesome6 name="clock" size={24}/>
@@ -145,12 +147,12 @@ const Profile = () => {
                     <Text style={{fontWeight: 500}}>{t('profile.postsBox')}</Text>
                 </View>
             </View>
-        </>
+        </View>
     )
 
     return (
-        <View style={css.container}>
-            <Text style={{ fontSize: 20, fontWeight: 600, margin: 15, marginTop: 30, alignSelf: 'center' }} numberOfLines={1} ellipsizeMode="tail">
+        <View style={[css.container, { paddingTop: headerHeight }]}>
+            <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 15, alignSelf: 'center' }} numberOfLines={1} ellipsizeMode="tail">
                 {data.username} 
                 { data.perms === 'admin' && ` ( ${t('profile.perms.admin')} ) `}
                 { data.perms === 'blocked' && ` ( ${t('profile.perms.blocked')} ) `}

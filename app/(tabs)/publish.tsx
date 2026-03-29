@@ -1,6 +1,7 @@
 import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from "axios";
 import { router } from 'expo-router';
 import { useState } from "react";
@@ -20,6 +21,7 @@ const addPost = async (title: string, desc: string, openModal: ({type, title, ms
 }
 
 const createPost = () => {
+    const headerHeight = useHeaderHeight()
     const { t } = useTranslation()
 
     const { openModal } = useModal()
@@ -30,7 +32,7 @@ const createPost = () => {
     const [desc, setDesc] = useState('')
 
     return (
-        <View style={css.container}>
+        <View style={[css.container, { paddingTop: headerHeight }]}>
             <TextInput placeholder={t('input.postTitle')} placeholderTextColor="gray" onChangeText={setTitle} style={css.title}/>
             <TextInput placeholder={t('input.postDesc')} placeholderTextColor="gray" onChangeText={setDesc} style={css.description} multiline={true} numberOfLines={7} textAlignVertical="top" />
             <Pressable onPress={() => addPost(title, desc, openModal, t)}>

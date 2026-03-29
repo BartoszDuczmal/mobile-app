@@ -6,6 +6,7 @@ TODO:
 -> zmienic system polubien postow tak jak to zrobilem w komentarzach ✅
 -> ustawic date z uwglednieniem strefy czasowej ✅
 -> dodaj do reszty list flatliste i dodatkowo ten pull-to-refresh ✅
+-> nowy design
 -> dodac rejestracje z potwierdzeniem mailowo 
 *MNIEJ WAŻNE:
 -> Poprawic we wszystkim walidacje

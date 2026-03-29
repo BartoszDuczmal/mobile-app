@@ -5,6 +5,7 @@ import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { deletePost } from '@/utils/deletePost';
 import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
@@ -30,6 +31,7 @@ type Comment = {
 }
 
 const ViewPost = () => {
+    const headerHeight = useHeaderHeight()
     const { t, i18n } = useTranslation()
     const params = useLocalSearchParams()
     const id = Array.isArray(params.id) ? params.id[0] : params.id
@@ -150,7 +152,7 @@ const ViewPost = () => {
 
     return (
         <FlatList 
-        style={css.container} 
+        style={[css.container, { paddingTop: headerHeight }]} 
         refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
         }

@@ -3,6 +3,7 @@ import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import emailValid from "@/utils/validation/email";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from "axios";
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,7 @@ const handleRecovery = async (email: string, openModal: ({type, title, msg}: { t
 }
 
 const recovery = () => {
+    const headerHeight = useHeaderHeight()
     const { t } = useTranslation()
 
     const { openModal } = useModal()
@@ -29,7 +31,7 @@ const recovery = () => {
     const eValid = emailValid(email)
 
     return (
-        <View style={css.container}>
+        <View style={[css.container, { paddingTop: headerHeight }]}>
             <View style={[css.inputBox, {borderBottomColor: eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'}]}>
                 <MaterialIcons name="alternate-email" size={40} color={eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'} />
                 <TextInput placeholderTextColor="gray" placeholder={t('input.email')} style={css.input} onChangeText={setEmail}/>

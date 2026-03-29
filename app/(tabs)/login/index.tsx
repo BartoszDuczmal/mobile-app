@@ -2,6 +2,7 @@ import '@/locales/config';
 import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -21,6 +22,7 @@ const fLogin = async (login: string, pass: string, openModal: ({type, title, msg
 }
 
 const index = () => {
+    const headerHeight = useHeaderHeight()
     const { t } = useTranslation()
 
     const { openModal } = useModal()
@@ -30,7 +32,7 @@ const index = () => {
     const [hide, setHide] = useState(true)
 
     return (
-        <View style={css.container}>
+        <View style={[css.container, { paddingTop: headerHeight }]}>
             <View style={css.inputBox}>
                 <MaterialIcons name="alternate-email" size={40} color={'gray'} />
                 <TextInput placeholderTextColor="gray" placeholder={t('input.login')} style={css.input} onChangeText={setLogin}/>

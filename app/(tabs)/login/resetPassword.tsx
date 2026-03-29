@@ -4,6 +4,7 @@ import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useHeaderHeight } from "@react-navigation/elements";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -22,6 +23,7 @@ const fReset = async (token: string, pass: string, openModal: ({type, title, msg
 }
 
 const resetPassword = () => {
+    const headerHeight = useHeaderHeight()
     const { t } = useTranslation()
 
     const { openModal } = useModal()
@@ -37,7 +39,7 @@ const resetPassword = () => {
     const pValid = passValid(pass)
 
     return (
-        <View style={css.container}>
+        <View style={[css.container, { paddingTop: headerHeight }]}>
             <View style={[css.inputBox, {
                 marginTop: 20, 
                 borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'

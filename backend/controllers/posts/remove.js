@@ -23,13 +23,12 @@ const remove = async (req, res) => {
         }
     }
 
-    // Usunięcie postu
     try {
+        // Usunięcie postu
         const [qDelete] = await db.query('DELETE FROM posts WHERE id=?', [postId])
         if(qDelete.affectedRows === 0) {
             return res.status(500).json({ error: 'common.err' })
         }
-        return res.json({ success: true })
     }
     catch(err) {
         console.error(err);

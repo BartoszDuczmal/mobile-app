@@ -5,6 +5,7 @@ import { useModal } from '@/providers/ModalContext';
 import { checkAuth } from '@/utils/checkAuth';
 import { deletePost } from '@/utils/deletePost';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
@@ -32,6 +33,8 @@ const fetchEdit = async (id: number, title: string, desc: string, openModal: ({t
 }
 
 const edit = () => {
+    const headerHeight = useHeaderHeight()
+
     const { t } = useTranslation()
 
     const { openModal } = useModal()
@@ -95,7 +98,7 @@ const edit = () => {
 
     return (
         <>
-            <View style={css.container}>
+            <View style={[css.container, { paddingTop: headerHeight }]}>
                 <View style={css.title}>
                     <TextInput placeholderTextColor="gray" style={{ fontSize: 35, color: 'black' }} value={title} onChangeText={setTitle}></TextInput>
                 </View>

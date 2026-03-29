@@ -6,7 +6,12 @@ export default {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        main: ["InstrumentSans"],
+        italic: ["InstrumentSansItalic"],
+      },
+    },
   },
   plugins: [],
 }

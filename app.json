@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "softwareKeyboardLayoutMode": "resize",
       "package": "com.twojanazwa.nativeapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -41,7 +42,15 @@
         }
       ],
       "expo-web-browser",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-navigation-bar",
+        {
+          "enforceContrast": false,
+          "barStyle": "light",
+          "visibility": "hidden"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

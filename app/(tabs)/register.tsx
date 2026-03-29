@@ -5,6 +5,7 @@ import emailValid from "@/utils/validation/email";
 import nameValid from "@/utils/validation/name";
 import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -24,6 +25,7 @@ const fRegister = async (name: string, email: string, pass: string, openModal: (
 }
 
 const register = () => {
+    const headerHeight = useHeaderHeight()
     const { t } = useTranslation()
 
     const { openModal } = useModal()
@@ -44,7 +46,7 @@ const register = () => {
 
 
     return (
-        <View style={css.container}>
+        <View style={[css.container, { paddingTop: headerHeight }]}>
             <View style={[css.inputBox, {
                 borderBottomColor: name.length === 0 ? 'gray' : nValid.valid ? 'gray': '#f2545b' 
             }]}>

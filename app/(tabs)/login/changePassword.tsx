@@ -3,6 +3,7 @@ import { API_URL } from "@/providers/config";
 import { useModal } from "@/providers/ModalContext";
 import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from "axios";
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,7 @@ const fReset = async (curr: string, pass: string, openModal: ({type, title, msg}
 }
 
 const changePassword = () => {
+    const headerHeight = useHeaderHeight()
     const { t } = useTranslation()
 
     const { openModal } = useModal()
@@ -35,7 +37,7 @@ const changePassword = () => {
     const pValid = passValid(pass)
 
     return (
-        <View style={css.container}>
+        <View style={[css.container, { paddingTop: headerHeight }]}>
             <View style={[css.inputBox, {
                 marginTop: 20, 
                 borderBottomColor: 'gray'

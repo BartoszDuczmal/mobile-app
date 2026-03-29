@@ -1,11 +1,14 @@
 import MiniPost from '@/components/MiniPost';
 import '@/locales/config';
 import { API_URL } from "@/providers/config";
+import { Ionicons } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
 import axios from 'axios';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, RefreshControl, StyleSheet, Text, TextInput, TouchableHighlight, useWindowDimensions, View } from 'react-native';
+import { FlatList, Keyboard, Platform, RefreshControl, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import Animated, { Easing, LinearTransition } from "react-native-reanimated";
 
 type Post = {
   id: number,
@@ -16,6 +19,8 @@ type Post = {
 };
 
 export default function Main() {
+  const headerHeight = useHeaderHeight()
+
   const { t } = useTranslation()
   
   const screenSize = useWindowDimensions()
@@ -24,9 +29,11 @@ export default function Main() {
 
   const [data, setData] = useState<Post[]>([])
 
-  const [searchData, setSearchData] = useState('')
+  const { search } = useLocalSearchParams<{ search?: string }>()
 
   const [refreshing, setRefreshing] = useState<boolean>(false)
+
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
 
   const fetchPosts = async () => {
     try {
@@ -41,6 +48,21 @@ export default function Main() {
 
   useEffect(() => {
     fetchPosts()
+
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardOffset(e.endCoordinates.height);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardOffset(0);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
   }, []);
 
   const onRefresh = async () => {
@@ -50,22 +72,19 @@ export default function Main() {
   }
 
   const filteredData = useMemo(() => {
+    const lower = search?.toLowerCase() || ''
     return data.filter((item) => 
-      item.title.toLowerCase().includes(searchData.toLowerCase()) || 
-      item.description.toLowerCase().includes(searchData.toLowerCase())
+      item.title.toLowerCase().includes(lower) || 
+      item.description.toLowerCase().includes(lower)
     );
-  }, [data, searchData]);
+  }, [data, search]);
 
   return (
-    <>
-    <View style={css.container}>
-        <View style={css.header}>
-          <TextInput placeholder={t('posts.fetch.search')} placeholderTextColor='gray' style={css.inputSearch} onChangeText={text => setSearchData(text)}></TextInput>
-        </View>
-        <View style={[css.footer, { marginBottom: screenSize.height * 0.1 }]}>
-          <TouchableHighlight onPress={() => router.push('/publish')} style={css.buttonFooter} underlayColor='darkgray'>
-            <Text style={{color: 'gray', fontSize: 25}}>+</Text>
-          </TouchableHighlight>
+    <View className='flex flex-row flex-1 justify-center w-full bg-[#f5f6f7]'>
+        <View className='absolute w-full self-end items-end flex-1'>
+          <Animated.View style={{ marginBottom: keyboardOffset !== 0 ? keyboardOffset + 25 : (screenSize.height * 0.1) }} className='rounded-full mr-[10%] bg-white z-10 p-3 shadow-sm active:opacity-80' onPress={() => router.push('/publish')} layout={LinearTransition.duration(200).easing(Easing.out(Easing.quad))}>
+            <Ionicons name="add-outline" size={32} color="black" />
+          </Animated.View>
         </View>
         <View style={css.content}>
           <FlatList 
@@ -83,6 +102,7 @@ export default function Main() {
           }
           data={filteredData}
           keyExtractor={(item) => item.id.toString()}
+          ListHeaderComponent={<View style={{ height: headerHeight }}></View>}
           renderItem={({ item }) => (
             <MiniPost 
             id={item.id} 
@@ -100,7 +120,6 @@ export default function Main() {
           />
         </View>
     </View>
-    </>
   );
 }
 
@@ -110,6 +129,7 @@ const css = StyleSheet.create({
       flexDirection: 'row',
       flex: 1,
       justifyContent: 'center',
+      width: '100%',
   },
   header: {
     width: '100%',
@@ -117,7 +137,6 @@ const css = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     height: 50,
-    marginTop: 30,
   },
   footer: {
     display: 'flex',
@@ -135,28 +154,13 @@ const css = StyleSheet.create({
     borderBottomColor: 'gray',
     borderBottomWidth: 1,
   },
-  buttonFooter: {
-    width: 50,
-    height: 50,
-    borderRadius: 30,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: '10%',
-    borderColor: 'gray',
-    color: 'gray',
-    borderWidth: 2,
-    zIndex: 3,
-    backgroundColor: '#EEEEEE',
-  },
   content: {
-    paddingTop: 72,
     flex: 1,
     alignItems: 'center',
   },
   withContent: {
     display: 'flex',
     width: '100%',
-    paddingHorizontal: '17.5%',
-  }
+    paddingHorizontal: '15%',
+  },
 });
