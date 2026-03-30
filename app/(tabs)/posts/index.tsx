@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Keyboard, Platform, RefreshControl, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { FlatList, Keyboard, Platform, Pressable, RefreshControl, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, { Easing, LinearTransition } from "react-native-reanimated";
 
 type Post = {
@@ -82,8 +82,10 @@ export default function Main() {
   return (
     <View className='flex flex-row flex-1 justify-center w-full bg-[#f5f6f7]'>
         <View className='absolute w-full self-end items-end flex-1'>
-          <Animated.View style={{ marginBottom: keyboardOffset !== 0 ? keyboardOffset + 25 : (screenSize.height * 0.1) }} className='rounded-full mr-[10%] bg-white z-10 p-3 shadow-sm active:opacity-80' onPress={() => router.push('/publish')} layout={LinearTransition.duration(200).easing(Easing.out(Easing.quad))}>
-            <Ionicons name="add-outline" size={32} color="black" />
+          <Animated.View style={{ marginBottom: keyboardOffset !== 0 ? keyboardOffset + 25 : (screenSize.height * 0.1) }} className='rounded-full mr-[10%] z-10 p-3' layout={LinearTransition.duration(200).easing(Easing.out(Easing.quad))}>
+            <Pressable onPress={() => router.push('/publish')} className='bg-white rounded-full p-3 shadow-sm active:opacity-80'>
+              <Ionicons name="add-outline" size={32} color="black" />
+            </Pressable>
           </Animated.View>
         </View>
         <View style={css.content}>
