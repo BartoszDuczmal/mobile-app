@@ -1,10 +1,12 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
-import { Animated, Easing, StyleSheet, View } from "react-native";
+import { Animated, Easing, StyleSheet, useColorScheme, View } from "react-native";
 
 const AnimatedAntDesign = Animated.createAnimatedComponent(AntDesign);
 
 const Loading = () => {
+    const colorScheme = useColorScheme();
+    const iconColor = colorScheme === "dark" ? "white" : "black";
 
     const spinValue = useRef(new Animated.Value(0)).current
 
@@ -31,7 +33,7 @@ const Loading = () => {
 
     return (
         <View style={css.loadingBox}>
-            <AnimatedAntDesign name="loading" size={80} color="black" style={{ transform: [{ rotate: spin }] }}/>
+            <AnimatedAntDesign name="loading" size={80} color={iconColor} style={{ transform: [{ rotate: spin }] }}/>
         </View>
     );
 }

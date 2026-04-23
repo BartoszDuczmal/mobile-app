@@ -7,15 +7,18 @@ import { createContext, ReactNode, useContext, useState } from "react"
 type ModalContextType = {
     openModal: ({ type, title, msg }: { type: string, title: string, msg?: string }) => Promise<void | boolean>
     closeModal: () => void
+    bottomBarHeight: number
+    setBottomBarHeight: (height: number) => void
 }
 
-const ModalContext = createContext<ModalContextType | undefined>(undefined)
+export const ModalContext = createContext<ModalContextType | undefined>(undefined)
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
     const [visible, setVisible] = useState(false)
     const [modalProps, setModalProps] = useState<any>({})
     const [modalType, setModalType] = useState<string|null>(null)
     const [resolver, setResolver] = useState<((value: boolean) => void) | null>(null)
+    const [bottomBarHeight, setBottomBarHeight] = useState<number>(0)
 
     const handleResponse = (answer: boolean) => {
         resolver?.(answer)
@@ -49,7 +52,12 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <ModalContext.Provider value={{openModal, closeModal}}>
+        <ModalContext.Provider value={{
+            openModal, 
+            closeModal, 
+            bottomBarHeight, 
+            setBottomBarHeight
+        }}>
             {children}
             {renderModal()}
         </ModalContext.Provider>

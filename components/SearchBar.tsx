@@ -1,24 +1,21 @@
-import { checkAuth } from "@/utils/checkAuth";
-import { Feather, Octicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import { getHeaderTitle } from "@react-navigation/elements";
 import { MotiView } from "moti";
-import { useCallback, useEffect, useState } from "react";
-import { useTranslation } from 'react-i18next';
-import { Pressable, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Pressable, Text, TextInput, useColorScheme, View } from "react-native";
 import Animated, { Easing, LinearTransition } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MenuModal from "./modals/MenuModal";
 
 const SearchBar = ({ options, route, navigation }: any) => {
+    const colorScheme = useColorScheme();
+    const iconColor = colorScheme === "dark" ? "white" : "black";
+
     const insets = useSafeAreaInsets();
 
     const title = getHeaderTitle(options, route.name);
 
     const [searchData, setSearchData] = useState('')
-
-    const { t } = useTranslation()
-
-    const [user, setUser] = useState(null)
 
     const [modal, setModal] = useState<boolean>(false)
 
@@ -33,52 +30,25 @@ const SearchBar = ({ options, route, navigation }: any) => {
         navigation.setParams({ search: text })
     }
 
-    useEffect(
-        useCallback(() => {
-            let isActive = true
-
-            async function verify() {
-                const res = await checkAuth()
-                console.log('Sprawdzenie usera:', res.user);
-
-                if(isActive) {
-                    if(res.loggedIn) {
-                        setUser(res.user)
-                    }
-                    else {
-                        setUser(null)
-                    }
-                }
-
-            }
-            verify()
-
-            return () => {
-                isActive = false
-            }
-
-        }, [])
-    )
-
     return (
         <>
-            <MenuModal isVisible={modal} user={user} close={handleClose}/>
+            <MenuModal isVisible={modal} close={handleClose}/>
             <View className='w-full items-center' style={{ paddingTop: insets.top }}>
                 <View className='w-full flex flex-row items-center px-6 py-6 justify-end relative'>
                     <MotiView style={{ position: "absolute", left: 24 }} animate={{ opacity: expandSearch ? 0 : 1 }}>
-                        <Text className="text-xl font-medium">{title}</Text>
+                        <Text className="text-xl font-medium dark:text-white">{title}</Text>
                     </MotiView>
                     <View className="flex-row gap-4">
-                        <Animated.View className={`justify-start rounded-full bg-white overflow-hidden ${expandSearch ? 'flex-1' : ''}`} layout={LinearTransition.duration(400).easing(Easing.out(Easing.quad))}>
+                        <Animated.View className={`justify-start rounded-full bg-white dark:bg-[#0f1215] overflow-hidden ${expandSearch ? 'flex-1' : ''}`} layout={LinearTransition.duration(400).easing(Easing.out(Easing.quad))}>
                             <Pressable className='flex-row items-center active:opacity-50' onPress={() => setExpandSearch(prev => !prev)}>
-                                <Octicons name="search" size={24} color="black" className="m-3"/>
+                                <FontAwesome name="search" size={24} color={iconColor} className="m-3"/>
                                 { expandSearch &&
-                                <TextInput className="h-12 bg-transparent flex-1" placeholder="Szukaj..." value={searchData} onChangeText={handleSearch}/>
+                                <TextInput className="h-12 bg-transparent flex-1 dark:text-white" placeholder="Szukaj..." value={searchData} onChangeText={handleSearch} placeholderTextColor={iconColor}/>
                                 }
                             </Pressable>
                         </Animated.View>
-                        <Pressable onPress={() => setModal(true)} className="items-center flex-row rounded-full p-3 bg-white active:opacity-50">
-                            <Feather name="user" size={24} color="#000" />
+                        <Pressable onPress={() => setModal(true)} className="items-center flex-row rounded-full p-3 bg-white dark:bg-[#0f1215] active:opacity-50">
+                            <FontAwesome6 name="gear" size={24} color={iconColor} />
                         </Pressable>
                     </View>
                 </View>

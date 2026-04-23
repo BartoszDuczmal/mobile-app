@@ -1,19 +1,18 @@
 import Loading from "@/components/Loading";
 import '@/locales/config';
-import { API_URL } from "@/providers/config";
-import { useModal } from "@/providers/ModalContext";
+import { useModal } from "@/providers/ModalProvider";
+import { api } from "@/services/api";
 import passValid from "@/utils/validation/pass";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
-import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 const fReset = async (token: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void, t: any) => {
     try {
-        await axios.post(`${API_URL}/auth/resetPass`, { token: token, pass: pass });
+        await api.post(`/auth/resetPass`, { token, pass });
         openModal({ type: 'info', title: t('auth.resetPass.scs.title'), msg: t('auth.resetPass.scs.msg') })
         router.push('/(tabs)/posts/')
     }
@@ -24,9 +23,11 @@ const fReset = async (token: string, pass: string, openModal: ({type, title, msg
 
 const resetPassword = () => {
     const headerHeight = useHeaderHeight()
+    const screenHeight = useWindowDimensions().height;
+
     const { t } = useTranslation()
 
-    const { openModal } = useModal()
+    const { openModal, bottomBarHeight } = useModal()
 
     const [pass, setPass] = useState('')
 
@@ -39,32 +40,28 @@ const resetPassword = () => {
     const pValid = passValid(pass)
 
     return (
-        <View style={[css.container, { paddingTop: headerHeight }]}>
-            <View style={[css.inputBox, {
-                marginTop: 20, 
-                borderBottomColor: pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'
-            }]}>
-                <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
-                <TextInput placeholderTextColor="gray" placeholder={t('input.pass')} style={css.input} onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
-            </View>
-            { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
-                <Text key={i} style={css.errMsg}>{msg}</Text>))
-            }
-            <View style={[css.inputBox, {
-                marginTop: 20, 
-                 borderBottomColor: repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'
-            }]}>
-                <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
-                <TextInput placeholderTextColor="gray" placeholder={t('input.rePass')} style={css.input} onChangeText={setRepass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
-            </View>
-            { repass !== pass && repass.length !== 0 && (
-                            <Text style={css.errMsg}>{t('input.error.samePass')}</Text>
-            )}
-            <Pressable onPress={() => fReset(token, pass, openModal, t)} style={[css.button, {opacity: !(pValid.valid && pass === repass) ? 0.5 : 1}]} disabled={ !(pValid.valid && pass === repass) }>
-                {({ pressed }) => (
-                <Text style={{ fontSize: 20, color: pressed ? 'blue' : 'black' }}>{t('input.button.changePass')}</Text>
-                )}
-            </Pressable>
+        <View className='flex-1 w-full'>
+            <ScrollView contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: bottomBarHeight }} contentContainerClassName='w-full items-center'>
+                <View className='bg-white items-center rounded-[30px] w-[80%] p-10 dark:bg-[#171a1c] shadow-md' style={{ marginTop: (screenHeight / 10) }}>
+                    <View className='flex-row items-center border-b-2 border-b-[gray]'>
+                        <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
+                        <TextInput placeholderTextColor="gray" placeholder={t('input.pass')} className='text-black dark:text-white ml-1 w-[80%] text-3xl' onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} multiline={false} numberOfLines={1}/>
+                    </View>
+                    { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
+                        <Text key={i} className='text-[#f2545b] mt-2'>{msg}</Text>))
+                    }
+                    <View className='flex-row items-center border-b-2 border-b-[gray]'>
+                        <MaterialIcons name="lock-outline" size={40} color={repass.length === 0 ? 'gray' : repass === pass ? 'gray': '#f2545b'} />
+                        <TextInput placeholderTextColor="gray" placeholder={t('input.rePass')} className='text-black dark:text-white ml-1 w-[80%] text-3xl' onChangeText={setRepass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} multiline={false} numberOfLines={1}/>
+                    </View>
+                    { repass !== pass && repass.length !== 0 && (
+                        <Text className='text-[#f2545b] mt-2'>{t('input.error.samePass')}</Text>
+                    )}
+                </View>
+                <Pressable onPress={() => fReset(token, pass, openModal, t)} className='shadow-md dark:bg-[#1e3773] bg-[#4974d7] w-[80%] p-5 mt-5 rounded-[50px] active:opacity-80' disabled={ !(pValid.valid && pass === repass) }>
+                    <Text className='text-2xl self-center text-white'>{t('input.button.changePass')}</Text>
+                </Pressable>
+            </ScrollView>
         </View>
     );
 }

@@ -1,11 +1,10 @@
-import { API_URL } from "@/providers/config";
-import { useModal } from '@/providers/ModalContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import axios from 'axios';
+import { useModal } from '@/providers/ModalProvider';
+import { api } from "@/services/api";
+import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type Post = {
     id: number,
@@ -16,6 +15,9 @@ type Post = {
 }
 
 const ViewPost = (props: Post) => {
+    const colorScheme = useColorScheme();
+    const iconColor = colorScheme === "dark" ? "white" : "black";
+
     const [likes, setLikes] = useState<number>(props.likes)
     const [isLike, setIsLike] = useState<boolean>(props.isLiked)
 
@@ -25,7 +27,7 @@ const ViewPost = (props: Post) => {
 
     const handleLike = async () => {
         try {
-            const res = await axios.post(`${API_URL}/posts/${props.id}/like`, { }, { withCredentials: true });
+            const res = await api.post(`/posts/${props.id}/like`, { });
             if(res.data.type === 'remove') {
                 setLikes((prev) => prev - 1)
                 setIsLike(false)
@@ -41,71 +43,24 @@ const ViewPost = (props: Post) => {
     }
 
     return (
-        <Pressable style={css.box} onPress={() => { router.push(`/posts/${props.id}`) }}>
-            <View style={css.contentBox}>
-                <Text style={css.title} numberOfLines={1} ellipsizeMode="tail">{props.title}</Text>
-                <Text numberOfLines={3} ellipsizeMode="tail">{props.desc}</Text>
+        <Pressable className="w-full h-44 bg-white rounded-3xl mt-8 flex z-1 dark:bg-[#171a1c] shadow-md" onPress={() => { router.push(`/posts/${props.id}`) }}>
+            <View className="h-max p-6 flex-1">
+                <Text className="text-3xl dark:text-[#d2d2d2]" numberOfLines={1} ellipsizeMode="tail">{props.title}</Text>
+                <Text numberOfLines={3} ellipsizeMode="tail" className="text-md dark:text-[#d2d2d2]">{props.desc}</Text>
             </View>
-            <View style={css.footerBox}>
-                <View style={css.footerLeft}>
+            <View className="flex-row px-7 items-center gap-7 h-12">
+                <View className="flex-row flex-1 w-full justify-start gap-2 items-center">
                     <TouchableOpacity onPress={() => handleLike()}>
                         <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'}/>
                     </TouchableOpacity>
                     <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
                 </View>
-                <View style={css.footerRight}>
-                    <MaterialCommunityIcons name='comment-outline' style={{ zIndex: 10 }} size={25} color='gray' />
+                <View className="flex-row flex-1 w-full justify-end gap-2">
+                    <FontAwesome6 name="comments" size={24} color="gray" />
                 </View>
             </View>
         </Pressable>
     );
 }
-
-const css = StyleSheet.create({
-    box: {
-        width: '100%',
-        height: 150,
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 20,
-        marginTop: 25,
-        display: 'flex',
-        zIndex: 1,
-    },
-    title: {
-        fontSize: 25,
-    },
-    contentBox: {
-        flex: 2,
-        padding: 15,
-    },
-    footerBox: {
-        display: 'flex',
-        flexDirection: 'row',
-        borderColor: 'gray',
-        borderTopWidth: 1,
-        flex: 1,
-        paddingHorizontal: 20,
-        alignItems: 'center',
-        gap: 7,
-    },
-    footerRight: {
-        display: 'flex',
-        flexDirection: 'row',
-        flex: 1,
-        width: '100%',
-        justifyContent: 'flex-end',
-        gap: 7
-    },
-    footerLeft: {
-        display: 'flex',
-        flexDirection: 'row',
-        flex: 1,
-        width: '100%',
-        justifyContent: 'flex-start',
-        gap: 5,
-        alignItems: 'center'
-    }
-})
 
 export default ViewPost;

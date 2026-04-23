@@ -19,7 +19,7 @@ const login = async (req, res) => {
     
     // Logowanie użytkownika 
     try {
-        const [result] = await db.query('SELECT id, pass, perms FROM users WHERE email = ? OR username = ? LIMIT 1', [req.body.login, req.body.login])
+        const [result] = await db.query('SELECT id, username, pass, perms FROM users WHERE email = ? OR username = ? LIMIT 1', [req.body.login, req.body.login])
         if(result.length > 0) {
             const isMatch = await bcrypt.compare(req.body.pass, result[0].pass)
             if(isMatch) {
@@ -34,7 +34,7 @@ const login = async (req, res) => {
                     path: '/',
                 });
 
-                res.json({ success: true }); 
+                res.json({ user: { id: result[0].id, name: result[0].username, perm: result[0].perm } }); 
             }
             else {
                 return res.status(401).json({ error: msgError });

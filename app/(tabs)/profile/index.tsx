@@ -1,15 +1,15 @@
 import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
 import '@/locales/config';
-import { API_URL } from '@/providers/config';
-import { useModal } from '@/providers/ModalContext';
+import { useAuth } from '@/providers/AuthProvider';
+import { useModal } from '@/providers/ModalProvider';
+import { api } from "@/services/api";
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
-import axios from "axios";
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -27,19 +27,6 @@ type Post = {
     isLiked: number
 };
 
-const logout = async (openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => Promise<boolean|void>, t: any) => {
-    const result = await openModal({ type: 'inquiry', title: t('myProfile.logout.inquiry') })
-    if(!result) return
-    try {
-        const res = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
-        router.replace('/(tabs)/posts')
-    }
-    catch(err: any) {
-        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-        openModal({ type: 'error', title: t('myProfile.logout.err.title'), msg: t('myProfile.logout.err.msg') })
-    }
-}
-
 const MyProfile = () => {
     const headerHeight = useHeaderHeight()
     const { t, i18n } = useTranslation()
@@ -49,11 +36,22 @@ const MyProfile = () => {
 
     const [refreshing, setRefreshing] = useState<boolean>(false)
 
-    const { openModal } = useModal()
+    const { openModal, bottomBarHeight } = useModal()
+
+    const { logout } = useAuth()
+
+    const colorScheme = useColorScheme();
+    const iconColor = colorScheme === "dark" ? "#d2d2d2" : "black";
+
+    const handleLogout = async () => {
+        const result = await openModal({ type: 'inquiry', title: t('myProfile.logout.inquiry') })
+        if(!result) return
+        await logout()
+    }
 
     const fetchAll = async () => {
         try {
-            const res = await axios.post(`${API_URL}/profile/myShow`, {}, { withCredentials: true })
+            const res = await api.post(`/profile/myShow`, {})
             if (res.data) {
                 setData({
                     id: res.data.id,
@@ -62,7 +60,7 @@ const MyProfile = () => {
                     perms: res.data.perms,
                     date: res.data.created_at,
                 })
-                const res2 = await axios.post(`${API_URL}/posts`, { name: res.data.username }, { withCredentials: true })
+                const res2 = await api.post(`/posts`, { name: res.data.username })
                 if(res2.data) {
                     setPosts(res2.data)
                 }
@@ -99,47 +97,47 @@ const MyProfile = () => {
 
     const ProfileTiles = () => {
         return (
-            <View>
-                <View style={css.infoBox}>
-                    <View style={css.userBox}>
-                        <FontAwesome6 name="clipboard-user" size={24} />
+            <View className='w-[80%] flex-1 self-center'>
+                <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
+                    <View className='flex-row items-center gap-4 pl-1'>
+                        <FontAwesome6 name="clipboard-user" size={24} color={iconColor} />
                         <View>
-                            <Text style={{ fontWeight: 500 }}>{t('myProfile.usernameBox')}</Text>
-                            <Text>{data.username}</Text>
+                            <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.usernameBox')}</Text>
+                            <Text className='dark:text-[#d2d2d2]'>{data.username}</Text>
                         </View>
                     </View>
                 </View>
-                <View style={css.infoBox}>
-                    <View style={css.dateBox}>
-                        <MaterialIcons name="alternate-email" size={26} />
+                <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
+                    <View className='flex-row items-center gap-3'>
+                        <MaterialIcons name="alternate-email" size={26} color={iconColor} />
                         <View>
-                            <Text style={{ fontWeight: 500 }}>{t('myProfile.emailBox')}</Text>
-                            <Text>{data.email}</Text>
+                            <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.emailBox')}</Text>
+                            <Text className='dark:text-[#d2d2d2]'>{data.email}</Text>
                         </View>
                     </View>
                 </View>
-                <View style={css.infoBox}>
-                    <View style={css.dateBox}>
-                        <FontAwesome6 name="clock" size={24} />
+                <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
+                    <View className='flex-row items-center gap-3'>
+                        <FontAwesome6 name="clock" size={24} color={iconColor} />
                         <View>
-                            <Text style={{ fontWeight: 500 }}>{t('myProfile.joinBox')}</Text>
-                            <Text>{formattedDate}</Text>
+                            <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.joinBox')}</Text>
+                            <Text className='dark:text-[#d2d2d2]'>{formattedDate}</Text>
                         </View>
                     </View>
                 </View>
-                <View style={css.infoBox}>
+                <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
                     <TouchableOpacity onPress={() => router.push('/(tabs)/login/changePassword')}>
-                        <View style={css.dateBox}>
-                            <MaterialIcons name="password" size={26} color="black" />
+                        <View className='flex-row items-center gap-3'>
+                            <MaterialIcons name="password" size={26} color={iconColor} />
                             <View>
-                                <Text style={{ fontWeight: 500 }}>{t('myProfile.changePassBox')}</Text>
+                                <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.changePassBox')}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
                 </View>
-                <View style={css.infoBox}>
-                    <TouchableOpacity onPress={() => logout(openModal, t)}>
-                        <View style={css.dateBox}>
+                <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
+                    <TouchableOpacity onPress={() => handleLogout()}>
+                        <View className='flex-row items-center gap-3'>
                             <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
                             <View>
                                 <Text style={{ fontWeight: 500, color: "rgba(185, 0, 0, 1)" }}>{t('myProfile.logoutBox')}</Text>
@@ -147,12 +145,10 @@ const MyProfile = () => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                <View style={css.infoBox}>
-                    <View style={css.postsBox}>
-                        <View style={css.postsTitle}>
-                            <FontAwesome6 name="folder-open" size={24} />
-                            <Text style={{ fontWeight: 500 }}>{t('myProfile.postsBox')}</Text>
-                        </View>
+                <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
+                    <View className='flex-row items-center gap-3'>
+                        <FontAwesome6 name="folder-open" size={24} color={iconColor} />
+                        <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.postsBox')}</Text>
                     </View>
                 </View>
             </View>
@@ -160,9 +156,9 @@ const MyProfile = () => {
     }
 
     return (
-            <View>
                 <FlatList 
-                contentContainerStyle={[ css.container, { paddingTop: headerHeight } ]}
+                contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: bottomBarHeight }}
+                className='flex-1 w-full'
                 refreshControl={ 
                     <RefreshControl 
                     refreshing={refreshing} 
@@ -175,7 +171,7 @@ const MyProfile = () => {
                     <ProfileTiles/>
                 }
                 renderItem={({ item }) => (
-                    <View style={css.listBox}>
+                    <View className='w-[70%] self-center'>
                         <MiniPost id={item.id} title={item.title} desc={item.description} likes={item.likes} isLiked={!!item.isLiked}/>
                     </View>
                 )}
@@ -185,58 +181,7 @@ const MyProfile = () => {
                 removeClippedSubviews={true}
                 keyboardShouldPersistTaps="handled"
                 />
-            </View>
     );
 }
-
-const css = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flex: 1,
-        justifyContent: 'center',
-        paddingBottom: 30,
-    },
-    dateBox: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-    },
-    userBox: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 15,
-        marginLeft: 5,
-    },
-    infoBox: {
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 20,
-        marginTop: 15,
-        padding: 15,
-        width: '80%',
-        display: 'flex',
-        gap: 15,
-        margin: 'auto'
-    },
-    postsBox: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-    },
-    postsTitle: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-    },
-    listBox: {
-        display: 'flex',
-        width: '70%',
-        margin: 'auto'
-    }
-})
 
 export default MyProfile;

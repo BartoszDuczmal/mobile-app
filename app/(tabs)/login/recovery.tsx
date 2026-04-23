@@ -1,17 +1,16 @@
 import '@/locales/config';
-import { API_URL } from "@/providers/config";
-import { useModal } from "@/providers/ModalContext";
+import { useModal } from "@/providers/ModalProvider";
+import { api } from "@/services/api";
 import emailValid from "@/utils/validation/email";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useHeaderHeight } from '@react-navigation/elements';
-import axios from "axios";
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 const handleRecovery = async (email: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void, t: any) => {
     try {
-        const res = await axios.post(`${API_URL}/auth/recovery`, { email: email })
+        const res = await api.post(`/auth/recovery`, { email })
         openModal({ type: 'info', title: t('auth.recovery.scs.title'), msg: t('auth.recovery.scs.msg') })
     }
     catch(err: any) {
@@ -22,74 +21,38 @@ const handleRecovery = async (email: string, openModal: ({type, title, msg}: { t
 
 const recovery = () => {
     const headerHeight = useHeaderHeight()
+    const screenHeight = useWindowDimensions().height;
+
     const { t } = useTranslation()
 
-    const { openModal } = useModal()
+    const { openModal, bottomBarHeight } = useModal()
 
     const [email, setEmail] = useState<string>('')
 
     const eValid = emailValid(email)
 
     return (
-        <View style={[css.container, { paddingTop: headerHeight }]}>
-            <View style={[css.inputBox, {borderBottomColor: eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'}]}>
-                <MaterialIcons name="alternate-email" size={40} color={eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'} />
-                <TextInput placeholderTextColor="gray" placeholder={t('input.email')} style={css.input} onChangeText={setEmail}/>
-            </View>
-            { !eValid && email.length !== 0 && (
-                <Text style={css.errMsg}>{t('input.error.emailFormat')}</Text>
-            )}
-            <View style={css.helpBox}>
-                <Text style={{ color: 'gray', textAlign: 'center' }}>{t('auth.recovery.infoMsg')}</Text>
-            </View>
-            <Pressable onPress={() => handleRecovery(email, openModal, t)} disabled={!eValid}>
-                {({ pressed }) => (
-                <Text style={{ 
-                    fontSize: 20, 
-                    color: pressed ? 'blue' : 'black' , 
-                    opacity: !eValid ? 0.5 : 1
-                }}>{t('input.button.recovery')}</Text>
-                )}
-            </Pressable>
+        <View className='w-full flex-1'>
+            <ScrollView contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: bottomBarHeight }} contentContainerClassName='w-full items-center'>
+                <View className='bg-white items-center rounded-[30px] w-[80%] p-10 dark:bg-[#171a1c] shadow-md' style={{ marginTop: (screenHeight / 10) }} >
+                    <View style={{borderBottomColor: eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'}} className='flex-row items-center border-b-2 border-b-gray'>
+                        <MaterialIcons name="alternate-email" size={40} color={eValid ? 'gray' : email.length === 0 ? 'gray' : '#f2545b'} />
+                        <TextInput placeholderTextColor="gray" placeholder={t('input.email')} className='text-black dark:text-white ml-1 w-[80%] text-3xl' onChangeText={setEmail}/>
+                    </View>
+                    { !eValid && email.length !== 0 && (
+                        <Text className='text-[#f2545b] mt-2'>{t('input.error.emailFormat')}</Text>
+                    )}
+                    <View className='flex-row items-center my-3'>
+                        <Text style={{ color: 'gray', textAlign: 'center' }}>{t('auth.recovery.infoMsg')}</Text>
+                    </View>
+                </View>
+                <Pressable onPress={() => handleRecovery(email, openModal, t)} disabled={!eValid} className='shadow-md dark:bg-[#1e3773] bg-[#4974d7] w-[80%] p-5 mt-5 rounded-[50px] active:opacity-80'>
+                    <Text className='text-2xl self-center text-white'>{t('input.button.recovery')}</Text>
+                </Pressable>
+            </ScrollView>
         </View>
     );
 
 }
-
-const css = StyleSheet.create({
-    container: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-    },
-    inputBox: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '60%',
-        borderBottomWidth: 2,
-        borderBottomColor: 'gray',
-    },
-    input: {
-        fontSize: 30, 
-        width: '80%', 
-        marginLeft: 5,
-        color: 'black',
-    },
-    helpBox: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
-        marginBottom: 10,
-        width: '60%',
-    },
-    errMsg: {
-        color: '#f2545b', 
-        marginTop: 10,
-    },
-})
 
 export default recovery;

@@ -1,20 +1,23 @@
 import i18n from '@/locales/config';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import Modal from 'react-native-modal';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const InquiryModal = ({ visible, title, msg, onResponse }: { visible: boolean, title: string, msg?: string, onResponse: (answer: boolean) => void }) => {
+    const marginTop = useSafeAreaInsets().top;
 
     return (
-        <Modal animationType="slide" visible={visible} transparent={true}>
-                <View style={css.centeredView}>
-                    <View style={css.modalView}>
-                        <Text style={css.title}>{title}</Text>
-                        { msg && <Text style={css.msg}>{msg}</Text> }
-                        <View style={css.buttonsView}>
-                        <TouchableOpacity onPress={() => onResponse(true)} style={css.button}>
-                            <Text style={{fontWeight: 700}}>{i18n.t('common.yes')}</Text>
+        <Modal animationIn='slideInDown' animationOut='slideOutUp' isVisible={visible} hasBackdrop={false} coverScreen={false}>
+            <View className='flex-1 items-center justify-start' style={{ paddingTop: marginTop }}>
+                <View className='w-[80%] items-center justify-start p-5 bg-white dark:bg-[#2b2e30] rounded-[30px] shadow-lg'>
+                    <Text className='text-xl text-center font-bold mb-1 dark:text-white'>{title}</Text>
+                    { msg && <Text className='text-lg dark: text-white'>{msg}</Text> }
+                    <View className='mt-3 flex-row justify-center items-center gap-12'>
+                        <TouchableOpacity onPress={() => onResponse(true)}>
+                            <Text className='font-extrabold dark:text-white'>{i18n.t('common.yes')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => onResponse(false)} style={css.button}>
-                            <Text style={{fontWeight: 700}}>{i18n.t('common.no')}</Text>
+                        <TouchableOpacity onPress={() => onResponse(false)}>
+                            <Text className='font-extrabold dark:text-white'>{i18n.t('common.no')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -22,51 +25,5 @@ const InquiryModal = ({ visible, title, msg, onResponse }: { visible: boolean, t
         </Modal>
     );
 }
-
-const css = StyleSheet.create({
-    centeredView: {
-       display: 'flex',
-       flex: 1,
-       alignItems: 'center',
-       justifyContent: 'center',
-    },
-    modalView: {
-        width: '80%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#fafeffff',
-        borderRadius: 30,
-        shadowColor: '#79c3fcff',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-    buttonsView: {
-        marginTop: 10,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 18, 
-        textAlign: 'center', 
-        fontWeight: 700,
-
-        marginBottom: 5,
-    },
-    msg: {
-        fontSize: 15, 
-        textAlign: 'center',
-    },
-    button: {
-        marginHorizontal: 30,
-    }
-})
 
 export default InquiryModal;

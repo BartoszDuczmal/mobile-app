@@ -187,7 +187,7 @@
                 "title": "Nie polubionio komentarza."
             }
         },
-        "whose": "komentarz użytkownika {{user}}",
+        "whose": "komentarz użytkownika {{user}}:",
         "info": "Komentarze:"
     },
     "input": {
@@ -238,6 +238,7 @@
         "notFound": "Nie znaleziono.",
         "nothingThere": "Nic tu nie ma.",
         "toManyAttempts5": "Zbyt wiele prób. Spróbuj ponownie za 5 minut.",
-        "toManyAttempts15": "Zbyt wiele prób. Spróbuj ponownie za 15 minut."
+        "toManyAttempts15": "Zbyt wiele prób. Spróbuj ponownie za 15 minut.",
+        "changeTheme": "Motyw:"
     }
 }

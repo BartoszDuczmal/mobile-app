@@ -3,7 +3,7 @@ import checkFunc from '../../functions/checkFunc.js';
 
 const fetch = async (req, res) => {
     try {
-        const keyUser = checkFunc(req.cookies.token)
+        const keyUser = await checkFunc(req.cookies.token)
 
         let posts;
 

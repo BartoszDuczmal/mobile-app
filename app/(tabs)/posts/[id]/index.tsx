@@ -1,12 +1,11 @@
 import Loading from '@/components/Loading';
 import MiniComment from '@/components/MiniComment';
-import { API_URL } from "@/providers/config";
-import { useModal } from '@/providers/ModalContext';
+import { useModal } from '@/providers/ModalProvider';
+import { api } from "@/services/api";
 import { checkAuth } from '@/utils/checkAuth';
 import { deletePost } from '@/utils/deletePost';
 import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
-import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
@@ -20,6 +19,7 @@ type Post = {
     author: string,
     likes: number,
     created_at: string,
+    isLiked: number,
 }
 type Comment = {
     id: number,
@@ -56,11 +56,11 @@ const ViewPost = () => {
     // Dla pull-to-refresh
     const [refreshing, setRefreshing] = useState<boolean>(false)
 
-    const { openModal } = useModal()
+    const { openModal, bottomBarHeight } = useModal()
 
     const handleAddComment = async (content: string, postId: number) => {
         try {
-            const res = await axios.post(`${API_URL}/comments/add`, { content: content, post: postId }, { withCredentials: true })
+            const res = await api.post(`/comments/add`, { content, post: postId })
             openModal({ type: 'info', title: t('comments.add.scs.title'), msg: t('comments.add.scs.msg') })
             setComment('')
             await fetchComments()
@@ -79,7 +79,7 @@ const ViewPost = () => {
 
     const fetchComments = async () => {
         try {
-            const res = await axios.get(`${API_URL}/comments/fetch/${id}`, { withCredentials: true })
+            const res = await api.get(`/comments/fetch/${id}`)
 
             if (res.data) {
                 setComments(res.data);
@@ -94,12 +94,12 @@ const ViewPost = () => {
 
     const fetchPost = async () => {
         try {
-            const res = await axios.get(`${API_URL}/posts/${id}`)
+            const res = await api.get(`/posts/${id}`)
 
             if (res.data) {
                 setData(res.data)
                 setLikes(res.data.likes)
-                setIsLike(res.data.isLiked)
+                setIsLike(!!res.data.isLiked)
             } else {
                 console.warn('Brak danych dla danego ID');
             }
@@ -114,7 +114,7 @@ const ViewPost = () => {
 
     const handleLike = async () => {
         try {
-            const res = await axios.post(`${API_URL}/posts/${id}/like`, { }, { withCredentials: true });
+            const res = await api.post(`/posts/${id}/like`, { });
             if(res.data.type === 'remove') {
                 setLikes((prev) => prev - 1)
                 setIsLike(false)
@@ -152,58 +152,62 @@ const ViewPost = () => {
 
     return (
         <FlatList 
-        style={[css.container, { paddingTop: headerHeight }]} 
+        className='flex-1 w-full'
+        contentContainerStyle={{
+            paddingBottom: bottomBarHeight,
+            paddingTop: headerHeight
+        }}
         refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
         }
         keyExtractor={( item ) => item.id.toString()}
         data={comments}
         ListHeaderComponent={ 
-            <>
-                <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
-                    <Text style={{ color: 'gray', fontSize: 18, alignSelf: 'center', marginBottom: 15 }} numberOfLines={1}>
-                        <Feather name="user" size={24} color='gray' />
-                        &nbsp;
-                        {data.author}
-                    </Text>
-                </Pressable>
-                <View style={css.title}>
-                    <Text style={{ fontSize: 35 }} numberOfLines={3}>{data.title}</Text>
-                </View>
-                <Text style={{fontSize: 20}}>{data.description}</Text>
-                <View style={css.footerBox}>
-                    <View style={css.likeFooter}>
-                        <TouchableOpacity onPress={() => handleLike()}>
-                            <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={28} color={isLike ? '#ec5353' : 'gray'}/>
-                        </TouchableOpacity>
-                        <Text style={{ color: 'gray', fontSize: 18 }}>{likes}</Text>
+            <View className='w-[80%] flex-1 items-center self-center'>
+                <View className='bg-white items-center rounded-[30px] w-full p-10 dark:bg-[#171a1c] shadow-md'>
+                    <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
+                        <Text className='text-[gray] text-xl self-center mb-4' numberOfLines={1}>
+                            <Feather name="user" size={24} color='gray' />
+                            &nbsp;
+                            {data.author}
+                        </Text>
+                    </Pressable>
+                    <View className='w-full pb-4 mb-2 border-b-2 border-[gray] items-center'>
+                        <Text numberOfLines={3} className='text-black dark:text-[#d2d2d2] text-4xl'>{data.title}</Text>
+                    </View>
+                    <Text className='text-black dark:text-[#d2d2d2] text-xl'>{data.description}</Text>
+                    <View className='align-center w-full flex-row m-6 justify-between'>
+                        <View className='flex-row gap-2 items-center'>
+                            <TouchableOpacity onPress={() => handleLike()}>
+                                <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={30} color={isLike ? '#ec5353' : 'gray'}/>
+                            </TouchableOpacity>
+                            <Text className='text-[gray] text-xl'>{likes}</Text>
+                        </View>
+                        <View className='flex-row gap-5 items-center'>
+                        { 
+                        (isOwner?.user === data.author || isOwner?.perm === 'admin') &&
+                        <>
+                            <TouchableOpacity onPress={() => router.push(`/posts/${idNum}/edit`)}>
+                                <FontAwesome6 name='edit' size={24} color='gray'/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => deletePost(data.id, openModal, t)}>
+                                <FontAwesome6 name='trash-can' size={24} color='gray'/>
+                            </TouchableOpacity>
+                        </>
+                        }
+                        </View> 
                     </View>
                     <Text style={{ color: 'gray', fontSize: 18 }}>{formattedDate}</Text>
                 </View>
-                { 
-                (isOwner?.user === data.author || isOwner?.perm === 'admin') &&
-                <View style={css.editBox}>
-                    <TouchableOpacity onPress={() => router.push(`/posts/${idNum}/edit`)}>
-                        <FontAwesome6 name='edit' size={24} color='gray'/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => deletePost(data.id, openModal, t)}>
-                        <FontAwesome6 name='trash-can' size={24} color='gray'/>
-                    </TouchableOpacity>
-                </View> 
-                }
-                
-                <View style={css.commentsHeader}>
-                    <Text style={{fontSize: 15}}>{t('comments.info')}</Text>
-                </View>
-                <View style={css.addBox}>
-                    <View style={css.addInput}>
-                        <TextInput placeholderTextColor="gray" placeholder={t('input.addComment')} autoCapitalize="none" value={comment} onChangeText={setComment} />
+                <View className='bg-white items-center rounded-[30px] w-full dark:bg-[#171a1c] shadow-md mt-5 flex-row justify-beetween p-3'>
+                    <View className='dark:bg-black rounded-full flex-1 px-4 bg-[#f5f6f7]'> 
+                        <TextInput placeholderTextColor="gray" placeholder={t('input.addComment')} autoCapitalize="none" value={comment} onChangeText={setComment} className='text-black dark:text-white'/>
                     </View>
-                    <TouchableOpacity style={{margin: 10, paddingHorizontal: 15, paddingVertical: 7, borderRadius: 25}} onPress={() => handleAddComment(comment, data.id)}>
-                        <Text>{t('input.button.comment')}</Text>
+                    <TouchableOpacity className='m-3 px-4' onPress={() => handleAddComment(comment, data.id)}>
+                        <Text className='text-black dark:text-white'>{t('input.button.comment')}</Text>
                     </TouchableOpacity>
                 </View>
-            </>
+            </View>
         }
         renderItem={({ item }) => ( 
             <MiniComment 
@@ -216,9 +220,6 @@ const ViewPost = () => {
             refresh={onRefresh} 
             /> 
         )}
-        ListFooterComponent={ 
-            <View style={{width: '100%', padding: 30}}/> 
-        }
         ListEmptyComponent={
             <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
         }
@@ -229,77 +230,6 @@ const ViewPost = () => {
 }
 
 const css = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flex: 1,
-        padding: 30,
-    },
-    box: {
-        display: 'flex',
-        flex: 1,
-        borderColor: 'gray',
-        borderWidth: 2,
-        borderRadius: 30,
-        padding: 20,
-    },
-    title: {
-        width: '100%',
-        paddingBottom: 15,
-        marginBottom: 10,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 2,
-        alignItems: 'center',
-    },
-    footerBox: {
-        marginTop: 25,
-        justifyContent: 'space-between',
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100%',
-        paddingHorizontal: 15,
-        paddingVertical: 5,
-        gap: 7,
-    },
-    likeFooter: {
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 7,
-        alignItems: 'center'
-    },
-    editBox: {
-        marginTop: 5,
-        paddingHorizontal: 15,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        gap: 20,
-    },
-    loadingBox: {
-        display: 'flex',
-        width: '100%',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingBottom: 80,
-    },
-    commentsRightHeader: {
-        display: 'flex',
-        gap: 5,
-        flexDirection: 'row',
-    },
-    commentsHeader: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginVertical: 5
-    },
-    addInput: {
-        margin: 5,
-        borderBottomColor: 'black',
-        borderBottomWidth: 1,
-        flex: 1
-    },
     addBox: {
         display: 'flex',
         flexDirection: 'row',

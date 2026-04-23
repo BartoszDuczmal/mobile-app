@@ -1,33 +1,34 @@
-import { router } from 'expo-router';
+import { useAppTheme } from "@/hooks/useAppTheme";
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { useColorScheme } from "nativewind";
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 
-const MenuModal = ({ isVisible, user, close }: { isVisible: boolean, user: null | string, close: () => void }) => {
+const MenuModal = ({ isVisible, close }: { isVisible: boolean, close: () => void }) => {
+    const { colorScheme, setColorScheme } = useColorScheme();
+
     const { t, i18n } = useTranslation()
+
+    const { theme, toggleTheme } = useAppTheme()
+
+    const iconColor = colorScheme === "dark" ? "white" : "black";
     
     const handleClose = () => {
         close()
     }
 
     return (
-        <Modal visible={isVisible} transparent={true}>
+        <Modal visible={isVisible} transparent={true} animationType='fade'>
             <Pressable onPress={() => handleClose()} style={css.closeArea}>
-                <Pressable style={css.menu}>
-                    <TouchableOpacity style={css.lang} onPress={() => (i18n.language == 'en') ? i18n.changeLanguage('pl') : i18n.changeLanguage('en')}>
-                        <Text>{t('common.changeLang')}</Text>
+                <Pressable className='self-end bg-white rounded-3xl m-4 mt-24 shadow-sm dark:bg-[#0f1215] items-start'>
+                    <TouchableOpacity className='pt-5 pb-3 px-8 w-full flex-row items-center gap-4' onPress={() => (i18n.language == 'en') ? i18n.changeLanguage('pl') : i18n.changeLanguage('en')}>
+                        <MaterialIcons name="translate" size={20} color='gray' />
+                        <Text className='dark:text-white'>{t('common.changeLang')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={css.login} onPress={
-                        () => {
-                        handleClose();
-                        if(user === null) { 
-                            router.push('/(tabs)/login') 
-                        } 
-                        else { 
-                            router.push('/(tabs)/profile')
-                        }
-                        }}>
-                        <Text>{ (user === null) ? t('common.login') : t('myProfile.header') }</Text>
+                    <TouchableOpacity className='pt-3 pb-5 px-8 text-center w-full flex-row items-center gap-4' onPress={ () => toggleTheme() }>
+                        <Feather name={colorScheme === 'dark' ? 'moon': 'sun'} size={20} color='gray' />
+                        <Text className='dark:text-white'>{t('common.changeTheme')} {theme}</Text>
                     </TouchableOpacity>
                 </Pressable>
             </Pressable>
@@ -51,9 +52,9 @@ const css = StyleSheet.create({
         },
         shadowOpacity: 0.22,
         shadowRadius: 2.22,
-        elevation: 3,
+        elevation: 1,
         margin: 15,
-        marginTop: 70,
+        marginTop: 75,
         alignItems: 'center',
     },
     lang: {

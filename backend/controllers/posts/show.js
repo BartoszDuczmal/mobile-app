@@ -1,5 +1,5 @@
 import db from '../../config/db.js';
-import countLikes from "../../functions/countPostLikes.js";
+import checkFunc from '../../functions/checkFunc.js';
 
 const show = async (req, res) => {
     const postId = req.params.id;
@@ -10,24 +10,26 @@ const show = async (req, res) => {
     }
 
     try {
-        const [post] = await db.query('SELECT * FROM posts WHERE id = ? LIMIT 1', [postId])
+        const keyUser = await checkFunc(req.cookies.token)
+
+        const [post] = await db.query(`
+            SELECT 
+                p.id,
+                p.title,
+                p.description,
+                p.created_at,
+                COALESCE(u.username, 'Deleted User') AS author,
+                (SELECT COUNT(*) FROM posts_likes WHERE post_id = p.id) AS likes,
+                EXISTS(SELECT 1 FROM posts_likes WHERE post_id = p.id AND user_id = ?) AS isLiked
+            FROM posts p
+            LEFT JOIN users u
+            ON p.author = u.id
+            WHERE p.id = ?`
+        , [keyUser?.id || null, postId])
+
         if (post.length === 0) {
             return res.status(404).json({ error: 'posts.show.notFound' });
         }
-
-        // Zliczamy ilość polubień dla posta
-        const likes = await countLikes(postId)
-        post[0].likes = likes
-
-        // Pobieranie nazwy użytkownika z id
-        let author = 'Deleted User'
-        if(post[0].author !== null) {
-            const [user] = await db.query('SELECT username FROM users WHERE id = ? LIMIT 1', [post[0].author])
-            author = user[0].username
-        }
-
-        post[0].author = author
-
 
         res.json(post[0]);
     }

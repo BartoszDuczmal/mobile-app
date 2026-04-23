@@ -1,17 +1,14 @@
 import Loading from '@/components/Loading';
 import '@/locales/config';
-import { API_URL } from "@/providers/config";
-import { useModal } from '@/providers/ModalContext';
+import { useModal } from '@/providers/ModalProvider';
+import { api } from "@/services/api";
 import { checkAuth } from '@/utils/checkAuth';
-import { deletePost } from '@/utils/deletePost';
-import { FontAwesome6 } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
-import axios from 'axios';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 
 type Post = {
     id: number,
@@ -22,7 +19,7 @@ type Post = {
 
 const fetchEdit = async (id: number, title: string, desc: string, openModal: ({type, title, msg}: { type: string, title: string, msg?: string }) => any, t: any) => {
     try {
-        const res = await axios.post(`${API_URL}/posts/${id}/edit`, { title: title, desc: desc }, { withCredentials: true });
+        const res = await api.post(`/posts/${id}/edit`, { title, desc });
         openModal({ type: 'info', title: t('posts.edit.scs.title'), msg: t('posts.edit.scs.msg') })
         router.back()
     }
@@ -34,10 +31,11 @@ const fetchEdit = async (id: number, title: string, desc: string, openModal: ({t
 
 const edit = () => {
     const headerHeight = useHeaderHeight()
+    const screenHeight = useWindowDimensions().height;
 
     const { t } = useTranslation()
 
-    const { openModal } = useModal()
+    const { openModal, bottomBarHeight } = useModal()
 
     const { width } = useWindowDimensions()
 
@@ -57,7 +55,7 @@ const edit = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`${API_URL}/posts/${id}`);
+                const res = await api.get(`/posts/${id}`);
 
                 if (res.data) {
                     setData({
@@ -97,73 +95,25 @@ const edit = () => {
     }
 
     return (
-        <>
-            <View style={[css.container, { paddingTop: headerHeight }]}>
-                <View style={css.title}>
-                    <TextInput placeholderTextColor="gray" style={{ fontSize: 35, color: 'black' }} value={title} onChangeText={setTitle}></TextInput>
+        <ScrollView className='w-full flex-1'>
+            <View style={{ paddingTop: headerHeight, paddingBottom: bottomBarHeight }} className='flex-1 w-[80%] self-center'>
+                <View className='bg-white items-center rounded-[30px] w-full p-10 dark:bg-[#171a1c] shadow-md' style={{ marginTop: (screenHeight / 10) }}>
+                    <View className='w-full pb-4 mb-2 border-b-2 border-[gray] items-center'>
+                        <TextInput placeholderTextColor="gray" className='text-black dark:text-[#d2d2d2] text-4xl' value={title} onChangeText={setTitle}></TextInput>
+                    </View>
+                    <TextInput placeholderTextColor="gray" className='text-black dark:text-[#d2d2d2] text-xl' value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
                 </View>
-                <TextInput placeholderTextColor="gray" style={{fontSize: 20, color: 'black'}} value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
-                <View style={css.footerBox}>
-                    <Pressable style={[css.actionBoxSave, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => fetchEdit(idNum, title, desc, openModal, t)}>
-                        <Text>{t('input.button.save')}</Text>
+                <View className='mt-5 justify-around flex-row w-full items-center gap-2 px-4'>
+                    <Pressable style={{ paddingHorizontal: (width - 200) / 5 }} className='shadow-md dark:bg-[#2a7e2a] bg-[lightgreen] p-5 rounded-[30px] active:opacity-80' onPress={() => fetchEdit(idNum, title, desc, openModal, t)}>
+                        <Text className='text-2xl self-center text-white'>{t('input.button.save')}</Text>
                     </Pressable>
-                    <Pressable style={[css.actionBoxCancel, { paddingHorizontal: (width - 200) / 5 }]} onPress={() => router.back()}>
-                        <Text>{t('input.button.cancel')}</Text>
-                    </Pressable>
-                    <Pressable onPress={() => deletePost(data.id, openModal, t)}>
-                        {({pressed}) => (
-                            <FontAwesome6 name='trash-can' size={24} color={pressed ? 'silver' : 'gray'}/>
-                        )}
+                    <Pressable style={{ paddingHorizontal: (width - 200) / 5 }} onPress={() => router.back()} className='shadow-md dark:bg-[#b74b49] bg-[#e39695] p-5 rounded-[30px] active:opacity-80'>
+                        <Text className='text-2xl self-center text-white'>{t('input.button.cancel')}</Text>
                     </Pressable>
                 </View>
             </View>
-        </>
+        </ScrollView>
     );
 }
-
-const css = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flex: 1,
-        padding: 30,
-    },
-    box: {
-        display: 'flex',
-        flex: 1,
-        borderColor: 'gray',
-        borderWidth: 2,
-        borderRadius: 30,
-        padding: 20,
-    },
-    title: {
-        width: '100%',
-        paddingBottom: 15,
-        marginBottom: 10,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 2,
-        alignItems: 'center',
-    },
-    footerBox: {
-        marginTop: 25,
-        justifyContent: 'space-around',
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100%',
-        paddingHorizontal: 15,
-        paddingVertical: 5,
-        gap: 7,
-        alignItems: 'center'
-    },
-    actionBoxSave: {
-        paddingVertical: 10,
-        borderRadius: 17,
-        backgroundColor: 'lightgreen',
-    },
-    actionBoxCancel: {
-        paddingVertical: 10,
-        borderRadius: 17,
-        backgroundColor: '#e39695',
-    }
-})
 
 export default edit;

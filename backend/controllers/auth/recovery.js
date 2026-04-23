@@ -32,7 +32,7 @@ const recovery = async (req, res) => {
                     htmlContent: 
                     `
                         <h2>Aby zmienić hasło do konta kliknij w przycisk poniżej.</h2>
-                        <a href="${resetLink}" target="_blank">{t('input.button.changePass')}</a>
+                        <a href="${resetLink}" target="_blank">${t('input.button.changePass')}</a>
                     `
                 });
             } catch(err) {

@@ -1,14 +1,12 @@
 import MiniPost from '@/components/MiniPost';
 import '@/locales/config';
-import { API_URL } from "@/providers/config";
-import { Ionicons } from '@expo/vector-icons';
+import { useModal } from '@/providers/ModalProvider';
+import { api } from "@/services/api";
 import { useHeaderHeight } from '@react-navigation/elements';
-import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Keyboard, Platform, Pressable, RefreshControl, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import Animated, { Easing, LinearTransition } from "react-native-reanimated";
+import { FlatList, Keyboard, Platform, RefreshControl, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 
 type Post = {
   id: number,
@@ -19,7 +17,11 @@ type Post = {
 };
 
 export default function Main() {
+  const colorScheme = useColorScheme();
+  const iconColor = colorScheme === "dark" ? "white" : "black";
+
   const headerHeight = useHeaderHeight()
+  const { bottomBarHeight } = useModal()
 
   const { t } = useTranslation()
   
@@ -37,7 +39,7 @@ export default function Main() {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.post(`${API_URL}/posts`, {}, { withCredentials: true })
+      const res = await api.post(`/posts`, {})
       if(res.data) {
         setData(res.data)
       }
@@ -80,17 +82,11 @@ export default function Main() {
   }, [data, search]);
 
   return (
-    <View className='flex flex-row flex-1 justify-center w-full bg-[#f5f6f7]'>
-        <View className='absolute w-full self-end items-end flex-1'>
-          <Animated.View style={{ marginBottom: keyboardOffset !== 0 ? keyboardOffset + 25 : (screenSize.height * 0.1) }} className='rounded-full mr-[10%] z-10 p-3' layout={LinearTransition.duration(200).easing(Easing.out(Easing.quad))}>
-            <Pressable onPress={() => router.push('/publish')} className='bg-white rounded-full p-3 shadow-sm active:opacity-80'>
-              <Ionicons name="add-outline" size={32} color="black" />
-            </Pressable>
-          </Animated.View>
-        </View>
-        <View style={css.content}>
+    <>
+    <View className='flex flex-row flex-1 justify-center w-full'>
+        <View className='flex-1 items-center'>
           <FlatList 
-          style={css.withContent} 
+          className='w-full px-[15%]'
           contentContainerStyle={{
               justifyContent: 'center', 
               paddingBottom: 30,
@@ -104,7 +100,7 @@ export default function Main() {
           }
           data={filteredData}
           keyExtractor={(item) => item.id.toString()}
-          ListHeaderComponent={<View style={{ height: headerHeight }}></View>}
+          ListHeaderComponent={<View style={{ height: headerHeight }}/>}
           renderItem={({ item }) => (
             <MiniPost 
             id={item.id} 
@@ -115,54 +111,14 @@ export default function Main() {
             />
           )}
           ListEmptyComponent={
-          <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+          <Text className='mx-5 self-center dark:text-white text-black'>{t('common.nothingThere')}</Text>
           }
           removeClippedSubviews={true}
+          ListFooterComponent={<View style={{ height: bottomBarHeight }}/>}
           keyboardShouldPersistTaps="handled"
           />
         </View>
     </View>
+    </>
   );
 }
-
-const css = StyleSheet.create({
-  container: {
-      display: 'flex',
-      flexDirection: 'row',
-      flex: 1,
-      justifyContent: 'center',
-      width: '100%',
-  },
-  header: {
-    width: '100%',
-    position: 'absolute',
-    display: 'flex',
-    alignItems: 'center',
-    height: 50,
-  },
-  footer: {
-    display: 'flex',
-    position: 'absolute',
-    width: '100%',
-    height: 50,
-    alignSelf: 'flex-end',
-    alignItems: 'flex-end'
-  },
-  inputSearch: {
-    width: '70%',
-    paddingLeft: 20,
-    color: 'black',
-    fontSize: 15,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 1,
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  withContent: {
-    display: 'flex',
-    width: '100%',
-    paddingHorizontal: '15%',
-  },
-});

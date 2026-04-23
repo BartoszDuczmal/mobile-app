@@ -1,9 +1,9 @@
-import { API_URL } from "@/providers/config"
-import axios from "axios"
+import { api } from "@/services/api";
 
 export const checkAuth = async () => {
     try {
-        const res = await axios.get(`${API_URL}/auth/check`, { withCredentials: true })
+        const res = await api.get(`/auth/check`)
+        console.log('Sprawdzanie autoryzacji:', res.data)
         return { loggedIn: true, user: res.data.user, perm: res.data.perm, id: res.data.id}
     }
     catch {

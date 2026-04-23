@@ -1,16 +1,15 @@
 import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
 import '@/locales/config';
-import { API_URL } from '@/providers/config';
-import { useModal } from '@/providers/ModalContext';
+import { useModal } from '@/providers/ModalProvider';
+import { api } from "@/services/api";
 import { checkAuth } from '@/utils/checkAuth';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useHeaderHeight } from '@react-navigation/elements';
-import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -31,7 +30,7 @@ const blockUser = async (id: number, openModal: ({type, title, msg}: { type: str
     const result = await openModal({ type: 'inquiry', title: t('profile.block.inquiry'), msg: '' })
     if(!result) return
     try {
-        await axios.post(`${API_URL}/admin/block`, { id: id }, { withCredentials: true })
+        await api.post(`/admin/block`, { id })
         openModal({ type: "info", title: t('profile.block.scs.title'), msg: t('proifle.block.scs.msg') })
     }
     catch(err: any) {
@@ -44,7 +43,7 @@ const unblockUser = async (id: number, openModal: ({type, title, msg}: { type: s
     const result = await openModal({ type: 'inquiry', title: t('profile.unblock.inquiry'), msg: '' })
     if(!result) return
     try {
-        await axios.post(`${API_URL}/admin/unblock`, { id: id }, { withCredentials: true })
+        await api.post(`/admin/unblock`, { id })
         openModal({ type: "info", title: t('profile.unblock.scs.title'), msg: t('proifle.unblock.scs.msg') })
     }
     catch(err: any) {
@@ -57,7 +56,10 @@ const Profile = () => {
     const headerHeight = useHeaderHeight()
     const { t, i18n } = useTranslation()
 
-    const { openModal } = useModal()
+    const { openModal, bottomBarHeight } = useModal()
+
+    const colorScheme = useColorScheme();
+    const iconColor = colorScheme === "dark" ? "#d2d2d2" : "black";
 
     const [data, setData] = useState<null | Profile>(null)
     const [posts, setPosts] = useState<Post[]>([])
@@ -70,7 +72,7 @@ const Profile = () => {
 
     const fetchAll = async () => {
         try {
-            const res = await axios.post(`${API_URL}/profile/show`, { name: name })
+            const res = await api.post(`/profile/show`, { name })
             if (res.data) {
                 setData({
                     id: res.data.id,
@@ -79,7 +81,7 @@ const Profile = () => {
                     date: res.data.created_at,
                 })
 
-                const res2 = await axios.post(`${API_URL}/posts`, { name: name }, { withCredentials: true })
+                const res2 = await api.post(`/posts`, { name })
                 if(res2.data) {
                     setPosts(res2.data)
                 }
@@ -115,19 +117,24 @@ const Profile = () => {
     });
 
     const ProfileTiles = () => (
-        <View>
-            <View style={css.infoBox}>
+        <View className='w-[80%] flex-1 self-center'>
+            <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 15, alignSelf: 'center' }} className='self-center mb-4 font-bold text-2xl dark:text-white' numberOfLines={1} ellipsizeMode="tail">
+                {data.username} 
+                { data.perms === 'admin' && ` ( ${t('profile.perms.admin')} ) `}
+                { data.perms === 'blocked' && ` ( ${t('profile.perms.blocked')} ) `}
+            </Text>
+            <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
                 <View style={css.dateBox}>
-                    <FontAwesome6 name="clock" size={24}/>
+                    <FontAwesome6 name="clock" size={24} color={iconColor}/>
                     <View>
-                        <Text style={{fontWeight: 500}}>{t('profile.joinBox')}</Text>
-                        <Text>{formattedDate}</Text>
+                        <Text className='font-bold dark:text-[#d2d2d2]'>{t('profile.joinBox')}</Text>
+                        <Text className='dark:text-[#d2d2d2]'>{formattedDate}</Text>
                     </View>
                 </View>
             </View>
             {
             logged.perm === 'admin' &&
-            <View style={[css.infoBox, {display: 'flex'}]}>
+            <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
                 <TouchableOpacity onPress={
                     async (e) => { 
                         e.stopPropagation?.();
@@ -136,31 +143,23 @@ const Profile = () => {
                     }}>
                         <View style={css.dateBox}>
                             <FontAwesome6 name={data.perms === 'blocked' ? 'reply' : 'ban'} size={24} color="#d00000" />
-                            <Text style={{fontWeight: 500, color: '#d00000'}}>{data.perms === 'blocked' ? t('profile.unblockBox') : t('profile.blockBox')}</Text>
+                            <Text className='font-bold text-[#d00000]'>{data.perms === 'blocked' ? t('profile.unblockBox') : t('profile.blockBox')}</Text>
                         </View>
                 </TouchableOpacity>
             </View>
             }
-            <View style={css.infoBox}>
+            <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
                 <View style={css.postsBox}>
-                    <FontAwesome6 name="folder-open" size={24}/>
-                    <Text style={{fontWeight: 500}}>{t('profile.postsBox')}</Text>
+                    <FontAwesome6 name="folder-open" size={24} color={iconColor}/>
+                    <Text className='font-bold dark:text-[#d2d2d2]'>{t('profile.postsBox')}</Text>
                 </View>
             </View>
         </View>
     )
 
     return (
-        <View style={[css.container, { paddingTop: headerHeight }]}>
-            <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 15, alignSelf: 'center' }} numberOfLines={1} ellipsizeMode="tail">
-                {data.username} 
-                { data.perms === 'admin' && ` ( ${t('profile.perms.admin')} ) `}
-                { data.perms === 'blocked' && ` ( ${t('profile.perms.blocked')} ) `}
-            </Text>
-            <FlatList 
-            contentContainerStyle={{ 
-                justifyContent: 'center',
-            }}
+            <FlatList
+            contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: bottomBarHeight }}
             refreshControl={ 
                 <RefreshControl 
                 refreshing={refreshing} 
@@ -173,17 +172,16 @@ const Profile = () => {
                 <ProfileTiles/>
             }
             renderItem={({ item }) => (
-                <View style={css.listBox}>
+                <View className='w-[70%] self-center'>
                     <MiniPost key={item.id} id={item.id} title={item.title} desc={item.description} likes={item.likes} isLiked={!!item.isLiked}/>
                 </View>
             )}
             ListEmptyComponent={
-                <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+                <Text className='mx-5 self-center'>{t('common.nothingThere')}</Text>
             }
             removeClippedSubviews={true}
             keyboardShouldPersistTaps="handled"
             />
-        </View>
     );
 }
 

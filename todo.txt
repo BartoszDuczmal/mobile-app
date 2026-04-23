@@ -6,9 +6,17 @@ TODO:
 -> zmienic system polubien postow tak jak to zrobilem w komentarzach ✅
 -> ustawic date z uwglednieniem strefy czasowej ✅
 -> dodaj do reszty list flatliste i dodatkowo ten pull-to-refresh ✅
--> nowy design
--> dodac rejestracje z potwierdzeniem mailowo 
+-> nowy design, zostalo: changePass, resetPass ✅
+-> dodac sprawdzanie polajkowania w posts/show.js ✅
+-> dodac rejestracje z potwierdzeniem mailowo ❌
+-> nie dziala wylogowywanie !!!! ✅
+-> odswiezanie logowania po wygasnieciu ❓
+-> ikona i ogl techniczne rzeczy
+-> zrobic authcontext(logowanie, wylogowywanie, sprawdzanie) ✅
+-> ZOBACZ CHAT Z GEMINI OGL DODAJ PLIK INSTANCJI AXIOS ✅
+-> poprawic wyglad maila?
 *MNIEJ WAŻNE:
 -> Poprawic we wszystkim walidacje
+-> zmienic aby nie uzywalo czcionki systemowej
 **JAK BEDZIE ZROBIONE WSZYSTKO INNE
 -> Zrobic builda i moze cos jeszcze pomyslec

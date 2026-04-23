@@ -157,6 +157,7 @@
             "blocked": "Blocked"
         }
     },
+    
     "input": {
         "pass": "password",
         "currPass": "current password",
@@ -237,6 +238,7 @@
         "notFound": "Not found.",
         "nothingThere": "Nothing there.",
         "toManyAttempts5": "Too many attempts. Please try again in 5 minutes.",
-        "toManyAttempts15": "Too many attempts. Please try again in 15 minutes."
+        "toManyAttempts15": "Too many attempts. Please try again in 15 minutes.",
+        "changeTheme": "Theme:"
     }
 }
