@@ -1,5 +1,6 @@
 import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
+import { StyledText } from '@/components/StyledComponents';
 import '@/locales/config';
 import { useModal } from '@/providers/ModalProvider';
 import { api } from "@/services/api";
@@ -9,7 +10,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -90,7 +91,7 @@ const Profile = () => {
             }
         } catch (err: any) {
             const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'Wystąpił nieznany błąd serwera.'
-            return <Text>{errMsg}</Text>
+            return <StyledText>{errMsg}</StyledText>
         }
     }
 
@@ -118,17 +119,17 @@ const Profile = () => {
 
     const ProfileTiles = () => (
         <View className='w-[80%] flex-1 self-center'>
-            <Text style={{ fontSize: 20, fontWeight: 600, marginBottom: 15, alignSelf: 'center' }} className='self-center mb-4 font-bold text-2xl dark:text-white' numberOfLines={1} ellipsizeMode="tail">
+            <StyledText style={{ fontSize: 20, fontWeight: 600, marginBottom: 15, alignSelf: 'center' }} className='self-center mb-4 font-bold text-2xl dark:text-white' numberOfLines={1} ellipsizeMode="tail">
                 {data.username} 
                 { data.perms === 'admin' && ` ( ${t('profile.perms.admin')} ) `}
                 { data.perms === 'blocked' && ` ( ${t('profile.perms.blocked')} ) `}
-            </Text>
+            </StyledText>
             <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
                 <View style={css.dateBox}>
                     <FontAwesome6 name="clock" size={24} color={iconColor}/>
                     <View>
-                        <Text className='font-bold dark:text-[#d2d2d2]'>{t('profile.joinBox')}</Text>
-                        <Text className='dark:text-[#d2d2d2]'>{formattedDate}</Text>
+                        <StyledText className='font-bold dark:text-[#d2d2d2]'>{t('profile.joinBox')}</StyledText>
+                        <StyledText className='dark:text-[#d2d2d2]'>{formattedDate}</StyledText>
                     </View>
                 </View>
             </View>
@@ -143,7 +144,7 @@ const Profile = () => {
                     }}>
                         <View style={css.dateBox}>
                             <FontAwesome6 name={data.perms === 'blocked' ? 'reply' : 'ban'} size={24} color="#d00000" />
-                            <Text className='font-bold text-[#d00000]'>{data.perms === 'blocked' ? t('profile.unblockBox') : t('profile.blockBox')}</Text>
+                            <StyledText className='font-bold text-[#d00000]'>{data.perms === 'blocked' ? t('profile.unblockBox') : t('profile.blockBox')}</StyledText>
                         </View>
                 </TouchableOpacity>
             </View>
@@ -151,7 +152,7 @@ const Profile = () => {
             <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
                 <View style={css.postsBox}>
                     <FontAwesome6 name="folder-open" size={24} color={iconColor}/>
-                    <Text className='font-bold dark:text-[#d2d2d2]'>{t('profile.postsBox')}</Text>
+                    <StyledText className='font-bold dark:text-[#d2d2d2]'>{t('profile.postsBox')}</StyledText>
                 </View>
             </View>
         </View>
@@ -177,7 +178,7 @@ const Profile = () => {
                 </View>
             )}
             ListEmptyComponent={
-                <Text className='mx-5 self-center'>{t('common.nothingThere')}</Text>
+                <StyledText className='mx-5 self-center'>{t('common.nothingThere')}</StyledText>
             }
             removeClippedSubviews={true}
             keyboardShouldPersistTaps="handled"

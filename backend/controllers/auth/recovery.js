@@ -31,8 +31,17 @@ const recovery = async (req, res) => {
                     subject: 'Resetowanie hasła.',
                     htmlContent: 
                     `
-                        <h2>Aby zmienić hasło do konta kliknij w przycisk poniżej.</h2>
-                        <a href="${resetLink}" target="_blank">${t('input.button.changePass')}</a>
+                        <h2>Cześć!</h2>
+                        <h3>Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w aplikacji [Nazwa Aplikacji]. Kliknij poniższy przycisk, aby ustawić nowe hasło:</h3>
+
+                        <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px;">${t('input.button.changePass')}</a>
+
+                        <p>Link wygaśnie za 60 minut. Jeśli to nie Ty wysłałeś prośbę, po prostu zignoruj tę wiadomość – Twoje hasło pozostanie bezpieczne.
+                    
+                    
+
+                        
+                        <p>Jeśli przycisk nie działa, skopiuj i wklej poniższy link do swojej przeglądarki: ${resetLink}</p>
                     `
                 });
             } catch(err) {

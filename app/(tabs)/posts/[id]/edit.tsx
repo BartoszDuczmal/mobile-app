@@ -1,4 +1,5 @@
 import Loading from '@/components/Loading';
+import { StyledText, StyledTextInput } from '@/components/StyledComponents';
 import '@/locales/config';
 import { useModal } from '@/providers/ModalProvider';
 import { api } from "@/services/api";
@@ -8,7 +9,7 @@ import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 
 type Post = {
     id: number,
@@ -99,16 +100,16 @@ const edit = () => {
             <View style={{ paddingTop: headerHeight, paddingBottom: bottomBarHeight }} className='flex-1 w-[80%] self-center'>
                 <View className='bg-white items-center rounded-[30px] w-full p-10 dark:bg-[#171a1c] shadow-md' style={{ marginTop: (screenHeight / 10) }}>
                     <View className='w-full pb-4 mb-2 border-b-2 border-[gray] items-center'>
-                        <TextInput placeholderTextColor="gray" className='text-black dark:text-[#d2d2d2] text-4xl' value={title} onChangeText={setTitle}></TextInput>
+                        <StyledTextInput placeholderTextColor="gray" className='text-black dark:text-[#d2d2d2] text-4xl' value={title} onChangeText={setTitle}/>
                     </View>
-                    <TextInput placeholderTextColor="gray" className='text-black dark:text-[#d2d2d2] text-xl' value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}></TextInput>
+                    <StyledTextInput placeholderTextColor="gray" className='text-black dark:text-[#d2d2d2] text-xl' value={desc} onChangeText={setDesc} numberOfLines={7} multiline={true}/>
                 </View>
                 <View className='mt-5 justify-around flex-row w-full items-center gap-2 px-4'>
                     <Pressable style={{ paddingHorizontal: (width - 200) / 5 }} className='shadow-md dark:bg-[#2a7e2a] bg-[lightgreen] p-5 rounded-[30px] active:opacity-80' onPress={() => fetchEdit(idNum, title, desc, openModal, t)}>
-                        <Text className='text-2xl self-center text-white'>{t('input.button.save')}</Text>
+                        <StyledText className='text-2xl self-center text-white'>{t('input.button.save')}</StyledText>
                     </Pressable>
                     <Pressable style={{ paddingHorizontal: (width - 200) / 5 }} onPress={() => router.back()} className='shadow-md dark:bg-[#b74b49] bg-[#e39695] p-5 rounded-[30px] active:opacity-80'>
-                        <Text className='text-2xl self-center text-white'>{t('input.button.cancel')}</Text>
+                        <StyledText className='text-2xl self-center text-white'>{t('input.button.cancel')}</StyledText>
                     </Pressable>
                 </View>
             </View>

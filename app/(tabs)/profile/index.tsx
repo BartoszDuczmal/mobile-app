@@ -1,5 +1,6 @@
 import Loading from '@/components/Loading';
 import MiniPost from '@/components/MiniPost';
+import { StyledText } from '@/components/StyledComponents';
 import '@/locales/config';
 import { useAuth } from '@/providers/AuthProvider';
 import { useModal } from '@/providers/ModalProvider';
@@ -9,7 +10,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, RefreshControl, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { FlatList, RefreshControl, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type Profile = {
     id: number,
@@ -65,11 +66,11 @@ const MyProfile = () => {
                     setPosts(res2.data)
                 }
             } else {
-                return <Text>{t('myProfile.noUser')}</Text>
+                return <StyledText>{t('myProfile.noUser')}</StyledText>
             }
         } catch (err: any) {
             const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-            return <Text>{errMsg}</Text>
+            return <StyledText>{errMsg}</StyledText>
         }
     };
 
@@ -102,8 +103,8 @@ const MyProfile = () => {
                     <View className='flex-row items-center gap-4 pl-1'>
                         <FontAwesome6 name="clipboard-user" size={24} color={iconColor} />
                         <View>
-                            <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.usernameBox')}</Text>
-                            <Text className='dark:text-[#d2d2d2]'>{data.username}</Text>
+                            <StyledText className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.usernameBox')}</StyledText>
+                            <StyledText className='dark:text-[#d2d2d2]'>{data.username}</StyledText>
                         </View>
                     </View>
                 </View>
@@ -111,8 +112,8 @@ const MyProfile = () => {
                     <View className='flex-row items-center gap-3'>
                         <MaterialIcons name="alternate-email" size={26} color={iconColor} />
                         <View>
-                            <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.emailBox')}</Text>
-                            <Text className='dark:text-[#d2d2d2]'>{data.email}</Text>
+                            <StyledText className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.emailBox')}</StyledText>
+                            <StyledText className='dark:text-[#d2d2d2]'>{data.email}</StyledText>
                         </View>
                     </View>
                 </View>
@@ -120,8 +121,8 @@ const MyProfile = () => {
                     <View className='flex-row items-center gap-3'>
                         <FontAwesome6 name="clock" size={24} color={iconColor} />
                         <View>
-                            <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.joinBox')}</Text>
-                            <Text className='dark:text-[#d2d2d2]'>{formattedDate}</Text>
+                            <StyledText className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.joinBox')}</StyledText>
+                            <StyledText className='dark:text-[#d2d2d2]'>{formattedDate}</StyledText>
                         </View>
                     </View>
                 </View>
@@ -130,7 +131,7 @@ const MyProfile = () => {
                         <View className='flex-row items-center gap-3'>
                             <MaterialIcons name="password" size={26} color={iconColor} />
                             <View>
-                                <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.changePassBox')}</Text>
+                                <StyledText className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.changePassBox')}</StyledText>
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -140,7 +141,7 @@ const MyProfile = () => {
                         <View className='flex-row items-center gap-3'>
                             <MaterialIcons name="logout" size={26} color="rgba(185, 0, 0, 1)" />
                             <View>
-                                <Text style={{ fontWeight: 500, color: "rgba(185, 0, 0, 1)" }}>{t('myProfile.logoutBox')}</Text>
+                                <StyledText style={{ fontWeight: 500, color: "rgba(185, 0, 0, 1)" }}>{t('myProfile.logoutBox')}</StyledText>
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -148,7 +149,7 @@ const MyProfile = () => {
                 <View className='bg-white items-start rounded-[30px] w-full p-5 dark:bg-[#171a1c] shadow-md my-2'>
                     <View className='flex-row items-center gap-3'>
                         <FontAwesome6 name="folder-open" size={24} color={iconColor} />
-                        <Text className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.postsBox')}</Text>
+                        <StyledText className='font-bold dark:text-[#d2d2d2]'>{t('myProfile.postsBox')}</StyledText>
                     </View>
                 </View>
             </View>
@@ -176,7 +177,7 @@ const MyProfile = () => {
                     </View>
                 )}
                 ListEmptyComponent={
-                    <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+                    <StyledText style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</StyledText>
                 }
                 removeClippedSubviews={true}
                 keyboardShouldPersistTaps="handled"

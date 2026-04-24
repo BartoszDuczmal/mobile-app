@@ -1,7 +1,8 @@
+import { StyledText } from '@/components/StyledComponents';
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { getHeaderTitle } from "@react-navigation/elements";
 import { useState } from "react";
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Pressable, useColorScheme, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MenuModal from "./modals/MenuModal";
 
@@ -27,7 +28,7 @@ const NavigationBar = ({ options, route, navigation }: any) => {
                     <Pressable className="rounded-full p-3 bg-white dark:bg-[#0f1215] active:opacity-50" onPress={() => navigation.goBack()}>
                         <Ionicons name="chevron-back" size={24} color={iconColor}/>
                     </Pressable>
-                    <Text className="text-xl font-medium dark:text-white">{title}</Text>
+                    <StyledText className="text-xl font-bold dark:text-white">{title}</StyledText>
                     <Pressable onPress={() => setModal(true)} className="items-center flex-row rounded-full p-3 bg-white dark:bg-[#0f1215] active:opacity-50">
                         <FontAwesome6 name="gear" size={24} color={iconColor} />
                     </Pressable>

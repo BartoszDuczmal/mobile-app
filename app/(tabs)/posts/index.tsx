@@ -1,4 +1,5 @@
 import MiniPost from '@/components/MiniPost';
+import { StyledText } from '@/components/StyledComponents';
 import '@/locales/config';
 import { useModal } from '@/providers/ModalProvider';
 import { api } from "@/services/api";
@@ -6,7 +7,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Keyboard, Platform, RefreshControl, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
+import { FlatList, Keyboard, Platform, RefreshControl, useColorScheme, useWindowDimensions, View } from 'react-native';
 
 type Post = {
   id: number,
@@ -111,7 +112,7 @@ export default function Main() {
             />
           )}
           ListEmptyComponent={
-          <Text className='mx-5 self-center dark:text-white text-black'>{t('common.nothingThere')}</Text>
+          <StyledText className='mx-5 self-center dark:text-white text-black'>{t('common.nothingThere')}</StyledText>
           }
           removeClippedSubviews={true}
           ListFooterComponent={<View style={{ height: bottomBarHeight }}/>}

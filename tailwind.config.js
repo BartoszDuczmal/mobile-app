@@ -8,8 +8,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        main: ["InstrumentSans"],
-        italic: ["InstrumentSansItalic"],
+        "main": ["FontMain"],
+        "italic": ["FontItalic"],
       },
     },
   },

@@ -1,8 +1,9 @@
+import { StyledText } from '@/components/StyledComponents';
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { useColorScheme } from "nativewind";
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Modal, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 
 const MenuModal = ({ isVisible, close }: { isVisible: boolean, close: () => void }) => {
@@ -24,11 +25,11 @@ const MenuModal = ({ isVisible, close }: { isVisible: boolean, close: () => void
                 <Pressable className='self-end bg-white rounded-3xl m-4 mt-24 shadow-sm dark:bg-[#0f1215] items-start'>
                     <TouchableOpacity className='pt-5 pb-3 px-8 w-full flex-row items-center gap-4' onPress={() => (i18n.language == 'en') ? i18n.changeLanguage('pl') : i18n.changeLanguage('en')}>
                         <MaterialIcons name="translate" size={20} color='gray' />
-                        <Text className='dark:text-white'>{t('common.changeLang')}</Text>
+                        <StyledText className='dark:text-white'>{t('common.changeLang')}</StyledText>
                     </TouchableOpacity>
                     <TouchableOpacity className='pt-3 pb-5 px-8 text-center w-full flex-row items-center gap-4' onPress={ () => toggleTheme() }>
                         <Feather name={colorScheme === 'dark' ? 'moon': 'sun'} size={20} color='gray' />
-                        <Text className='dark:text-white'>{t('common.changeTheme')} {theme}</Text>
+                        <StyledText className='dark:text-white'>{t('common.changeTheme')} {theme}</StyledText>
                     </TouchableOpacity>
                 </Pressable>
             </Pressable>

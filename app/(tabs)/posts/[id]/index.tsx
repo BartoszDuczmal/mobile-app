@@ -1,5 +1,6 @@
 import Loading from '@/components/Loading';
 import MiniComment from '@/components/MiniComment';
+import { StyledText, StyledTextInput } from '@/components/StyledComponents';
 import { useModal } from '@/providers/ModalProvider';
 import { api } from "@/services/api";
 import { checkAuth } from '@/utils/checkAuth';
@@ -10,7 +11,7 @@ import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, StyleSheet, TouchableOpacity, View } from "react-native";
 
 type Post = {
     id: number,
@@ -166,22 +167,22 @@ const ViewPost = () => {
             <View className='w-[80%] flex-1 items-center self-center'>
                 <View className='bg-white items-center rounded-[30px] w-full p-10 dark:bg-[#171a1c] shadow-md'>
                     <Pressable onPress={() => router.push(`/(tabs)/profile/${data.author}`)}>
-                        <Text className='text-[gray] text-xl self-center mb-4' numberOfLines={1}>
+                        <StyledText className='text-[gray] text-xl self-center mb-4' numberOfLines={1}>
                             <Feather name="user" size={24} color='gray' />
                             &nbsp;
                             {data.author}
-                        </Text>
+                        </StyledText>
                     </Pressable>
                     <View className='w-full pb-4 mb-2 border-b-2 border-[gray] items-center'>
-                        <Text numberOfLines={3} className='text-black dark:text-[#d2d2d2] text-4xl'>{data.title}</Text>
+                        <StyledText numberOfLines={3} className='text-black dark:text-[#d2d2d2] text-4xl'>{data.title}</StyledText>
                     </View>
-                    <Text className='text-black dark:text-[#d2d2d2] text-xl'>{data.description}</Text>
+                    <StyledText className='text-black dark:text-[#d2d2d2] text-xl'>{data.description}</StyledText>
                     <View className='align-center w-full flex-row m-6 justify-between'>
                         <View className='flex-row gap-2 items-center'>
                             <TouchableOpacity onPress={() => handleLike()}>
                                 <MaterialCommunityIcons name={isLike ? 'heart' : 'heart-outline'} style={{ zIndex: 10 }} size={30} color={isLike ? '#ec5353' : 'gray'}/>
                             </TouchableOpacity>
-                            <Text className='text-[gray] text-xl'>{likes}</Text>
+                            <StyledText className='text-[gray] text-xl'>{likes}</StyledText>
                         </View>
                         <View className='flex-row gap-5 items-center'>
                         { 
@@ -197,14 +198,14 @@ const ViewPost = () => {
                         }
                         </View> 
                     </View>
-                    <Text style={{ color: 'gray', fontSize: 18 }}>{formattedDate}</Text>
+                    <StyledText style={{ color: 'gray', fontSize: 18 }}>{formattedDate}</StyledText>
                 </View>
                 <View className='bg-white items-center rounded-[30px] w-full dark:bg-[#171a1c] shadow-md mt-5 flex-row justify-beetween p-3'>
                     <View className='dark:bg-black rounded-full flex-1 px-4 bg-[#f5f6f7]'> 
-                        <TextInput placeholderTextColor="gray" placeholder={t('input.addComment')} autoCapitalize="none" value={comment} onChangeText={setComment} className='text-black dark:text-white'/>
+                        <StyledTextInput placeholderTextColor="gray" placeholder={t('input.addComment')} autoCapitalize="none" value={comment} onChangeText={setComment} className='text-black dark:text-white'/>
                     </View>
                     <TouchableOpacity className='m-3 px-4' onPress={() => handleAddComment(comment, data.id)}>
-                        <Text className='text-black dark:text-white'>{t('input.button.comment')}</Text>
+                        <StyledText className='text-black dark:text-white'>{t('input.button.comment')}</StyledText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -221,7 +222,7 @@ const ViewPost = () => {
             /> 
         )}
         ListEmptyComponent={
-            <Text style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</Text>
+            <StyledText style={{marginVertical: 20, alignSelf: 'center'}}>{t('common.nothingThere')}</StyledText>
         }
         removeClippedSubviews={true}
         keyboardShouldPersistTaps='handled'

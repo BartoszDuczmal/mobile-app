@@ -9,7 +9,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import "../global.css";
@@ -20,8 +20,8 @@ export default function RootLayout() {
   const { t } = useTranslation()
 
   const [loaded] = useFonts({
-    'InstrumentSansItalic': require('../assets/fonts/InstrumentSans-Italic-VariableFont_wdth,wght.ttf'),
-    'InstrumentSans': require('../assets/fonts/InstrumentSans-VariableFont_wdth,wght.ttf'),
+    'FontItalic': require('../assets/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf'),
+    'FontMain': require('../assets/fonts/Roboto-VariableFont_wdth,wght.ttf'),
   });
 
   useEffect(() => {
@@ -33,6 +33,12 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+
+  if ((Text as any).defaultProps == null) (Text as any).defaultProps = {};
+  (Text as any).defaultProps.allowFontScaling = false;
+
+  if ((TextInput as any).defaultProps == null) (TextInput as any).defaultProps = {};
+  (TextInput as any).defaultProps.allowFontScaling = false;
 
   return (
   <AuthProvider>

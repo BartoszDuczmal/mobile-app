@@ -1,10 +1,11 @@
+import { StyledText } from '@/components/StyledComponents';
 import { useModal } from '@/providers/ModalProvider';
 import { api } from "@/services/api";
 import { checkAuth } from "@/utils/checkAuth";
 import { Feather, FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 const MiniComment = ({id, content, date, author, likes, isLiked, refresh}: {id: number, content: string, date: string, author: string, likes: number, isLiked: boolean, refresh: () => void}) => {
     const { t, i18n } = useTranslation()
@@ -69,17 +70,17 @@ const MiniComment = ({id, content, date, author, likes, isLiked, refresh}: {id: 
 
     return (
         <View className='mx-2 mt-5 w-[80%] self-center'>
-            <Text className='text-[gray] text-sm ml-[34px] mb-[-5px] mt-[5px]'>{formattedDate}</Text>
+            <StyledText className='text-[gray] text-sm ml-[34px] mb-[-5px] mt-[5px]'>{formattedDate}</StyledText>
             <View className='flex-row items-center p-[5px] gap-[5px]'>
                 <Feather name="corner-down-right" size={24} color="#5c5c5c" />
-                <Text className='text-[gray]'>{t('comments.whose', { user: author })}</Text>
+                <StyledText className='text-[gray]'>{t('comments.whose', { user: author })}</StyledText>
             </View>
-            <Text className='dark:text-[#d2d2d2] text-black ml-[35px] text-[15px]'>{content}</Text>
+            <StyledText className='dark:text-[#d2d2d2] text-black ml-[35px] text-[15px]'>{content}</StyledText>
             <View className='flex-row gap-1 justify-end items-center'>
                 <TouchableOpacity style={{flexDirection: 'row', gap: 3}} onPress={() => handleLike()}>
                     <MaterialCommunityIcons name={isLike ? "heart" : "heart-outline"} size={20} color={isLike ? '#ec5353' : "#5c5c5c"}/>
                 </TouchableOpacity>
-                <Text style={{color: '#5c5c5c'}}>{useLikes}</Text>
+                <StyledText style={{color: '#5c5c5c'}}>{useLikes}</StyledText>
                 { (user?.user === author || user?.perm === 'admin')  &&
                 <TouchableOpacity style={{alignItems: 'center', justifyContent: 'center', marginLeft: 5}} onPress={() => fetchDelete()}>
                     <FontAwesome6 name='trash-can' size={16} color='#5c5c5c'/>

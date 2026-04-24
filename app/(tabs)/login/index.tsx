@@ -1,3 +1,4 @@
+import { StyledText, StyledTextInput } from '@/components/StyledComponents';
 import '@/locales/config';
 import { useAuth } from '@/providers/AuthProvider';
 import { useModal } from "@/providers/ModalProvider";
@@ -6,7 +7,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 
 const index = () => {
     const headerHeight = useHeaderHeight()
@@ -40,24 +41,24 @@ const index = () => {
                 <View className='bg-white items-center rounded-[30px] w-[80%] p-10 dark:bg-[#171a1c] shadow-md' style={{ marginTop: (screenHeight / 10) }} >
                     <View className='flex-row items-center border-b-2 border-b-[gray]'>
                         <MaterialIcons name="alternate-email" size={40} color={'gray'} />
-                        <TextInput placeholderTextColor="gray" placeholder={t('input.login')} onChangeText={setLogin} className='text-black dark:text-white ml-1 w-[80%] text-3xl'/>
+                        <StyledTextInput placeholderTextColor="gray" placeholder={t('input.login')} onChangeText={setLogin} className='text-black dark:text-white ml-1 w-[80%] text-3xl'/>
                     </View>
                     <View className='flex-row items-center border-b-2 border-b-[gray] mt-5'>
                         <MaterialIcons name="lock-open" size={40} color={'gray'} />
-                        <TextInput placeholderTextColor="gray" placeholder={t('input.pass')} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} className='text-black dark:text-white ml-1 w-[80%] text-3xl'/>
+                        <StyledTextInput placeholderTextColor="gray" placeholder={t('input.pass')} onChangeText={setPass} secureTextEntry={hide} autoCapitalize="none" autoCorrect={false} className='text-black dark:text-white ml-1 w-[80%] text-3xl'/>
                     </View>
-                    <Pressable onPress={() => setHide(v => !v)} className='items-end px-3 w-full'><Text style={{color: 'gray'}}>{ hide ? t('input.option.show') : t('input.option.hide') }</Text></Pressable>
+                    <Pressable onPress={() => setHide(v => !v)} className='items-end px-3 w-full'><StyledText style={{color: 'gray'}}>{ hide ? t('input.option.show') : t('input.option.hide') }</StyledText></Pressable>
                     <View className='flex-column items-center mt-2 gap-1'>
                         <Pressable onPress={() => router.push('/register')} className='group'>
-                            <Text className='text-base text-[gray] dark:group-active:text-[lightgray] group-active:text-black'>{t('auth.login.noAccount')}</Text>
+                            <StyledText className='text-base text-[gray] dark:group-active:text-[lightgray] group-active:text-black'>{t('auth.login.noAccount')}</StyledText>
                         </Pressable>
                         <Pressable onPress={() => router.push('/login/recovery')} className='group'>
-                            <Text className='text-base text-[gray] dark:group-active:text-[lightgray] group-active:text-black'>{t('auth.login.forgetPass')}</Text>
+                            <StyledText className='text-base text-[gray] dark:group-active:text-[lightgray] group-active:text-black'>{t('auth.login.forgetPass')}</StyledText>
                         </Pressable>
                     </View>
                 </View>
                 <Pressable onPress={() => handleLogin(login, pass, openModal, t)} disabled={login.length === 0 || pass.length === 0} className='shadow-md dark:bg-[#1e3773] bg-[#4974d7] w-[80%] p-5 mt-5 rounded-[50px] active:opacity-80'>
-                    <Text className='text-2xl self-center text-white'>{t('input.button.login')}</Text>
+                    <StyledText className='text-2xl self-center text-white'>{t('input.button.login')}</StyledText>
                 </Pressable>
             </ScrollView>
         </View>

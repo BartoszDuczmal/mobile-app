@@ -1,4 +1,5 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyledText } from '@/components/StyledComponents';
+import { TouchableOpacity, View } from "react-native";
 import Modal from 'react-native-modal';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -9,11 +10,11 @@ const ErrorModal = ({ visible, title, msg, onClose }: { visible: boolean, title:
         <Modal animationIn='slideInDown' animationOut='slideOutUp' isVisible={visible} hasBackdrop={false} coverScreen={false}>
                 <View className='flex-1 items-center justify-start' style={{ paddingTop: marginTop }}>
                     <View className='w-[80%] items-center justify-start p-5 bg-[#fdd7d7] dark:bg-[#f57676] rounded-[30px] shadow-lg'>
-                        <Text className='text-xl text-center font-bold mb-1'>{title}</Text>
-                        { msg && <Text className='text-lg'>{msg}</Text> }
+                        <StyledText className='text-xl text-center font-bold mb-1'>{title}</StyledText>
+                        { msg && <StyledText className='text-lg'>{msg}</StyledText> }
                         <View className='mt-3 flex-row justify-center items-center'>
                         <TouchableOpacity onPress={onClose}>
-                            <Text className='font-extrabold'>OK</Text>
+                            <StyledText className='font-extrabold'>OK</StyledText>
                         </TouchableOpacity>
                     </View>
                 </View>

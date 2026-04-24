@@ -1,3 +1,4 @@
+import { StyledText, StyledTextInput } from '@/components/StyledComponents';
 import '@/locales/config';
 import { useModal } from "@/providers/ModalProvider";
 import { api } from "@/services/api";
@@ -5,7 +6,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { router } from 'expo-router';
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 
 const addPost = async (title: string, desc: string, openModal: ({type, title, msg}: {type: string, title: string, msg: string }) => void, t: any) => {
   try {
@@ -35,12 +36,12 @@ const createPost = () => {
             <ScrollView contentContainerClassName='w-full items-center' contentContainerStyle={{ paddingTop: headerHeight, paddingBottom: bottomBarHeight }}>
                 <View className='items-center bg-white dark:bg-[#171a1c] w-[80%] p-10 rounded-[30px] shadow-md' style={{ marginTop: (screenHeight / 10) }}>
                     <View className='border-b-[gray] border-b-2 align-center w-full'>
-                        <TextInput placeholder={t('input.postTitle')} placeholderTextColor="gray" onChangeText={setTitle} className='w-full text-5xl justify-start text-black dark:text-white'/>
+                        <StyledTextInput placeholder={t('input.postTitle')} placeholderTextColor="gray" onChangeText={setTitle} className='w-full text-5xl justify-start text-black dark:text-white'/>
                     </View>
-                    <TextInput placeholder={t('input.postDesc')} placeholderTextColor="gray" onChangeText={setDesc} className='w-full text-3xl justify-start text-black dark:text-white' multiline={true} numberOfLines={7} textAlignVertical="top" />
+                    <StyledTextInput placeholder={t('input.postDesc')} placeholderTextColor="gray" onChangeText={setDesc} className='w-full text-3xl justify-start text-black dark:text-white' multiline={true} numberOfLines={7} textAlignVertical="top" />
                 </View>
                 <Pressable onPress={() => addPost(title, desc, openModal, t)} className='shadow-md dark:bg-[#1e3773] bg-[#4974d7] w-[80%] p-5 mt-5 rounded-[50px] active:opacity-80'>
-                    <Text className='text-2xl self-center text-white'>{t('input.button.publish')}</Text>
+                    <StyledText className='text-2xl self-center text-white'>{t('input.button.publish')}</StyledText>
                 </Pressable>
             </ScrollView>
         </View>

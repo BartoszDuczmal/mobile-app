@@ -16,7 +16,7 @@ TODO:
 -> ZOBACZ CHAT Z GEMINI OGL DODAJ PLIK INSTANCJI AXIOS ✅
 -> poprawic wyglad maila?
 *MNIEJ WAŻNE:
--> Poprawic we wszystkim walidacje
+-> Poprawic we wszystkim walidacje ✅
 -> zmienic aby nie uzywalo czcionki systemowej
 **JAK BEDZIE ZROBIONE WSZYSTKO INNE
 -> Zrobic builda i moze cos jeszcze pomyslec
