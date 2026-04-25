@@ -21,18 +21,18 @@ const recovery = async (req, res) => {
             const jti = uuidv4()
             await db.query('INSERT INTO pass_resets (jti, user_id) VALUES (?, ?)', [jti, result[0].id])
             await db.query('DELETE FROM pass_resets WHERE user_id = ? AND id NOT IN ( SELECT id FROM ( SELECT id FROM pass_resets WHERE user_id = ? ORDER BY created_at DESC LIMIT 3 ) AS recent )', [result[0].id, result[0].id])
-            const token = jwt.sign({ jti: jti, user: result[0].id }, process.env.JWT_KEY, { expiresIn: '10m' });
+            const token = jwt.sign({ jti: jti, user: result[0].id }, process.env.JWT_KEY, { expiresIn: '15m' });
             const resetLink = `https://mobile-app-ochre-two.vercel.app?token=${token}`
             console.log(process.env.EMAIL_USER)
 
-            const emailContent = (lng === 'pl') ? 
+            const emailContent = (req.body.lng === 'pl') ? 
             `
                 <h2>Cześć!</h2>
                 <h3>Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w aplikacji [Nazwa Aplikacji]. Kliknij poniższy przycisk, aby ustawić nowe hasło:</h3>
 
                 <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px;">Zmień hasło</a>
 
-                <p>Link wygaśnie za 60 minut. Jeśli to nie Ty wysłałeś prośbę, po prostu zignoruj tę wiadomość – Twoje hasło pozostanie bezpieczne.
+                <p>Link wygaśnie za 15 minut. Jeśli to nie Ty wysłałeś prośbę, po prostu zignoruj tę wiadomość – Twoje hasło pozostanie bezpieczne.
         
                     
   
@@ -45,7 +45,7 @@ const recovery = async (req, res) => {
 
                 <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px; text-decoration: none; display: inline-block;">Change password</a>
 
-                <p>This link will expire in 60 minutes. If you did not make this request, simply ignore this message – your password will remain secure.</p>
+                <p>This link will expire in 15 minutes. If you did not make this request, simply ignore this message – your password will remain secure.</p>
                 
 
 
