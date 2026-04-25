@@ -72,8 +72,14 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "8571cfeb-35ea-47c9-a100-d17de2ddc589"
+        "projectId": "99c12dda-5152-4b83-b76f-e7538ad3a8de"
+      },
+      "expo-navigation-bar": {
+        "enforceContrast": false,
+        "barStyle": "light",
+        "visibility": "hidden"
       }
-    }
+    },
+    "owner": "digger2137"
   }
 }
