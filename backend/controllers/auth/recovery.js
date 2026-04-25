@@ -25,24 +25,38 @@ const recovery = async (req, res) => {
             const resetLink = `https://mobile-app-ochre-two.vercel.app?token=${token}`
             console.log(process.env.EMAIL_USER)
 
+            const emailContent = (lng === 'pl') ? 
+            `
+                <h2>Cześć!</h2>
+                <h3>Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w aplikacji [Nazwa Aplikacji]. Kliknij poniższy przycisk, aby ustawić nowe hasło:</h3>
+
+                <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px;">Zmień hasło</a>
+
+                <p>Link wygaśnie za 60 minut. Jeśli to nie Ty wysłałeś prośbę, po prostu zignoruj tę wiadomość – Twoje hasło pozostanie bezpieczne.
+        
+                    
+  
+                <p>Jeśli przycisk nie działa, skopiuj i wklej poniższy link do swojej przeglądarki: ${resetLink}</p>
+            `
+            :
+            `
+                <h2>Hey!</h2>
+                <h3>We received a request to reset the password for your account in [Nazwa Aplikacji]. Click the button below to set a new password:</h3>
+
+                <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px; text-decoration: none; display: inline-block;">Change password</a>
+
+                <p>This link will expire in 60 minutes. If you did not make this request, simply ignore this message – your password will remain secure.</p>
+                
+
+
+                <p>If the button doesn't work, copy and paste the following link into your browser: ${resetLink}</p>
+            `
+
             try {
                 await sendMail({
                     to: value,
                     subject: 'Resetowanie hasła.',
-                    htmlContent: 
-                    `
-                        <h2>Cześć!</h2>
-                        <h3>Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w aplikacji [Nazwa Aplikacji]. Kliknij poniższy przycisk, aby ustawić nowe hasło:</h3>
-
-                        <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px;">${t('input.button.changePass')}</a>
-
-                        <p>Link wygaśnie za 60 minut. Jeśli to nie Ty wysłałeś prośbę, po prostu zignoruj tę wiadomość – Twoje hasło pozostanie bezpieczne.
-                    
-                    
-
-                        
-                        <p>Jeśli przycisk nie działa, skopiuj i wklej poniższy link do swojej przeglądarki: ${resetLink}</p>
-                    `
+                    htmlContent: emailContent
                 });
             } catch(err) {
                 return res.status(500).json({ error: "auth.recovery.mailSystem" });

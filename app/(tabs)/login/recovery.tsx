@@ -9,28 +9,28 @@ import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 
-const handleRecovery = async (email: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void, t: any) => {
-    try {
-        const res = await api.post(`/auth/recovery`, { email })
-        openModal({ type: 'info', title: t('auth.recovery.scs.title'), msg: t('auth.recovery.scs.msg') })
-    }
-    catch(err: any) {
-        const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
-        openModal({ type: "error", title: t('common.err'), msg: t(errMsg) })
-    }
-}
-
 const recovery = () => {
     const headerHeight = useHeaderHeight()
     const screenHeight = useWindowDimensions().height;
 
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
 
     const { openModal, bottomBarHeight } = useModal()
 
     const [email, setEmail] = useState<string>('')
 
     const eValid = emailValid(email)
+
+    const handleRecovery = async (email: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void, t: any) => {
+        try {
+            const res = await api.post(`/auth/recovery`, { email, lng: i18n.language })
+            openModal({ type: 'info', title: t('auth.recovery.scs.title'), msg: t('auth.recovery.scs.msg') })
+        }
+        catch(err: any) {
+            const errMsg = typeof err.response.data?.error === 'string' ? err.response.data?.error : 'common.internalErr'
+            openModal({ type: "error", title: t('common.err'), msg: t(errMsg) })
+        }
+    }
 
     return (
         <View className='w-full flex-1'>
