@@ -1,4 +1,4 @@
-package com.twojanazwa.nativeapp
+package com.bartoszduczmal.mobileapp
 
 import android.app.Application
 import android.content.res.Configuration

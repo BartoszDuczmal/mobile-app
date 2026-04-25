@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.twojanazwa.nativeapp'
+    namespace 'com.bartoszduczmal.mobileapp'
     defaultConfig {
-        applicationId 'com.twojanazwa.nativeapp'
+        applicationId 'com.bartoszduczmal.mobileapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

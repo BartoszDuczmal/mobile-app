@@ -1,4 +1,4 @@
-package com.twojanazwa.nativeapp
+package com.bartoszduczmal.mobileapp
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

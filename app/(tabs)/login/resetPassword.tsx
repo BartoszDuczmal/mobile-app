@@ -46,7 +46,7 @@ const resetPassword = () => {
                 <View className='bg-white items-center rounded-[30px] w-[80%] p-10 dark:bg-[#171a1c] shadow-md' style={{ marginTop: (screenHeight / 10) }}>
                     <View className='flex-row items-center border-b-2 border-b-[gray]'>
                         <MaterialIcons name="lock-outline" size={40} color={pass.length === 0 ? 'gray' : pValid.valid ? 'gray': '#f2545b'} />
-                        <StyledTextInput placeholderTextColor="gray" placeholder={t('input.pass')} className='text-black dark:text-white ml-1 w-[80%] text-3xl' onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} multiline={false} numberOfLines={1}/>
+                        <StyledTextInput placeholderTextColor="gray" placeholder={t('input.newPass')} className='text-black dark:text-white ml-1 w-[80%] text-3xl' onChangeText={setPass} secureTextEntry={true} autoCapitalize="none" autoCorrect={false} multiline={false} numberOfLines={1}/>
                     </View>
                     { !pValid.valid && pass.length !== 0 && pValid.messages.map((msg, i) => (
                         <StyledText key={i} className='text-[#f2545b] mt-2'>{msg}</StyledText>))
