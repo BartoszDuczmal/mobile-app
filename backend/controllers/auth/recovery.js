@@ -28,7 +28,7 @@ const recovery = async (req, res) => {
             `
                 <h2>Cześć!</h2>
                 <h3>Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w aplikacji mobile_app. Kliknij poniższy przycisk, aby ustawić nowe hasło:</h3>
-                <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px; text-decoration: none; margin: 20px;">Zmień hasło</a>
+                <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px; text-decoration: none; margin: 20px; display: inline-block; ">Zmień hasło</a>
                 <p>Link wygaśnie za 15 minut. Jeśli to nie Ty wysłałeś prośbę, po prostu zignoruj tę wiadomość – Twoje hasło pozostanie bezpieczne.
                 <br><br><br>
                 <p>Jeśli przycisk nie działa, skopiuj i wklej poniższy link do swojej przeglądarki: <br>${resetLink}</p>
@@ -37,7 +37,7 @@ const recovery = async (req, res) => {
             `
                 <h2>Hey!</h2>
                 <h3>We received a request to reset the password for your account in mobile_app. Click the button below to set a new password:</h3>
-                <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px; text-decoration: none; margin: 20px;">Change password</a>
+                <a href="${resetLink}" target="_blank" style="background-color: #4974d7; border-radius: 20px; font-weight: bold; color: #ffffff; padding: 15px 25px; text-decoration: none; margin: 20px; display: inline-block; ">Change password</a>
                 <p>This link will expire in 15 minutes. If you did not make this request, simply ignore this message – your password will remain secure.</p>
                 <br><br><br>
                 <p>If the button doesn't work, copy and paste the following link into your browser: <br>${resetLink}</p>
