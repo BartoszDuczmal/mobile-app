@@ -9,17 +9,6 @@ import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 
-const fReset = async (curr: string, pass: string, openModal: ({type, title, msg}: { type: string, title: string, msg: string }) => void, t: any) => {
-    try {
-        await api.post(`/auth/resetPass`, { curr, pass });
-        openModal({ type: 'info', title: t('auth.passReset.scs.title'), msg: t('auth.passReset.scs.msg') })
-    }
-    catch(err: any) {
-        const errMsg = err.response?.data?.error || 'common.internalErr'
-        openModal({ type: "error", title: t('auth.passReset.err.title'), msg: t(errMsg) })
-    }
-}
-
 const changePassword = () => {
     const headerHeight = useHeaderHeight()
     const { t } = useTranslation()
@@ -37,6 +26,17 @@ const changePassword = () => {
     const [newReHide, setNewReHide] = useState(true)
 
     const pValid = passValid(pass)
+
+    const fReset = async (curr: string, pass: string) => {
+        try {
+            await api.post(`/auth/resetPass`, { curr, pass });
+            openModal({ type: 'info', title: t('auth.passReset.scs.title'), msg: t('auth.passReset.scs.msg') })
+        }
+        catch(err: any) {
+            const errMsg = err.response?.data?.error || 'common.internalErr'
+            openModal({ type: "error", title: t('auth.passReset.err.title'), msg: t(errMsg) })
+        }
+    }
 
     return (
         <View className='flex-1 w-full'>
@@ -64,7 +64,7 @@ const changePassword = () => {
                                     <StyledText className='text-[#f2545b] mt-2'>{t('input.error.samePass')}</StyledText>
                     )}
                 </View>
-                <Pressable onPress={() => fReset(curr, pass, openModal, t)} className='shadow-md dark:bg-[#1e3773] bg-[#4974d7] w-[80%] p-5 mt-5 rounded-[50px] active:opacity-80' disabled={ !(pValid.valid && pass === repass) }>
+                <Pressable onPress={() => fReset(curr, pass)} className='shadow-md dark:bg-[#1e3773] bg-[#4974d7] w-[80%] p-5 mt-5 rounded-[50px] active:opacity-80' disabled={ !(pValid.valid && pass === repass) }>
                     <StyledText className='text-2xl self-center text-white' >{t('input.button.changePass')}</StyledText>
                 </Pressable>
             </ScrollView>
