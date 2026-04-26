@@ -7,7 +7,6 @@ const myShow = async (req, res) => {
     
     const user = checkFunc(token)
     if(user === null) {
-        console.log('Nieautoryzano!')
         return res.status(401).json({ error: 'common.authErr' })
     }
 

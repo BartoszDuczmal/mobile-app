@@ -3,7 +3,6 @@ import checkFunc from '../../functions/checkFunc.js';
 
 const show = async (req, res) => {
     const postId = req.params.id;
-    console.log('Otrzymano próbę wyświetlenia posta. ID: ', postId)
 
     if (isNaN(Number(postId))) {
         return res.status(400).json({ error: 'common.wrongIdErr' });

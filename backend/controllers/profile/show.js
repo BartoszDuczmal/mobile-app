@@ -2,7 +2,6 @@ import db from '../../config/db.js';
 import schemaLogin from "../../models/loginModel.js";
 
 const show = async (req, res) => {
-    console.log("REQ BODY:", req.body)
     const msg = "common.noUserErr"
 
     const { error, value } = schemaLogin.extract('name').validate(req.body.name)

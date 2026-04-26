@@ -13,7 +13,6 @@ const edit = async (req, res) => {
     // Walidacja otrzymanych danych
     const { error, value } = schemaPost.validate(req.body)
     if(error) {
-        console.log('Bledna walidacja! Error: ' + error)
         return res.status(400).json({ error: 'posts.edit.incorrect' });
     }
 

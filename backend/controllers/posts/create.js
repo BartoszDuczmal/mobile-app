@@ -8,11 +8,8 @@ const create = async (req, res) => {
         return res.status(401).json({ error: 'common.unauthorized' })
     }
 
-    console.log('Otrzymano post: ', req.body, '-> ID: ', user.id)
-
     const { error, value } = schemaPost.validate(req.body)
     if(error) {
-        console.log('Bledna walidacja! Error: ' + error)
         return res.status(400).json({ error: 'posts.publish.incorrect' });
     }
 
